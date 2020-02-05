@@ -1,7 +1,7 @@
 Python Ornitho API Client
 =========================
 
-The following "ornitho controllers" are partly implemented:
+The following "ornitho controllers / calls" are implemented:
 
 - taxonomic groups
 
@@ -23,7 +23,7 @@ The following "ornitho controllers" are partly implemented:
   - List Observers
   - Get a single observer
 
--  observations
+- observations
 
   - List observations
   - Get a single observation
@@ -46,14 +46,29 @@ Not yet Implemented:
 - bearded vulture birds
 - bearded vulture information
 
+Usage
+-----
+Before the client can be used  **consumer_key**, **consumer_secret**, **user_email**, **user_pw** and **api_base** must be set:
+
+.. code-block:: python
+
+    import ornitho
+
+    ornitho.consumer_key = "CONSUMER_KEY"
+    ornitho.consumer_secret = "CONSUMER_SECRET"
+    ornitho.user_email = "USER_MAIL"
+    ornitho.user_pw = "USER_PASSWORD"
+    ornitho.api_base = "https://www.ornitho.de/api/"
+
+The client can then be used.
+
 Examples
---------
+~~~~~~~~~~~~~
 Following code shows how to get all observation from ornitho.de between 01.10.2019 and 31.10.2019:
 
 .. code-block:: python
 
     import os
-
     import ornitho
 
     ornitho.consumer_key = os.environ.get("ORNITHO_CONSUMER_KEY")
@@ -62,10 +77,10 @@ Following code shows how to get all observation from ornitho.de between 01.10.20
     ornitho.user_pw = os.environ.get("ORNITHO_USER_PW")
     ornitho.api_base = "https://www.ornitho.de/api/"
     
-    resp = ornitho.Observation.search_all(period_choice="range", date_from="31.10.2019", date_to="31.10.2019")
-    print(f"Found {len(resp)} observation between 31.10.2019 and 31.10.2019")
+    resp = ornitho.Observation.search_all(period_choice="range", date_from="01.10.2019", date_to="31.10.2019")
+    print(f"Found {len(resp)} observations between 01.10.2019 and 31.10.2019")
     
-More examples can be found the example folder.
+More examples can be found the `examples <https://github.com/dda-dev/ornitho-client-python/tree/master/examples>`__ folder.
 
 Prerequisites
 ~~~~~~~~~~~~~
@@ -87,34 +102,22 @@ These can be installed with pipenv:
 
 Installing
 ~~~~~~~~~~
-**Currently not published on pypi so the library has to be installed manually!**
+**Currently not published on pypi!**
 
-The project will be offered as a `Pypi
-package <https://pypi.python.org/pypi/ornitho>`__, and using pip /
-pipenv is the preferred way to install it. For this use the following
-command;
+.. The project will be offered as a `Pypi
+   package <https://pypi.python.org/pypi/ornitho>`__, and using pip /
+   pipenv is the preferred way to install it. For this use the following
+   command:
 
-``$ pip install ornitho``
+   ``$ pip install ornitho``
 
-If needed, manual installation is possible:
+Manual installation can be done with following command:
 
 ``$ python setup.py install``
-
-Testing
--------
-
-The tests included with the project can be run with:
-
-``$ pytest``
-
-To test all supported Python versions, use tox:
-
-``$ tox``
 
 Used Libraries
 --------------
 https://github.com/requests/requests-oauthlib
-
 
 Collaborate
 -----------
@@ -131,6 +134,17 @@ Issues management
 Issues are managed at the Github `project issues
 tracker <https://github.com/dda-dev/ornitho-client-python/issues>`__, where
 any Github user may report bugs or ask for new features.
+
+Testing
+~~~~~~~
+
+The tests included with the project can be run with:
+
+``$ pytest``
+
+To test all supported Python versions, use tox:
+
+``$ tox``
 
 License
 -------
