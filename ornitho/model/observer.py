@@ -79,6 +79,7 @@ class Observer(ListableModel):
     def registration_date(self) -> datetime:
         return datetime.fromtimestamp(
             int(self._raw_data["registration_date"]["@timestamp"])
+            + int(self._raw_data["registration_date"]["@offset"])
         )
 
     @property
@@ -86,6 +87,7 @@ class Observer(ListableModel):
         last_inserted_data = (
             datetime.fromtimestamp(
                 int(self._raw_data["last_inserted_data"]["@timestamp"])
+                + int(self._raw_data["last_inserted_data"]["@offset"])
             )
             if "last_inserted_data" in self._raw_data
             else None
@@ -94,7 +96,10 @@ class Observer(ListableModel):
 
     @property
     def last_login(self) -> datetime:
-        return datetime.fromtimestamp(int(self._raw_data["last_login"]["@timestamp"]))
+        return datetime.fromtimestamp(
+            int(self._raw_data["last_login"]["@timestamp"])
+            + int(self._raw_data["last_login"]["@offset"])
+        )
 
     @property
     def anonymous(self) -> bool:

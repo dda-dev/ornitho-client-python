@@ -137,6 +137,7 @@ class TestObserver(TestCase):
         self.assertEqual(
             datetime.fromtimestamp(
                 int(self.observer_json["registration_date"]["@timestamp"])
+                + int(self.observer_json["registration_date"]["@offset"])
             ),
             self.observer.registration_date,
         )
@@ -145,13 +146,17 @@ class TestObserver(TestCase):
         self.assertEqual(
             datetime.fromtimestamp(
                 int(self.observer_json["last_inserted_data"]["@timestamp"])
+                + int(self.observer_json["last_inserted_data"]["@offset"])
             ),
             self.observer.last_inserted_data,
         )
 
     def test_last_login(self):
         self.assertEqual(
-            datetime.fromtimestamp(int(self.observer_json["last_login"]["@timestamp"])),
+            datetime.fromtimestamp(
+                int(self.observer_json["last_login"]["@timestamp"])
+                + int(self.observer_json["last_login"]["@offset"])
+            ),
             self.observer.last_login,
         )
 

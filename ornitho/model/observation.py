@@ -50,6 +50,7 @@ class Observation(ListableModel, SearchableModel):
     def timing(self) -> datetime:
         return datetime.fromtimestamp(
             int(self._raw_data["observers"][0].get("timing")["@timestamp"])
+            + int(self._raw_data["observers"][0].get("timing")["@offset"])
         )
 
     @property
@@ -107,8 +108,11 @@ class Observation(ListableModel, SearchableModel):
     def insert_date(self) -> datetime:
         return datetime.fromtimestamp(
             int(self._raw_data["observers"][0]["insert_date"]["@timestamp"])
+            + int(self._raw_data["observers"][0].get("insert_date")["@offset"])
             if type(self._raw_data["observers"][0]["insert_date"]) is dict
-            else int(self._raw_data["observers"][0]["insert_date"])
+            else int(
+                self._raw_data["observers"][0]["insert_date"]
+            )  # TODO missing offset!
         )
 
     @property
@@ -116,8 +120,11 @@ class Observation(ListableModel, SearchableModel):
         update_date = (
             datetime.fromtimestamp(
                 int(self._raw_data["observers"][0]["update_date"]["@timestamp"])
+                + int(self._raw_data["observers"][0].get("update_date")["@offset"])
                 if type(self._raw_data["observers"][0]["update_date"]) is dict
-                else int(self._raw_data["observers"][0]["update_date"])
+                else int(
+                    self._raw_data["observers"][0]["update_date"]
+                )  # TODO missing offset!
             )
             if "update_date" in self._raw_data["observers"][0]
             else None

@@ -74,6 +74,7 @@ class TestObservation(TestCase):
         self.assertEqual(
             datetime.fromtimestamp(
                 int(self.observation_json["observers"][0]["timing"]["@timestamp"])
+                + int(self.observation_json["observers"][0]["timing"]["@offset"])
             ),
             self.observation.timing,
         )
