@@ -1,5 +1,3 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, Union
@@ -134,21 +132,21 @@ class Observation(ListableModel, SearchableModel):
     def species(self) -> Species:
         """ Observed Species """
         if self._species is None:
-            self._species = Species.retrieve(self.id_species)
+            self._species = Species.get(self.id_species)
         return self._species
 
     @property
     def observer(self) -> Observer:
         """ Observing user """
         if self._observer is None:
-            self._observer = Observer.retrieve(self.id_observer)
+            self._observer = Observer.get(self.id_observer)
         return self._observer
 
     @property
     def place(self) -> Place:
         """ Place of the observation """
         if self._place is None:
-            self._place = Place.retrieve(self.id_place)
+            self._place = Place.get(self.id_place)
         return self._place
 
     @classmethod
@@ -222,12 +220,14 @@ class Observation(ListableModel, SearchableModel):
             params["id_taxo_group"] = id_taxo_group
         if only_form:
             params["only_form"] = 1
-        params["date"] = date.astimezone(pytz.timezone('Europe/Berlin')).replace(tzinfo=None)
+        params["date"] = date.astimezone(pytz.timezone("Europe/Berlin")).replace(
+            tzinfo=None
+        )
         changed_observations = cls.request(method="get", url=url, params=params)
         observations = []
         for obs in changed_observations:
             if retrieve_observations:
-                observations.append(cls.retrieve(int(obs["id_sighting"])))
+                observations.append(cls.get(int(obs["id_sighting"])))
             else:
                 observations.append(cls(id_=int(obs["id_sighting"])))
         return observations

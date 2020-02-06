@@ -7,7 +7,7 @@ ornitho.consumer_secret = os.environ.get("ORNITHO_CONSUMER_SECRET")
 ornitho.user_email = os.environ.get("ORNITHO_USER_EMAIL")
 ornitho.user_pw = os.environ.get("ORNITHO_USER_PW")
 
-resp = ornitho.Place.retrieve(id_=767)
+resp = ornitho.Place.get(id_=767)
 print("Success: %r" % resp.name)
 
 resp, pagination_key = ornitho.Place.list(id_commune=8192, request_all=True)

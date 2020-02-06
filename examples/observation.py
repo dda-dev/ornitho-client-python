@@ -9,7 +9,7 @@ ornitho.user_email = os.environ.get("ORNITHO_USER_EMAIL")
 ornitho.user_pw = os.environ.get("ORNITHO_USER_PW")
 ornitho.api_base = "https://www.ornitho.de/api/"
 
-resp = ornitho.Observation.retrieve(id_=43050307)
+resp = ornitho.Observation.get(id_=43050307)
 print(
     f"{resp.count} {resp.species.english_name_plur}; Place: {resp.place.name};"
     f"Time: {resp.timing}, Observer: {resp.observer.surname} {resp.observer.name}"

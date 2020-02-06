@@ -26,7 +26,7 @@ class BaseModel(ABC):
         return self._id
 
     @classmethod
-    def retrieve(cls, id_: int):
+    def get(cls, id_: int):
         """ Retrieve Object from Biolovision with given ID
         :param id_: Unique identifier
         :type id_: int

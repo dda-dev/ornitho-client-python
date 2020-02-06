@@ -22,7 +22,7 @@ class TestBaseModel(TestCase):
 
     def test_retrieve(self):
         self.MyModel.refresh = MagicMock()
-        model = self.MyModel.retrieve(1)
+        model = self.MyModel.get(1)
         self.MyModel.refresh.assert_called()
         self.assertEqual(1, model.id_)
 

@@ -142,23 +142,23 @@ class TestObservation(TestCase):
 
     @mock.patch("ornitho.model.observation.Species")
     def test_species(self, mock_species):
-        mock_species.retrieve.return_value = "Species retrieved"
+        mock_species.get.return_value = "Species retrieved"
         species = self.observation.species
-        mock_species.retrieve.assert_called_with(self.observation.id_species)
+        mock_species.get.assert_called_with(self.observation.id_species)
         self.assertEqual(species, "Species retrieved")
 
     @mock.patch("ornitho.model.observation.Observer")
     def test_observer(self, mock_observer):
-        mock_observer.retrieve.return_value = "Observer retrieved"
+        mock_observer.get.return_value = "Observer retrieved"
         observer = self.observation.observer
-        mock_observer.retrieve.assert_called_with(self.observation.id_observer)
+        mock_observer.get.assert_called_with(self.observation.id_observer)
         self.assertEqual(observer, "Observer retrieved")
 
     @mock.patch("ornitho.model.observation.Place")
     def test_place(self, mock_place):
-        mock_place.retrieve.return_value = "Place retrieved"
+        mock_place.get.return_value = "Place retrieved"
         place = self.observation.place
-        mock_place.retrieve.assert_called_with(self.observation.id_place)
+        mock_place.get.assert_called_with(self.observation.id_place)
         self.assertEqual(place, "Place retrieved")
 
     def test_by_observer(self):
@@ -211,7 +211,7 @@ class TestObservation(TestCase):
 
         # Case 1: without retrieving
 
-        Observation.retrieve = MagicMock(return_value=self.observation)
+        Observation.get = MagicMock(return_value=self.observation)
         date = datetime.now() - timedelta(hours=1)
         observations = Observation.diff(date, retrieve_observations=True)
         self.assertEqual(len(observations), 2)
