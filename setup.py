@@ -60,6 +60,6 @@ setup(
         "Programming Language :: Python :: 3.8",
     ],
     long_description=read("README.rst"),
-    install_requires=["requests-oauthlib"],
+    install_requires=["requests-oauthlib", "pytz"],
     python_requires=">=2.6, !=3.0.*, !=3.1.*, !=3.2.*,!=3.3.*, !=3.4.*, <4",
 )
