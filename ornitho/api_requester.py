@@ -37,6 +37,16 @@ class APIRequester(object):
         self.user_email: Optional[str] = user_email or ornitho.user_email
         self.user_pw: Optional[str] = user_pw or ornitho.user_pw
         self.api_base: Optional[str] = api_base or ornitho.api_base
+        if not self.consumer_key:
+            raise RuntimeError("consumer_key missing!")
+        if not self.consumer_secret:
+            raise RuntimeError("consumer_secret missing!")
+        if not self.user_email:
+            raise RuntimeError("user_email missing!")
+        if not self.user_pw:
+            raise RuntimeError("user_pw missing!")
+        if not self.api_base:
+            raise RuntimeError("api_base missing!")
         self.session: OAuth1Session = OAuth1Session(
             self.consumer_key, client_secret=self.consumer_secret
         )

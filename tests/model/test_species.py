@@ -1,6 +1,13 @@
 from unittest import TestCase
 
+import ornitho
 from ornitho.model.species import Species
+
+ornitho.consumer_key = "ORNITHO_CONSUMER_KEY"
+ornitho.consumer_secret = "ORNITHO_CONSUMER_SECRET"
+ornitho.user_email = "ORNITHO_USER_EMAIL"
+ornitho.user_pw = "ORNITHO_USER_PW"
+ornitho.api_base = "ORNITHO_API_BASE"
 
 
 class TestSpecies(TestCase):

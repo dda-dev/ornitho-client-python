@@ -4,6 +4,12 @@ from unittest.mock import MagicMock
 import ornitho
 from ornitho.model.abstract import BaseModel
 
+ornitho.consumer_key = "ORNITHO_CONSUMER_KEY"
+ornitho.consumer_secret = "ORNITHO_CONSUMER_SECRET"
+ornitho.user_email = "ORNITHO_USER_EMAIL"
+ornitho.user_pw = "ORNITHO_USER_PW"
+ornitho.api_base = "ORNITHO_API_BASE"
+
 
 class TestBaseModel(TestCase):
     class MyModel(BaseModel):

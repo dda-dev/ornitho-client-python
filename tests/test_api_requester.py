@@ -9,10 +9,37 @@ from ornitho import (
     GatewayTimeoutException,
 )
 
+ornitho.consumer_key = "ORNITHO_CONSUMER_KEY"
+ornitho.consumer_secret = "ORNITHO_CONSUMER_SECRET"
+ornitho.user_email = "ORNITHO_USER_EMAIL"
+ornitho.user_pw = "ORNITHO_USER_PW"
+ornitho.api_base = "ORNITHO_API_BASE"
+
 
 class TestAPIRequester(TestCase):
     def setUp(self):
         self.requester = APIRequester()
+
+    def test_missing_config(self):
+        ornitho.consumer_key = None
+        self.assertRaises(RuntimeError, lambda: APIRequester())
+        ornitho.consumer_key = "ORNITHO_CONSUMER_KEY"
+
+        ornitho.consumer_secret = None
+        self.assertRaises(RuntimeError, lambda: APIRequester())
+        ornitho.consumer_secret = "ORNITHO_CONSUMER_SECRET"
+
+        ornitho.user_email = None
+        self.assertRaises(RuntimeError, lambda: APIRequester())
+        ornitho.user_email = "ORNITHO_USER_EMAIL"
+
+        ornitho.user_pw = None
+        self.assertRaises(RuntimeError, lambda: APIRequester())
+        ornitho.user_pw = "ORNITHO_USER_PW"
+
+        ornitho.api_base = None
+        self.assertRaises(RuntimeError, lambda: APIRequester())
+        ornitho.api_base = "ORNITHO_API_BASE"
 
     def test_enter(self):
         requester = self.requester.__enter__()

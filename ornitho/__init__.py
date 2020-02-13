@@ -8,6 +8,7 @@
 """
 import logging
 import os
+from typing import Optional
 
 from ornitho.api_exception import (
     APIConnectionException,
@@ -31,11 +32,11 @@ __license__ = "MIT"
 
 # Configuration variables
 
-consumer_key = None
-consumer_secret = None
-user_email = None
-user_pw = None
-api_base = "https://www.ornitho.de/api/"
+consumer_key: Optional[str] = None
+consumer_secret: Optional[str] = None
+user_email: Optional[str] = None
+user_pw: Optional[str] = None
+api_base: Optional[str] = None
 
 app_info = None
 
