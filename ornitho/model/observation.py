@@ -2,8 +2,6 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-import pytz
-
 from ornitho.model.abstract import BaseModel, ListableModel, SearchableModel
 from ornitho.model.observer import Observer
 from ornitho.model.place import Place
@@ -49,9 +47,10 @@ class Observation(ListableModel, SearchableModel):
     @property
     def timing(self) -> datetime:
         timing = datetime.fromtimestamp(
-            int(self._raw_data["observers"][0].get("timing")["@timestamp"])
+            int(self._raw_data["observers"][0].get("timing")["@timestamp"]),
+            datetime.now().astimezone().tzinfo,
         )
-        return pytz.utc.localize(timing)
+        return timing
 
     @property
     def coord_lat(self) -> float:
@@ -109,19 +108,19 @@ class Observation(ListableModel, SearchableModel):
         insert_date = datetime.fromtimestamp(
             int(self._raw_data["observers"][0]["insert_date"]["@timestamp"])
             if type(self._raw_data["observers"][0]["insert_date"]) is dict
-            else int(self._raw_data["observers"][0]["insert_date"])
+            else int(self._raw_data["observers"][0]["insert_date"]),
+            datetime.now().astimezone().tzinfo,
         )
-        return pytz.utc.localize(insert_date)
+        return insert_date
 
     @property
     def update_date(self) -> Optional[datetime]:
         update_date = (
-            pytz.utc.localize(
-                datetime.fromtimestamp(
-                    int(self._raw_data["observers"][0]["update_date"]["@timestamp"])
-                    if type(self._raw_data["observers"][0]["update_date"]) is dict
-                    else int(self._raw_data["observers"][0]["update_date"])
-                )
+            datetime.fromtimestamp(
+                int(self._raw_data["observers"][0]["update_date"]["@timestamp"])
+                if type(self._raw_data["observers"][0]["update_date"]) is dict
+                else int(self._raw_data["observers"][0]["update_date"]),
+                datetime.now().astimezone().tzinfo,
             )
             if "update_date" in self._raw_data["observers"][0]
             else None
@@ -224,9 +223,15 @@ class Observation(ListableModel, SearchableModel):
             params["id_taxo_group"] = id_taxo_group
         if only_form:
             params["only_form"] = 1
-        params["date"] = date.astimezone(pytz.timezone("Europe/Berlin")).replace(
-            tzinfo=None
-        )
+
+        # Converte timezone to local timezone and make it naive, since ornitho can't handle timezone in parameters
+        if date.tzinfo:
+            params["date"] = date.astimezone(
+                datetime.now().astimezone().tzinfo
+            ).replace(tzinfo=None)
+        else:
+            params["date"] = date
+
         changed_observations = cls.request(method="get", url=url, params=params)
         observations = []
         for obs in changed_observations:

@@ -1,8 +1,6 @@
 from datetime import datetime
 from typing import Optional
 
-import pytz
-
 from ornitho.model.abstract import ListableModel
 
 
@@ -80,17 +78,17 @@ class Observer(ListableModel):
     @property
     def registration_date(self) -> datetime:
         registration_date = datetime.fromtimestamp(
-            int(self._raw_data["registration_date"]["@timestamp"])
+            int(self._raw_data["registration_date"]["@timestamp"]),
+            datetime.now().astimezone().tzinfo,
         )
-        return pytz.utc.localize(registration_date)
+        return registration_date
 
     @property
     def last_inserted_data(self) -> Optional[datetime]:
         last_inserted_data = (
-            pytz.utc.localize(
-                datetime.fromtimestamp(
-                    int(self._raw_data["last_inserted_data"]["@timestamp"])
-                )
+            datetime.fromtimestamp(
+                int(self._raw_data["last_inserted_data"]["@timestamp"]),
+                datetime.now().astimezone().tzinfo,
             )
             if "last_inserted_data" in self._raw_data
             else None
@@ -100,9 +98,10 @@ class Observer(ListableModel):
     @property
     def last_login(self) -> datetime:
         last_login = datetime.fromtimestamp(
-            int(self._raw_data["last_login"]["@timestamp"])
+            int(self._raw_data["last_login"]["@timestamp"]),
+            datetime.now().astimezone().tzinfo,
         )
-        return pytz.utc.localize(last_login)
+        return last_login
 
     @property
     def anonymous(self) -> bool:

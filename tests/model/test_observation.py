@@ -74,10 +74,9 @@ class TestObservation(TestCase):
 
     def test_timing(self):
         self.assertEqual(
-            pytz.utc.localize(
-                datetime.fromtimestamp(
-                    int(self.observation_json["observers"][0]["timing"]["@timestamp"])
-                )
+            datetime.fromtimestamp(
+                int(self.observation_json["observers"][0]["timing"]["@timestamp"]),
+                datetime.now().astimezone().tzinfo,
             ),
             self.observation.timing,
         )
@@ -130,10 +129,9 @@ class TestObservation(TestCase):
 
     def test_insert_date(self):
         self.assertEqual(
-            pytz.utc.localize(
-                datetime.fromtimestamp(
-                    int(self.observation_json["observers"][0]["insert_date"])
-                )
+            datetime.fromtimestamp(
+                int(self.observation_json["observers"][0]["insert_date"]),
+                datetime.now().astimezone().tzinfo,
             ),
             self.observation.insert_date,
         )
@@ -218,10 +216,18 @@ class TestObservation(TestCase):
         # Case 1: without retrieving
 
         Observation.get = MagicMock(return_value=self.observation)
-        date = datetime.now() - timedelta(hours=1)
+        date = datetime.now().astimezone(pytz.timezone("Asia/Tokyo")) - timedelta(
+            hours=1
+        )
         observations = Observation.diff(date, retrieve_observations=True)
         self.assertEqual(len(observations), 2)
         self.assertEqual(observations[0], self.observation)
         Observation.request.assert_called_with(
-            method="get", url="observations/diff", params={"date": date}
+            method="get",
+            url="observations/diff",
+            params={
+                "date": date.astimezone(datetime.now().astimezone().tzinfo).replace(
+                    tzinfo=None
+                )
+            },
         )
