@@ -2,6 +2,8 @@ from datetime import datetime, timedelta
 from unittest import TestCase, mock
 from unittest.mock import MagicMock
 
+import pytz
+
 from ornitho import ModificationType, Observation
 
 
@@ -72,9 +74,10 @@ class TestObservation(TestCase):
 
     def test_timing(self):
         self.assertEqual(
-            datetime.fromtimestamp(
-                int(self.observation_json["observers"][0]["timing"]["@timestamp"])
-                + int(self.observation_json["observers"][0]["timing"]["@offset"])
+            pytz.utc.localize(
+                datetime.fromtimestamp(
+                    int(self.observation_json["observers"][0]["timing"]["@timestamp"])
+                )
             ),
             self.observation.timing,
         )
@@ -127,8 +130,10 @@ class TestObservation(TestCase):
 
     def test_insert_date(self):
         self.assertEqual(
-            datetime.fromtimestamp(
-                int(self.observation_json["observers"][0]["insert_date"])
+            pytz.utc.localize(
+                datetime.fromtimestamp(
+                    int(self.observation_json["observers"][0]["insert_date"])
+                )
             ),
             self.observation.insert_date,
         )

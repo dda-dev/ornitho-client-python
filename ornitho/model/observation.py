@@ -48,10 +48,10 @@ class Observation(ListableModel, SearchableModel):
 
     @property
     def timing(self) -> datetime:
-        return datetime.fromtimestamp(
+        timing = datetime.fromtimestamp(
             int(self._raw_data["observers"][0].get("timing")["@timestamp"])
-            + int(self._raw_data["observers"][0].get("timing")["@offset"])
         )
+        return pytz.utc.localize(timing)
 
     @property
     def coord_lat(self) -> float:
@@ -106,25 +106,22 @@ class Observation(ListableModel, SearchableModel):
 
     @property
     def insert_date(self) -> datetime:
-        return datetime.fromtimestamp(
+        insert_date = datetime.fromtimestamp(
             int(self._raw_data["observers"][0]["insert_date"]["@timestamp"])
-            + int(self._raw_data["observers"][0].get("insert_date")["@offset"])
             if type(self._raw_data["observers"][0]["insert_date"]) is dict
-            else int(
-                self._raw_data["observers"][0]["insert_date"]
-            )  # TODO missing offset!
+            else int(self._raw_data["observers"][0]["insert_date"])
         )
+        return pytz.utc.localize(insert_date)
 
     @property
     def update_date(self) -> Optional[datetime]:
         update_date = (
-            datetime.fromtimestamp(
-                int(self._raw_data["observers"][0]["update_date"]["@timestamp"])
-                + int(self._raw_data["observers"][0].get("update_date")["@offset"])
-                if type(self._raw_data["observers"][0]["update_date"]) is dict
-                else int(
-                    self._raw_data["observers"][0]["update_date"]
-                )  # TODO missing offset!
+            pytz.utc.localize(
+                datetime.fromtimestamp(
+                    int(self._raw_data["observers"][0]["update_date"]["@timestamp"])
+                    if type(self._raw_data["observers"][0]["update_date"]) is dict
+                    else int(self._raw_data["observers"][0]["update_date"])
+                )
             )
             if "update_date" in self._raw_data["observers"][0]
             else None

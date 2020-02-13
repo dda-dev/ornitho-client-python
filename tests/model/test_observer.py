@@ -1,6 +1,8 @@
 from datetime import datetime
 from unittest import TestCase
 
+import pytz
+
 from ornitho.model.observer import Observer
 
 
@@ -135,27 +137,30 @@ class TestObserver(TestCase):
 
     def test_registration_date(self):
         self.assertEqual(
-            datetime.fromtimestamp(
-                int(self.observer_json["registration_date"]["@timestamp"])
-                + int(self.observer_json["registration_date"]["@offset"])
+            pytz.utc.localize(
+                datetime.fromtimestamp(
+                    int(self.observer_json["registration_date"]["@timestamp"])
+                )
             ),
             self.observer.registration_date,
         )
 
     def test_last_inserted_data(self):
         self.assertEqual(
-            datetime.fromtimestamp(
-                int(self.observer_json["last_inserted_data"]["@timestamp"])
-                + int(self.observer_json["last_inserted_data"]["@offset"])
+            pytz.utc.localize(
+                datetime.fromtimestamp(
+                    int(self.observer_json["last_inserted_data"]["@timestamp"])
+                )
             ),
             self.observer.last_inserted_data,
         )
 
     def test_last_login(self):
         self.assertEqual(
-            datetime.fromtimestamp(
-                int(self.observer_json["last_login"]["@timestamp"])
-                + int(self.observer_json["last_login"]["@offset"])
+            pytz.utc.localize(
+                datetime.fromtimestamp(
+                    int(self.observer_json["last_login"]["@timestamp"])
+                )
             ),
             self.observer.last_login,
         )
