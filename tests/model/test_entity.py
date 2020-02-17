@@ -6,12 +6,12 @@ from ornitho import Entity
 class TestEntity(TestCase):
     def setUp(self):
         self.entity_json = {
-            "id": "5",
-            "short_name": "MhB-DE",
-            "full_name_german": "MhB Default-Profil",
+            "id": "1",
+            "short_name": "Short",
+            "full_name_german": "Full Nmae",
             "address": "",
             "url": "",
-            "description_german": '<p>\r\n\tBitte wenden Sie sich an die für Ihre Bundesland / Ihre Region zuständige Koordinationsstelle. Diese finden Sie auf der DDA-Webseite unter <a href="https://www.dda-web.de/mhb" target="_blank">www.dda-web.de/mhb</a>.<br />\r\n\tIst dort keine Koordinatorin / kein Koordinator angegeben, wenden Sie sich bei Fragen bitte an die bundesweite Koordinationsstelle. Vielen Dank!</p>\r\n',
+            "description_german": 'Description',
         }
         self.entity = Entity.create_from(self.entity_json)
 
