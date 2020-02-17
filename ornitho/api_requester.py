@@ -1,6 +1,6 @@
 import json
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from requests import Response
 from requests_oauthlib import OAuth1Session
@@ -73,7 +73,7 @@ class APIRequester(object):
         request_all: Optional[bool] = False,
         params: Optional[Dict[str, Any]] = None,
         body: Optional[Dict[str, Any]] = None,
-    ) -> Tuple[List[Dict[str, str]], Optional[str]]:
+    ) -> Tuple[Union[bytes, List[Dict[str, str]]], Optional[str]]:
         """Make requests to the API
         If request_all ist set, several requests calls to the API can be made, until all data is retrieved. Else a
         pagination key will be returned, which can be used to get the next data set.
@@ -106,9 +106,11 @@ class APIRequester(object):
             params=params,
             body=body,
         )
-        if isinstance(responds, list):
+        if isinstance(responds, bytes):
+            return responds, pk
+        elif isinstance(responds, list):
             data += responds
-        else:
+        elif "data" in responds.keys():
             if isinstance(responds["data"], dict):
                 if "sightings" in responds["data"].keys():
                     data += responds["data"]["sightings"]
@@ -117,15 +119,18 @@ class APIRequester(object):
                         data += form["sightings"]
             else:
                 data += responds["data"]
+        else:
+            data.append(responds)
+
         ornitho.logger.info("Received %s data objects" % (len(data)))
 
         if pk and request_all and len(data) > 0:
-            data = (
-                data
-                + self.request(
-                    method, url, headers, pk, short_version, request_all, params, body
-                )[0]
-            )
+            next_response = self.request(
+                method, url, headers, pk, short_version, request_all, params, body
+            )[0]
+            if isinstance(next_response, bytes):
+                raise RuntimeError("Recieved bytes content, where json was expected")
+            data = data + next_response
 
         return data, pk
 
@@ -215,9 +220,15 @@ class APIRequester(object):
         if not 200 <= raw_response.status_code < 300:
             self.handle_error_response(raw_response)
 
-        try:
+        if "pagination_key" in raw_response.headers.keys():
             pagination_key = raw_response.headers["pagination_key"] or None
-        except KeyError:
+        else:
             pagination_key = None
+
+        if (
+            "Content-Type" in raw_response.headers.keys()
+            and raw_response.headers["Content-Type"] == "application/pdf"
+        ):
+            return raw_response.content, pagination_key
 
         return json.loads(raw_response.content.decode("utf-8")), pagination_key

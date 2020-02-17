@@ -96,6 +96,30 @@ class TestAPIRequester(TestCase):
         self.assertEqual(response, [{"id": "1"}])
         self.assertEqual(pk, "pagination_key")
 
+        # Case 5: response is bytes
+        self.requester.request_raw = MagicMock(return_value=[b"BYTES", None])
+        response, pk = self.requester.request(method="get", url="test")
+        self.assertEqual(response, b"BYTES")
+        self.assertEqual(pk, None)
+
+        # Case 6: response is dict and has no data-attribute
+        self.requester.request_raw = MagicMock(return_value=[{"sites": "1"}, "pk"])
+        response, pk = self.requester.request(method="get", url="test")
+        self.assertEqual(response, [{"sites": "1"}])
+        self.assertEqual(pk, "pk")
+
+        # Case 7: first JSON, then byte response – no real world case
+        self.requester.request_raw = MagicMock(
+            side_effect=[
+                [{"data": [{"id": "1"}]}, "pagination_key"],
+                [b"BYTES", "pagination_key"],
+            ]
+        )
+        self.assertRaises(
+            RuntimeError,
+            lambda: self.requester.request(method="get", url="test", request_all=True),
+        )
+
     def test_handle_error_response(self):
         self.assertRaises(
             AuthenticationException,
@@ -157,3 +181,17 @@ class TestAPIRequester(TestCase):
         self.assertRaises(
             Exception, lambda: self.requester.request_raw(method="post", url="test")
         )
+
+        # Case 4: PDF
+        self.requester.session.request = MagicMock(
+            return_value=Mock(
+                status_code=200,
+                headers={"Content-Type": "application/pdf"},
+                content=b"PDF",
+            )
+        )
+        response, pk = self.requester.request_raw(
+            method="post", url="test", pagination_key="key", body={"test": "filter"}
+        )
+        self.assertEqual(b"PDF", response)
+        self.assertEqual(pk, None)

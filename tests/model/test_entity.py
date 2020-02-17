@@ -11,7 +11,7 @@ class TestEntity(TestCase):
             "full_name_german": "Full Nmae",
             "address": "",
             "url": "",
-            "description_german": 'Description',
+            "description_german": "Description",
         }
         self.entity = Entity.create_from(self.entity_json)
 

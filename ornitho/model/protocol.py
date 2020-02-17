@@ -1,0 +1,175 @@
+from typing import List, Optional
+
+from ornitho.model.abstract import BaseModel, ListableModel
+from ornitho.model.entity import Entity
+from ornitho.model.site import Site
+
+
+class Protocol(ListableModel):
+    ENDPOINT: str = "protocol"
+
+    def __init__(self, id_: int) -> None:
+        """ Protocol constructor
+        :param id_: ID, which is used to get the protocol from Biolovison
+        :type id_: int
+        """
+        super(Protocol, self).__init__(id_)
+        self._entity: Optional[Entity] = None
+        self._sites: Optional[List[BaseModel]] = None
+
+    @property
+    def name(self) -> str:
+        return self._raw_data["name"]
+
+    @property
+    def nbre_points_min(self) -> int:
+        return int(self._raw_data["nbre_points_min"])
+
+    @property
+    def nbre_points_max(self) -> int:
+        return int(self._raw_data["nbre_points_max"])
+
+    @property
+    def time_point(self) -> Optional[int]:
+        return (
+            int(self._raw_data["time_point"]) if self._raw_data["time_point"] else None
+        )
+
+    @property
+    def taxo_point(self) -> int:
+        return int(self._raw_data["taxo_point"])
+
+    @property
+    def additional_taxo_point(self) -> Optional[int]:
+        return (
+            int(self._raw_data["additional_taxo_point"])
+            if self._raw_data["additional_taxo_point"]
+            else None
+        )
+
+    @property
+    def nbre_transects_min(self) -> int:
+        return int(self._raw_data["nbre_transects_min"])
+
+    @property
+    def nbre_transects_max(self) -> int:
+        return int(self._raw_data["nbre_transects_max"])
+
+    @property
+    def time_transect(self) -> Optional[int]:
+        return (
+            int(self._raw_data["time_transect"])
+            if self._raw_data["time_transect"]
+            else None
+        )
+
+    @property
+    def taxo_transect(self) -> int:
+        return int(self._raw_data["taxo_transect"])
+
+    @property
+    def additional_taxo_transect(self) -> Optional[int]:
+        return (
+            int(self._raw_data["additional_taxo_transect"])
+            if self._raw_data["additional_taxo_transect"]
+            else None
+        )
+
+    @property
+    def nbre_polygones_min(self) -> int:
+        return int(self._raw_data["nbre_polygones_min"])
+
+    @property
+    def nbre_polygones_max(self) -> int:
+        return int(self._raw_data["nbre_polygones_max"])
+
+    @property
+    def time_polygone(self) -> Optional[int]:
+        return (
+            int(self._raw_data["time_polygone"])
+            if self._raw_data["time_polygone"]
+            else None
+        )
+
+    @property
+    def taxo_poly(self) -> int:
+        return int(self._raw_data["taxo_poly"])
+
+    @property
+    def additional_taxo_poly(self) -> Optional[int]:
+        return (
+            int(self._raw_data["additional_taxo_poly"])
+            if self._raw_data["additional_taxo_poly"]
+            else None
+        )
+
+    @property
+    def project_id(self) -> Optional[int]:
+        return (
+            int(self._raw_data["project_id"]) if self._raw_data["project_id"] else None
+        )
+
+    @property
+    def id_entity(self) -> int:
+        return int(self._raw_data["id_entity"])
+
+    @property
+    def nbre_bounding_box_max(self) -> int:
+        return int(self._raw_data["nbre_bounding_box_max"])
+
+    @property
+    def nbre_passage(self) -> Optional[int]:
+        return (
+            int(self._raw_data["nbre_passage"])
+            if self._raw_data["nbre_passage"]
+            else None
+        )
+
+    @property
+    def auto_hidden(self) -> int:
+        return False if self._raw_data["auto_hidden"] == "0" else True
+
+    @property
+    def only_admin_create(self) -> int:
+        return False if self._raw_data["only_admin_create"] == "0" else True
+
+    @property
+    def start_month(self) -> int:
+        return int(self._raw_data["start_month"])
+
+    @property
+    def default_atlas_code(self) -> Optional[int]:
+        return (
+            int(self._raw_data["default_atlas_code"])
+            if self._raw_data["default_atlas_code"]
+            else None
+        )
+
+    @property
+    def default_count(self) -> Optional[int]:
+        return (
+            int(self._raw_data["default_count"])
+            if self._raw_data["default_count"]
+            else None
+        )
+
+    @property
+    def entity(self) -> Entity:
+        """ Entity of the protocol """
+        if self._entity is None:
+            self._entity = Entity.get(self.id_entity)
+        return self._entity
+
+    @property
+    def sites(self) -> List[BaseModel]:
+        if not self._sites:
+            url = f"{self.ENDPOINT}/list_sites"
+            params = {"id": self.id_}
+
+            sites_object = self.request(method="get", url=url, params=params)[0][
+                "sites"
+            ]
+            self._sites = []
+            for site in sites_object.values():
+                self._sites.append(Site.create_from(site))
+        return self._sites

@@ -23,6 +23,18 @@ The following "ornitho controllers / calls" are implemented:
   - List Observers
   - Get a single observer
 
+- entities
+
+  - List entities
+  - Get a single entity
+
+- protocol
+
+  - List protocol
+  - Get a single protocol
+  - Get list of sites for protocol id
+  - Get PDF for site id
+
 - observations
 
   - List observations
@@ -33,18 +45,100 @@ The following "ornitho controllers / calls" are implemented:
 Not yet Implemented:
 
 - families
+
+  - List families
+  - Get a single family
+
 - territorial units
+
+  - List territorial units
+  - Get a single territorial unit
+
 - local admin units
-- entities
+
+  - List local admin units
+  - Search local admin units
+  - Get a single local admin unit
+
+- observers
+
+  - Get an observer rights list
+  - Get current observers info
+
 - export organizations
+
+  - List export organizations
+  - Get a single export organization
+
+- observations
+
+  - Create an observation
+  - Update an observations
+  - Delete an observations
+  - Search closest observations
+  - Search last observations
+  - Search rare observations
+  - Search my observations
+  - Search observations from a list of observers
+  - Search observations from a list of coordinates
+  - Search resources linked to an observation
+  - Create a new resources for an observation
+  - Delete a record
+  - Delete a list
+
 - fields
+
+  - List fields
+  - Get a single field options
+
 - media
+
+  - Get a single media
+  
 - import files
+
+  - List import files
+  - Get a single import file
+
 - import files/observations
+
+  - List links for import files and observations
+  - Get a single link between import file and observation
+
 - validations
+
+  - List validations
+  - Get a single validation
+
 - mortality information
+
+  - List mortality informations
+
 - bearded vulture birds
+
+  - List all bearded vulture birds
+  - Get a single bird
+
 - bearded vulture information
+
+  - List bearded vulture informations
+
+- observations by polygon
+
+  - List observations_by_polygon
+  - Get a single family
+  - Get a single group
+
+- polygons
+
+  - Get a single polygon
+  - List polygons from a group
+  - List polygon groups
+  - List cache for a given polygon or group with a period
+  - List form cache for a given polygon or group with a period
+  - List species form cache for a given polygon or group with a period
+  - List observer cache for a given polygon or group
+  - List observer species cache for a given polygon or group
 
 Usage
 -----
