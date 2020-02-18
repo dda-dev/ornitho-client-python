@@ -45,7 +45,7 @@ class Site(BaseModel):
         return self._raw_data["reference_locality"]
 
     def pdf(
-        self, map_layer: MapLayer = None, greyscale: bool = None, alpha: bool = None
+        self, map_layer: MapLayer = None, greyscale: bool = None, alpha: bool = None, boundary: bool = None
     ) -> List[Any]:
         """ Send request to Biolovision and returns the content as a PDF
         :return: Response map from Biolovision
@@ -60,6 +60,8 @@ class Site(BaseModel):
                 params["greyscale"] = 1
             if alpha:
                 params["alpha"] = 1
+            if boundary:
+                params["boundary"] = 1
             response, pagination_key = requester.request(
                 method="GET", url=url, params=params
             )

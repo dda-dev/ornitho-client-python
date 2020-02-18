@@ -19,4 +19,4 @@ print(
 )
 
 with open(f"./{resp.sites[2].custom_name}.pdf", "wb") as file:
-    file.write(resp.sites[2].pdf(map_layer=MapLayer.OSMLIVE))
+    file.write(resp.sites[2].pdf(map_layer=MapLayer.OSMLIVE, boundary=True))
