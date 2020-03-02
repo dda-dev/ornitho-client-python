@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, Mock
 
 import ornitho
 from ornitho import (
-    APIException,
+    APIHttpException,
     APIRequester,
     AuthenticationException,
     GatewayTimeoutException,
@@ -134,7 +134,7 @@ class TestAPIRequester(TestCase):
             ),
         )
         self.assertRaises(
-            APIException,
+            APIHttpException,
             lambda: self.requester.handle_error_response(response=Mock(status_code=0)),
         )
 

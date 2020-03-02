@@ -13,6 +13,7 @@ from typing import Optional
 from ornitho.api_exception import (
     APIConnectionException,
     APIException,
+    APIHttpException,
     AuthenticationException,
     GatewayTimeoutException,
 )

@@ -1,22 +1,30 @@
+from urllib.parse import parse_qs, urlsplit
+
 from requests import Response
 
 
 class APIException(Exception):
     """Base API exception class"""
 
-    def __init__(self, response: Response,) -> None:
-        """API Exception constructor"""
-        super(APIException, self).__init__(response)
 
+class APIHttpException(APIException):
+    """HTTP exception class"""
+
+    def __init__(self, response: Response) -> None:
+        """API Exception constructor"""
+        super(APIHttpException, self).__init__(response)
         self.response: Response = response
 
     def __str__(self) -> str:
         """Readable string representation"""
-        return self.reason or "<empty message>"
+        return f"{self.path} with query {self.query} responses with {self.http_status}:{self.reason}"
 
     def __repr__(self) -> str:
         """Unambiguous string representation"""
-        return f"{self.__class__.__name__}(http_status={self.http_status}, reason='{self.reason}', body='{self.body}')"
+        return (
+            f"{self.__class__.__name__}(http_status={self.http_status}, reason='{self.reason}', "
+            f"body='{self.body}', path='{self.path}', query='{self.query}', request_body='{self.request_body}')"
+        )
 
     @property
     def http_status(self) -> int:
@@ -33,14 +41,34 @@ class APIException(Exception):
         """Response body as string"""
         return self.response.text
 
+    @property
+    def path(self) -> str:
+        """Path of the failed request"""
+        return str(urlsplit(self.response.request.url).path)
 
-class APIConnectionException(APIException):
+    @property
+    def query(self) -> dict:
+        """Path of the failed request"""
+        query = parse_qs(str(urlsplit(self.response.request.url).query))
+        if "user_email" in query.keys():
+            query["user_email"] = ["***"]
+        if "user_pw" in query.keys():
+            query["user_pw"] = ["***"]
+        return query
+
+    @property
+    def request_body(self) -> str:
+        """Path of the failed request"""
+        return str(self.response.request.body)
+
+
+class APIConnectionException(APIHttpException):
     """Exception class indicating an connection error"""
 
 
-class AuthenticationException(APIException):
+class AuthenticationException(APIHttpException):
     """Exception class indicating failed authentication"""
 
 
-class GatewayTimeoutException(APIException):
+class GatewayTimeoutException(APIHttpException):
     """Exception class indicating a gateway timeout error"""

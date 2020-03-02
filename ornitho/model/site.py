@@ -45,7 +45,11 @@ class Site(BaseModel):
         return self._raw_data["reference_locality"]
 
     def pdf(
-        self, map_layer: MapLayer = None, greyscale: bool = None, alpha: bool = None, boundary: bool = None
+        self,
+        map_layer: MapLayer = None,
+        greyscale: bool = None,
+        alpha: bool = None,
+        boundary: bool = None,
     ) -> List[Any]:
         """ Send request to Biolovision and returns the content as a PDF
         :return: Response map from Biolovision

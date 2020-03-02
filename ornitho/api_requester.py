@@ -148,7 +148,7 @@ class APIRequester(object):
         elif response.status_code == 504:
             raise api_exception.GatewayTimeoutException(response)
         else:
-            raise api_exception.APIException(response)
+            raise api_exception.APIHttpException(response)
 
     @staticmethod
     def request_headers() -> Dict[str, str]:
