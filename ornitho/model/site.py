@@ -47,9 +47,10 @@ class Site(BaseModel):
     def pdf(
         self,
         map_layer: MapLayer = None,
-        greyscale: bool = None,
-        alpha: bool = None,
-        boundary: bool = None,
+        greyscale: bool = False,
+        greyline: bool = False,
+        alpha: bool = False,
+        boundary: bool = False,
     ) -> List[Any]:
         """ Send request to Biolovision and returns the content as a PDF
         :return: Response map from Biolovision
@@ -62,6 +63,8 @@ class Site(BaseModel):
                 params["map_layer"] = map_layer.value
             if greyscale:
                 params["greyscale"] = 1
+            if greyline:
+                params["greyline"] = 1
             if alpha:
                 params["alpha"] = 1
             if boundary:
