@@ -41,6 +41,10 @@ class TestSite(TestCase):
         mock_requester.return_value.__enter__ = enter_requester
 
         pdf = self.site.pdf(
-            map_layer=MapLayer.BKG, greyscale=True, greyline=True, alpha=True, boundary=True
+            map_layer=MapLayer.BKG,
+            greyscale=True,
+            greyline=True,
+            alpha=True,
+            boundary=True,
         )
         self.assertEqual(b"PDF", pdf)

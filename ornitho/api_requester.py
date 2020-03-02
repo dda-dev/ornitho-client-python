@@ -129,8 +129,14 @@ class APIRequester(object):
                 method, url, headers, pk, short_version, request_all, params, body
             )[0]
             if isinstance(next_response, bytes):
-                raise RuntimeError("Recieved bytes content, where json was expected")
+                raise api_exception.APIException(
+                    "Received bytes content, where json was expected"
+                )
             data = data + next_response
+        elif not pk and len(data) <= 0:
+            raise api_exception.APIException(
+                "No data received! This can be caused by wrong parameter or an error in ornitho."
+            )
 
         return data, pk
 
@@ -186,28 +192,25 @@ class APIRequester(object):
         :return: Tuple of raw response data and pagination key
         :rtype: Tuple[Any, Any]
         :raise APIConnectionError: Unspecified error while connecting to Biolovision
+        :raise APIException: Response contains unhandled HTTP Code
+        :raise AuthenticationException: Authentication failed, wrong credentials?
+        :raise GatewayTimeoutException: Request took to long, reduce possible response by adding filters
+        :raise ContentTypeException: Unhandled Content Type received or no information about content typ found
         """
 
-        abs_url = "%s%s?user_email=%s&user_pw=%s" % (
-            self.api_base,
-            url,
-            self.user_email,
-            self.user_pw,
+        abs_url = (
+            f"{self.api_base}{url}?user_email={self.user_email}&user_pw={self.user_pw}"
         )
 
         if pagination_key:
-            abs_url = "%s&pagination_key=%s" % (abs_url, pagination_key)
+            abs_url = f"{abs_url}&pagination_key={pagination_key}"
 
         if short_version:
-            abs_url = "%s&short_version=%s" % (abs_url, "1")
+            abs_url = f"{abs_url}&short_version={'1'}"
 
         if params:
             for key, value in params.items():
-                abs_url = "%s&%s=%s" % (
-                    abs_url,
-                    key,
-                    value if not isinstance(value, datetime) else value.isoformat(),
-                )
+                abs_url = f"{abs_url}&{key}={value if not isinstance(value, datetime) else value.isoformat()}"
 
         data = json.dumps(body) if body else None
 
@@ -220,15 +223,32 @@ class APIRequester(object):
         if not 200 <= raw_response.status_code < 300:
             self.handle_error_response(raw_response)
 
+        if (
+            "Content-Length" not in raw_response.headers.keys()
+            or int(raw_response.headers["Content-Length"]) <= 0
+        ):
+            raise api_exception.APIException(
+                "No data received! This can be caused by wrong parameter or an error in ornitho."
+            )
+
         if "pagination_key" in raw_response.headers.keys():
             pagination_key = raw_response.headers["pagination_key"] or None
         else:
             pagination_key = None
 
-        if (
-            "Content-Type" in raw_response.headers.keys()
-            and raw_response.headers["Content-Type"] == "application/pdf"
-        ):
-            return raw_response.content, pagination_key
-
-        return json.loads(raw_response.content.decode("utf-8")), pagination_key
+        if "Content-Type" in raw_response.headers.keys():
+            if (
+                raw_response.headers["Content-Type"]
+                == "application/json; charset=utf-8"
+            ):
+                return json.loads(raw_response.content.decode("utf-8")), pagination_key
+            elif raw_response.headers["Content-Type"] == "application/pdf":
+                return raw_response.content, pagination_key
+            else:
+                raise api_exception.ContentTypeException(
+                    f"Unhandled Content-Typ '{raw_response.headers['Content-Type']}' received!"
+                )
+        else:
+            raise api_exception.ContentTypeException(
+                f"Received header does not contain Content-Typ information!"
+            )

@@ -7,6 +7,10 @@ class APIException(Exception):
     """Base API exception class"""
 
 
+class ContentTypeException(APIException):
+    """Content Type exception"""
+
+
 class APIHttpException(APIException):
     """HTTP exception class"""
 

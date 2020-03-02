@@ -3,6 +3,7 @@ from unittest.mock import MagicMock, Mock
 
 import ornitho
 from ornitho import (
+    APIException,
     APIHttpException,
     APIRequester,
     AuthenticationException,
@@ -116,7 +117,14 @@ class TestAPIRequester(TestCase):
             ]
         )
         self.assertRaises(
-            RuntimeError,
+            APIException,
+            lambda: self.requester.request(method="get", url="test", request_all=True),
+        )
+
+        # Case 8: No Data received
+        self.requester.request_raw = MagicMock(return_value=[[], None])
+        self.assertRaises(
+            APIException,
             lambda: self.requester.request(method="get", url="test", request_all=True),
         )
 
@@ -150,7 +158,11 @@ class TestAPIRequester(TestCase):
         self.requester.session.request = MagicMock(
             return_value=Mock(
                 status_code=200,
-                headers={"pagination_key": "new_key"},
+                headers={
+                    "pagination_key": "new_key",
+                    "Content-Type": "application/json; charset=utf-8",
+                    "Content-Length": 23,
+                },
                 content=b'{"data": [{"id": "1"}]}',
             )
         )
@@ -167,7 +179,12 @@ class TestAPIRequester(TestCase):
         # Case 2: Other Method
         self.requester.session.request = MagicMock(
             return_value=Mock(
-                status_code=200, headers={}, content=b'{"data": [{"id": "1"}]}'
+                status_code=200,
+                headers={
+                    "Content-Type": "application/json; charset=utf-8",
+                    "Content-Length": 23,
+                },
+                content=b'{"data": [{"id": "1"}]}',
             )
         )
         response, pk = self.requester.request_raw(
@@ -179,14 +196,15 @@ class TestAPIRequester(TestCase):
         # Case 3: Error
         self.requester.session.request = MagicMock(return_value=Mock(status_code=401))
         self.assertRaises(
-            Exception, lambda: self.requester.request_raw(method="post", url="test")
+            AuthenticationException,
+            lambda: self.requester.request_raw(method="post", url="test"),
         )
 
         # Case 4: PDF
         self.requester.session.request = MagicMock(
             return_value=Mock(
                 status_code=200,
-                headers={"Content-Type": "application/pdf"},
+                headers={"Content-Type": "application/pdf", "Content-Length": 3},
                 content=b"PDF",
             )
         )
@@ -195,3 +213,41 @@ class TestAPIRequester(TestCase):
         )
         self.assertEqual(b"PDF", response)
         self.assertEqual(pk, None)
+
+        # Case 5: No data received
+        self.requester.session.request = MagicMock(
+            return_value=Mock(
+                status_code=200,
+                headers={
+                    "Content-Type": "application/json; charset=utf-8",
+                    "Content-Length": 0,
+                },
+            )
+        )
+        self.assertRaises(
+            APIException, lambda: self.requester.request_raw(method="post", url="test"),
+        )
+
+        # Case 6: Unhandled content type
+        self.requester.session.request = MagicMock(
+            return_value=Mock(
+                status_code=200,
+                headers={"Content-Type": "application/foo", "Content-Length": 23},
+                content=b'{"data": [{"id": "1"}]}',
+            )
+        )
+        self.assertRaises(
+            APIException, lambda: self.requester.request_raw(method="post", url="test"),
+        )
+
+        # Case 7: No content type received
+        self.requester.session.request = MagicMock(
+            return_value=Mock(
+                status_code=200,
+                headers={"Content-Length": 23},
+                content=b'{"data": [{"id": "1"}]}',
+            )
+        )
+        self.assertRaises(
+            APIException, lambda: self.requester.request_raw(method="post", url="test"),
+        )
