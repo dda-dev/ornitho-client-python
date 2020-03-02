@@ -1,7 +1,6 @@
 import os
 
 import ornitho
-from ornitho import MapLayer
 
 ornitho.consumer_key = os.environ.get("ORNITHO_CONSUMER_KEY")
 ornitho.consumer_secret = os.environ.get("ORNITHO_CONSUMER_SECRET")
@@ -19,4 +18,12 @@ print(
 )
 
 with open(f"./{resp.sites[2].custom_name}.pdf", "wb") as file:
-    file.write(resp.sites[2].pdf(map_layer=MapLayer.OSMLIVE, boundary=True))
+    file.write(
+        resp.sites[2].pdf(
+            map_layer=ornitho.MapLayer.OSMLIVE,
+            greyscale=True,
+            greyline=True,
+            alpha=True,
+            boundary=True,
+        )
+    )
