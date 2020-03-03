@@ -123,10 +123,9 @@ class TestAPIRequester(TestCase):
 
         # Case 8: No Data received
         self.requester.request_raw = MagicMock(return_value=[[], None])
-        self.assertRaises(
-            APIException,
-            lambda: self.requester.request(method="get", url="test", request_all=True),
-        )
+        response, pk = self.requester.request(method="get", url="test")
+        self.assertEqual(response, [])
+        self.assertEqual(pk, None)
 
     def test_handle_error_response(self):
         self.assertRaises(
@@ -214,21 +213,7 @@ class TestAPIRequester(TestCase):
         self.assertEqual(b"PDF", response)
         self.assertEqual(pk, None)
 
-        # Case 5: No data received
-        self.requester.session.request = MagicMock(
-            return_value=Mock(
-                status_code=200,
-                headers={
-                    "Content-Type": "application/json; charset=utf-8",
-                    "Content-Length": 0,
-                },
-            )
-        )
-        self.assertRaises(
-            APIException, lambda: self.requester.request_raw(method="post", url="test"),
-        )
-
-        # Case 6: Unhandled content type
+        # Case 5: Unhandled content type
         self.requester.session.request = MagicMock(
             return_value=Mock(
                 status_code=200,
@@ -240,7 +225,7 @@ class TestAPIRequester(TestCase):
             APIException, lambda: self.requester.request_raw(method="post", url="test"),
         )
 
-        # Case 7: No content type received
+        # Case 6: No content type received
         self.requester.session.request = MagicMock(
             return_value=Mock(
                 status_code=200,

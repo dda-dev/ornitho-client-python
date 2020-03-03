@@ -67,7 +67,6 @@ class APIRequester(object):
         self,
         method: str,
         url: str,
-        headers: Optional[Dict[str, Any]] = None,
         pagination_key: Optional[str] = None,
         short_version: Optional[bool] = True,
         request_all: Optional[bool] = False,
@@ -88,7 +87,6 @@ class APIRequester(object):
         :param body: Request body
         :type method: str
         :type url: str
-        :type headers: Dict[str, Any]]
         :type pagination_key: str
         :type short_version: bool
         :type request_all: bool
@@ -126,15 +124,21 @@ class APIRequester(object):
 
         if pk and request_all and len(data) > 0:
             next_response = self.request(
-                method, url, headers, pk, short_version, request_all, params, body
+                method=method,
+                url=url,
+                pagination_key=pk,
+                short_version=short_version,
+                request_all=request_all,
+                params=params,
+                body=body,
             )[0]
             if isinstance(next_response, bytes):
                 raise api_exception.APIException(
                     "Received bytes content, where json was expected"
                 )
             data = data + next_response
-        elif not pk and len(data) <= 0:
-            raise api_exception.APIException(
+        if not pagination_key and len(data) <= 0:
+            ornitho.logger.warning(
                 "No data received! This can be caused by wrong parameter or an error in ornitho."
             )
 
@@ -222,14 +226,6 @@ class APIRequester(object):
 
         if not 200 <= raw_response.status_code < 300:
             self.handle_error_response(raw_response)
-
-        if (
-            "Content-Length" not in raw_response.headers.keys()
-            or int(raw_response.headers["Content-Length"]) <= 0
-        ):
-            raise api_exception.APIException(
-                "No data received! This can be caused by wrong parameter or an error in ornitho."
-            )
 
         if "pagination_key" in raw_response.headers.keys():
             pagination_key = raw_response.headers["pagination_key"] or None
