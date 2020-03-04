@@ -206,6 +206,7 @@ class TestObservation(TestCase):
             date,
             modification_type=ModificationType.ALL,
             id_taxo_group=1,
+            only_protocol="CBBM",
             only_form=True,
         )
         self.assertEqual(len(observations), 2)
@@ -216,17 +217,22 @@ class TestObservation(TestCase):
                 "date": date,
                 "modification_type": ModificationType.ALL.value,
                 "id_taxo_group": 1,
+                "only_protocol": "CBBM",
                 "only_form": 1,
             },
         )
 
-        # Case 1: without retrieving
+        # Case 2: with retrieving
 
+        mock_protocol = MagicMock(spec=ornitho.Protocol)
+        type(mock_protocol).name = mock.PropertyMock(return_value="CBBM-Mock")
         Observation.get = MagicMock(return_value=self.observation)
         date = datetime.now().astimezone(pytz.timezone("Asia/Tokyo")) - timedelta(
             hours=1
         )
-        observations = Observation.diff(date, retrieve_observations=True)
+        observations = Observation.diff(
+            date, only_protocol=mock_protocol, retrieve_observations=True
+        )
         self.assertEqual(len(observations), 2)
         self.assertEqual(observations[0], self.observation)
         Observation.request.assert_called_with(
@@ -235,6 +241,7 @@ class TestObservation(TestCase):
             params={
                 "date": date.astimezone(datetime.now().astimezone().tzinfo).replace(
                     tzinfo=None
-                )
+                ),
+                "only_protocol": "CBBM-Mock",
             },
         )

@@ -198,6 +198,7 @@ class Observation(ListableModel, SearchableModel):
         date: datetime,
         modification_type: ModificationType = None,
         id_taxo_group: int = None,
+        only_protocol: Union[str, BaseModel] = None,
         only_form: bool = None,
         retrieve_observations: bool = False,
     ) -> List[BaseModel]:
@@ -205,11 +206,13 @@ class Observation(ListableModel, SearchableModel):
         :param date: Date in the past, to which changed observation should be searched
         :param modification_type: Type of modification.
         :param id_taxo_group: Optional taxo group, to which the observerd species must belong to
+        :param only_protocol: Return only observation which are part of the given Protocol (Protocol Instance or Name)
         :param only_form: Return only observation which are part of a form
         :param retrieve_observations: Indicates if the observation object should be retrieved. Default: False
         :type date: datetime
         :type modification_type: ModificationType
         :type id_taxo_group: int
+        :type only_protocol: Union[str, "Protocol"]
         :type only_form: bool
         :type retrieve_observations: bool
         :return: List of observations
@@ -221,6 +224,13 @@ class Observation(ListableModel, SearchableModel):
             params["modification_type"] = modification_type.value
         if id_taxo_group:
             params["id_taxo_group"] = id_taxo_group
+        if only_protocol:
+            from ornitho.model.protocol import Protocol
+
+            if isinstance(only_protocol, Protocol):
+                params["only_protocol"] = only_protocol.name
+            else:
+                params["only_protocol"] = only_protocol
         if only_form:
             params["only_form"] = 1
 

@@ -210,9 +210,8 @@ class Protocol(ListableModel):
         self, **kwargs: Union[str, int, float, bool]
     ) -> List[BaseModel]:
         """ Get observations linked to the protocol
-        The same search parameters can be used as for the observations (except 'only_protocol' which is automatically set
+        The same search parameters can be used as for the observations (except 'only_protocol' which is automatically set)
         :param kwargs: Additional filter values
-        :type pagination_key: Optional[str]
         :type kwargs: Union[str, int, float, bool]
         :return: List of observations
         :rtype: List[BaseModel]
