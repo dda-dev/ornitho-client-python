@@ -51,10 +51,20 @@ class Site(BaseModel):
         greyline: bool = False,
         alpha: bool = False,
         boundary: bool = False,
-    ) -> List[Any]:
-        """ Send request to Biolovision and returns the content as a PDF
-        :return: Response map from Biolovision
-        :rtype: Dict[str, str]
+    ) -> bytes:
+        """ Request the site pdf map
+        :param map_layer: Used map layer
+        :param greyscale: Switch for a greyscaled map layer
+        :param greyline: Switch for a grey dashed route
+        :param alpha: Switch for 50% transparency
+        :param boundary: Switch for disable the outer buffer
+        :type map_layer: MapLayer
+        :type greyscale: bool
+        :type greyline: bool
+        :type alpha: bool
+        :type boundary: bool
+        :return: PDF as bytes
+        :rtype: bytes
         """
         with APIRequester() as requester:
             url = f"protocol/site_pdf"
@@ -72,5 +82,4 @@ class Site(BaseModel):
             response, pagination_key = requester.request(
                 method="GET", url=url, params=params
             )
-        # noinspection PyTypeChecker
         return response

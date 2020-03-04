@@ -150,8 +150,7 @@ class TestProtocol(TestCase):
         mock_entity.get.assert_called_with(self.protocol.id_entity)
         self.assertEqual(entity, "Entity retrieved")
 
-    @mock.patch("ornitho.model.protocol.Site")
-    def test_sites(self, mock_site):
+    def test_sites(self):
         Protocol.request = MagicMock(
             return_value=[
                 {
@@ -172,20 +171,6 @@ class TestProtocol(TestCase):
                 }
             ]
         )
-        mock_site.creat_from.return_value = [
-            {
-                "id": "5253",
-                "id_universal": "28_5253",
-                "custom_name": "test CBBM",
-                "reference_locality": "Staufenberg [4623_4_39s]",
-            },
-            {
-                "id": "7043",
-                "id_universal": "28_7043",
-                "custom_name": "dda3",
-                "reference_locality": "DDA-Teststrecke-Uder",
-            },
-        ]
 
         sites = self.protocol.sites
         self.assertEqual(len(sites), 2)
@@ -193,4 +178,35 @@ class TestProtocol(TestCase):
             method="get",
             url=f"{self.protocol.ENDPOINT}/list_sites",
             params={"id": self.protocol.id_},
+        )
+
+    @mock.patch("ornitho.model.protocol.Observation")
+    def test_get_observations(self, mock_observation):
+        mock_observation.search = MagicMock(
+            return_value=[["observation1", "observation2"], None]
+        )
+
+        observations = self.protocol.get_observations()
+        self.assertEqual(2, len(observations[0]))
+        self.assertIsNone(observations[1])
+        mock_observation.search.assert_called_with(
+            request_all=False,
+            pagination_key=None,
+            only_protocol=self.protocol.name,
+            period_choice="all",
+        )
+
+    @mock.patch("ornitho.model.protocol.Observation")
+    def test_get_all_observations(self, mock_observation):
+        mock_observation.search = MagicMock(
+            return_value=[["observation1", "observation2"], None]
+        )
+
+        observations = self.protocol.get_all_observations(period_choice="range")
+        self.assertEqual(2, len(observations))
+        mock_observation.search.assert_called_with(
+            request_all=True,
+            pagination_key=None,
+            only_protocol=self.protocol.name,
+            period_choice="range",
         )

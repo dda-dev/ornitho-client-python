@@ -1,7 +1,8 @@
-from typing import List, Optional
+from typing import List, Optional, Tuple, Union
 
 from ornitho.model.abstract import BaseModel, ListableModel
 from ornitho.model.entity import Entity
+from ornitho.model.observation import Observation
 from ornitho.model.site import Site
 
 
@@ -162,6 +163,10 @@ class Protocol(ListableModel):
 
     @property
     def sites(self) -> List[BaseModel]:
+        """ Get sites linked to the protocol
+        :return: List of sites
+        :rtype: List[BaseModel]
+        """
         if not self._sites:
             url = f"{self.ENDPOINT}/list_sites"
             params = {"id": self.id_}
@@ -173,3 +178,43 @@ class Protocol(ListableModel):
             for site in sites_object.values():
                 self._sites.append(Site.create_from(site))
         return self._sites
+
+    def get_observations(
+        self,
+        request_all: Optional[bool] = False,
+        pagination_key: Optional[str] = None,
+        **kwargs: Union[str, int, float, bool],
+    ) -> Tuple[List[BaseModel], Optional[str]]:
+        """ Get observations linked to the protocol
+        The same search parameters can be used as for the observations (except 'only_protocol' which is automatically set)
+        If the list is chunked, a pagination key ist returned
+        :param request_all: Indicates, if all instances should be retrieved (may result in many API calls)
+        :param pagination_key: Pagination key, which can be used to retrieve the next page
+        :param kwargs: Additional filter values
+        :type request_all: Optional[bool]
+        :type pagination_key: Optional[str]
+        :type kwargs: Union[str, int, float, bool]
+        :return: List of observations
+        :rtype: Tuple[List[BaseModel], Optional[str]]
+        """
+        if "period_choice" not in kwargs.keys():
+            kwargs["period_choice"] = "all"
+        return Observation.search(
+            request_all=request_all,
+            pagination_key=pagination_key,
+            only_protocol=self.name,
+            **kwargs,
+        )
+
+    def get_all_observations(
+        self, **kwargs: Union[str, int, float, bool]
+    ) -> List[BaseModel]:
+        """ Get observations linked to the protocol
+        The same search parameters can be used as for the observations (except 'only_protocol' which is automatically set
+        :param kwargs: Additional filter values
+        :type pagination_key: Optional[str]
+        :type kwargs: Union[str, int, float, bool]
+        :return: List of observations
+        :rtype: List[BaseModel]
+        """
+        return self.get_observations(request_all=True, pagination_key=None, **kwargs)[0]
