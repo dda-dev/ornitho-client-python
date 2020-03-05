@@ -1,6 +1,5 @@
 from abc import ABC
 from typing import Any, Dict, List
-from urllib.parse import quote_plus
 
 from ornitho.api_requester import APIRequester
 
@@ -65,7 +64,7 @@ class BaseModel(ABC):
 
     @classmethod
     def create_from(cls, data: Dict[str, Any]) -> "BaseModel":
-        identifier: int = int(data["id"])
+        identifier: int = int(data["@id"]) if "@id" in data else int(data["id"])
         obj = cls(identifier)
         obj._raw_data = data
         return obj
@@ -76,7 +75,7 @@ class BaseModel(ABC):
         :return: Refreshed Object
         :rtype: BaseModel
         """
-        data = self.request(method="get", url=self.instance_url())[0]
+        data = self.request(method="GET", url=self.instance_url())[0]
         self._previous = self._raw_data
         self._raw_data = data
         return self
@@ -86,6 +85,4 @@ class BaseModel(ABC):
         :return: Instance's url
         :rtype: str
         """
-        base = self.ENDPOINT
-        extn = quote_plus(self._id.__str__())
-        return f"{base}/{extn}"
+        return f"{self.ENDPOINT}/{self._id}"

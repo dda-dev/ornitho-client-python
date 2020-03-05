@@ -78,7 +78,6 @@ class APIRequester(object):
         pagination key will be returned, which can be used to get the next data set.
         :param method: HTTP Method e.g. 'GET'
         :param url: API URL to call
-        :param headers: Additional headers to be applied
         :param pagination_key: Additional pagination key, to get the next page
         :param short_version: Indicates, if a short version with foreign keys should be returned by the API.
             Default: 'True'

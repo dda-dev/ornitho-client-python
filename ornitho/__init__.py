@@ -20,6 +20,7 @@ from ornitho.api_exception import (
 from ornitho.api_requester import APIRequester
 from ornitho.model import (
     Entity,
+    Form,
     MapLayer,
     ModificationType,
     Observation,
