@@ -2,6 +2,7 @@ from unittest import TestCase, mock
 from unittest.mock import MagicMock
 
 import ornitho
+from ornitho.api_exception import APIException
 from ornitho.model.abstract import BaseModel
 
 ornitho.consumer_key = "ORNITHO_CONSUMER_KEY"
@@ -19,6 +20,11 @@ class TestBaseModel(TestCase):
     @staticmethod
     def fake_request(**kwargs):
         return [["data"], "paginationKey"]
+
+    # noinspection PyUnusedLocal
+    @staticmethod
+    def fake_empty_request(**kwargs):
+        return [[], None]
 
     def setUp(self):
         self.my_model = self.MyModel.create_from({"id": "1"})
@@ -48,6 +54,14 @@ class TestBaseModel(TestCase):
 
         self.assertEqual({"id": "1"}, self.my_model._previous)
         self.assertEqual("data", self.my_model._raw_data)
+
+    @mock.patch.object(
+        ornitho.api_requester.APIRequester, "request", fake_empty_request
+    )
+    def test_refresh_exception(self):
+        self.assertRaises(
+            APIException, lambda: self.my_model.refresh(),
+        )
 
     def test_instance_url(self):
         self.assertEqual("my_model/1", self.my_model.instance_url())

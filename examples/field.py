@@ -8,7 +8,7 @@ ornitho.user_email = os.environ.get("ORNITHO_USER_EMAIL")
 ornitho.user_pw = os.environ.get("ORNITHO_USER_PW")
 ornitho.api_base = os.environ.get("ORNITHO_API_BASE")
 
-form = ornitho.Form.get(446981)
-print(
-    f"Visit number {form.visit_number} of samplearea {form.site_code} has {len(form.observations)} observations."
-)
+field = ornitho.Field.get(1)
+print(f"{field.group}: {field.name}/{field.text}")
+for option in field.options:
+    print(f"{option.id_}: {option.text}")

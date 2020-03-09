@@ -27,8 +27,8 @@ class TestAPIException(TestCase):
     def test_str(self):
         self.assertEqual(
             f"{urlsplit(self.mock_response.request.url).path} with query "
-            f"{parse_qs(urlsplit(self.mock_response.request.url).query)} responses with "
-            f"{self.mock_response.status_code}:{self.mock_response.reason}",
+            f"{parse_qs(urlsplit(self.mock_response.request.url).query)} and body {self.mock_response.request.body} "
+            f"responses with {self.mock_response.status_code}: {self.mock_response.reason}",
             self.exception.__str__(),
         )
 

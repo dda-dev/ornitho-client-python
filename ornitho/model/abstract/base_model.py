@@ -1,6 +1,7 @@
 from abc import ABC
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
+from ornitho.api_exception import APIException
 from ornitho.api_requester import APIRequester
 
 
@@ -9,26 +10,26 @@ class BaseModel(ABC):
 
     ENDPOINT: str
 
-    def __init__(self, id_: int):
+    def __init__(self, id_: Union[int, str]):
         """ Base model constructor
         :param id_: Unique identifier
-        :type id_: int
+        :type id_: Union[int, str]
         """
         super(BaseModel, self).__init__()
-        self._id: int = id_
+        self._id: Union[int, str] = id_
         self._raw_data: Dict[str, Any] = dict()
         self._previous: Dict[str, Any] = dict()
 
     @property
-    def id_(self) -> int:
-        """ ID, in which the place is located"""
+    def id_(self) -> Union[int, str]:
+        """ Unique identifier """
         return self._id
 
     @classmethod
-    def get(cls, id_: int):
+    def get(cls, id_: Union[int, str]):
         """ Retrieve Object from Biolovision with given ID
         :param id_: Unique identifier
-        :type id_: int
+        :type id_: Union[int, str]
         :return: Instance, retrieved from Biolovision with given ID
         :rtype: BaseModel
         """
@@ -64,7 +65,11 @@ class BaseModel(ABC):
 
     @classmethod
     def create_from(cls, data: Dict[str, Any]) -> "BaseModel":
-        identifier: int = int(data["@id"]) if "@id" in data else int(data["id"])
+        identifier: Union[int, str]
+        if "@id" in data:
+            identifier = int(data["@id"]) if data["@id"].isdigit() else data["@id"]
+        else:
+            identifier = int(data["id"]) if data["id"].isdigit() else data["id"]
         obj = cls(identifier)
         obj._raw_data = data
         return obj
@@ -74,10 +79,13 @@ class BaseModel(ABC):
         Call the api and refresh fields from response
         :return: Refreshed Object
         :rtype: BaseModel
+        :raise APIException: No or more than one objects retrieved
         """
-        data = self.request(method="GET", url=self.instance_url())[0]
+        data = self.request(method="GET", url=self.instance_url())
+        if len(data) != 1:
+            raise APIException(f"Get {len(data)} objects for {self.instance_url()}")
         self._previous = self._raw_data
-        self._raw_data = data
+        self._raw_data = data[0]
         return self
 
     def instance_url(self) -> str:
@@ -85,4 +93,4 @@ class BaseModel(ABC):
         :return: Instance's url
         :rtype: str
         """
-        return f"{self.ENDPOINT}/{self._id}"
+        return f"{self.ENDPOINT}/{self.id_}"

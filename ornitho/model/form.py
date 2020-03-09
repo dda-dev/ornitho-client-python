@@ -1,5 +1,6 @@
 from typing import List, Optional
 
+from ornitho.api_exception import APIException
 from ornitho.api_requester import APIRequester
 from ornitho.model.abstract import BaseModel
 from ornitho.model.observation import Observation
@@ -7,7 +8,6 @@ from ornitho.model.observation import Observation
 
 class Form(BaseModel):
     ENDPOINT: str = "observations/search"
-    DEFAULT_HTTP_METHOD: str = "POST"
 
     def __init__(self, id_: int) -> None:
         """ Form constructor
@@ -34,10 +34,13 @@ class Form(BaseModel):
             data, pagination_key = requester.request_raw(
                 method="POST", url=self.instance_url(), body={"id_form": self.id_}
             )
-            data = data["data"]["forms"][0]
-            self._previous = self._raw_data
-            self._raw_data = data
-            self._observations = None
+            if "data" in data and "forms" in data["data"]:
+                data = data["data"]["forms"][0]
+                self._previous = self._raw_data
+                self._raw_data = data
+                self._observations = None
+            else:
+                raise APIException(f"Unrecognized response: {data}")
         return self
 
     @property

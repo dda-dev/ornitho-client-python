@@ -42,6 +42,11 @@ The following "ornitho controllers / calls" are implemented:
   - Search an observation
   - Search update or deletion since a given date
 
+- fields
+
+  - List fields
+  - Get a single field options
+
 Not yet Implemented:
 
 - families
@@ -85,11 +90,6 @@ Not yet Implemented:
   - Create a new resources for an observation
   - Delete a record
   - Delete a list
-
-- fields
-
-  - List fields
-  - Get a single field options
 
 - media
 

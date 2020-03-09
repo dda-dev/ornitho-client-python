@@ -2,6 +2,7 @@ from unittest import TestCase, mock
 
 import ornitho
 from ornitho import Form
+from ornitho.api_exception import APIException
 
 ornitho.consumer_key = "ORNITHO_CONSUMER_KEY"
 ornitho.consumer_secret = "ORNITHO_CONSUMER_SECRET"
@@ -103,6 +104,20 @@ class TestForm(TestCase):
         mock_requester.return_value.__enter__ = enter_requester
         form = self.form.refresh()
         self.assertEqual("NEW", form.time_start)
+
+    @mock.patch("ornitho.model.form.APIRequester")
+    def test_refresh_exception(self, mock_requester):
+        class MockRequesterClass:
+            def request_raw(self, method, url, body):
+                return {"data": {"WRONG": [{"time_start": "NEW"}]}}, None
+
+        def enter_requester(requester):
+            return MockRequesterClass()
+
+        mock_requester.return_value.__enter__ = enter_requester
+        self.assertRaises(
+            APIException, lambda: self.form.refresh(),
+        )
 
     def test_id_form_universal(self):
         self.assertEqual(

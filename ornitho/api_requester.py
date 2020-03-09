@@ -137,7 +137,7 @@ class APIRequester(object):
                 )
             data = data + next_response
         if not pagination_key and len(data) <= 0:
-            ornitho.logger.warning(
+            ornitho.logger.debug(
                 "No data received! This can be caused by wrong parameter or an error in ornitho."
             )
 
@@ -148,7 +148,7 @@ class APIRequester(object):
         """Check the error response and raises a proper exception
         :param response: Erroneous response, received from the API
         :type response: Response
-        :raise APIException: Response contains unhandled HTTP Code
+        :raise APIHttpException: Response contains unhandled HTTP Code
         :raise AuthenticationException: Authentication failed, wrong credentials?
         :raise GatewayTimeoutException: Request took to long, reduce possible response by adding filters
         """
