@@ -1,8 +1,11 @@
 from abc import ABC
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Tuple, Type, TypeVar, Union
 
 from ornitho.api_requester import APIRequester
 from ornitho.model.abstract import BaseModel
+
+# Create a generic variable that can be 'ListableModel', or any subclass.
+T = TypeVar("T", bound="ListableModel")
 
 
 class ListableModel(BaseModel, ABC):
@@ -10,11 +13,11 @@ class ListableModel(BaseModel, ABC):
 
     @classmethod
     def list(
-        cls,
+        cls: Type[T],
         request_all: Optional[bool] = False,
         pagination_key: Optional[str] = None,
         **kwargs: Union[str, int, float, bool]
-    ) -> Tuple[List["BaseModel"], Optional[str]]:
+    ) -> Tuple[List[T], Optional[str]]:
         """ Retrieves a (paged) list of instances from Biolovison
         If the list is chunked, a pagination key ist returned
         :param request_all: Indicates, if all instances should be retrieved (may result in many API calls)
@@ -24,7 +27,7 @@ class ListableModel(BaseModel, ABC):
         :type pagination_key: Optional[str]
         :type kwargs: Union[str, int, float, bool]
         :return: Tuple of instances and pagination key
-        :rtype: Tuple[List[BaseModel], Optional[str]]
+        :rtype: Tuple[List[T], Optional[str]]
         """
         with APIRequester() as requester:
             url = cls.ENDPOINT
@@ -35,19 +38,19 @@ class ListableModel(BaseModel, ABC):
                 pagination_key=pagination_key,
                 params=kwargs,
             )
-            model_list: List[BaseModel] = []
+            model_list: List[T] = []
             for ele in response:
                 obj = cls.create_from(ele)
                 model_list.append(obj)
         return model_list, pk
 
     @classmethod
-    def list_all(cls, **kwargs: Union[str, int, float, bool]) -> List["BaseModel"]:
+    def list_all(cls: Type[T], **kwargs: Union[str, int, float, bool]) -> List[T]:
         """Retrieves a list of all instances from Biolovison
         :param kwargs: Additional filter values
         :type kwargs: Union[str, int, float, bool]
         :return: List of instances
-        :rtype: List[BaseModel]
+        :rtype: List[T]
         """
         object_list, pk = cls.list(True, None, **kwargs)
         return object_list

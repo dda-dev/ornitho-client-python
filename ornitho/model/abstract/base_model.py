@@ -1,8 +1,11 @@
 from abc import ABC
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Type, TypeVar, Union
 
 from ornitho.api_exception import APIException
 from ornitho.api_requester import APIRequester
+
+# Create a generic variable that can be 'BaseModel', or any subclass.
+T = TypeVar("T", bound="BaseModel")
 
 
 class BaseModel(ABC):
@@ -26,12 +29,12 @@ class BaseModel(ABC):
         return self._id
 
     @classmethod
-    def get(cls, id_: Union[int, str]):
+    def get(cls: Type[T], id_: Union[int, str]):
         """ Retrieve Object from Biolovision with given ID
         :param id_: Unique identifier
         :type id_: Union[int, str]
         :return: Instance, retrieved from Biolovision with given ID
-        :rtype: BaseModel
+        :rtype: T
         """
         instance = cls(id_)
         instance.refresh()
@@ -54,7 +57,7 @@ class BaseModel(ABC):
         :type params: Dict[str, Any]
         :type body: Dict[str, Any]
         :return: Response map from Biolovision
-        :rtype: Dict[str, str]
+        :rtype: List[Any]
         """
         with APIRequester() as requester:
             response, pagination_key = requester.request(
@@ -64,7 +67,7 @@ class BaseModel(ABC):
         return response
 
     @classmethod
-    def create_from(cls, data: Dict[str, Any]) -> "BaseModel":
+    def create_from(cls: Type[T], data: Dict[str, Any]) -> T:
         identifier: Union[int, str]
         if "@id" in data:
             identifier = int(data["@id"]) if data["@id"].isdigit() else data["@id"]
@@ -74,11 +77,11 @@ class BaseModel(ABC):
         obj._raw_data = data
         return obj
 
-    def refresh(self) -> "BaseModel":
+    def refresh(self: T) -> T:
         """ Refresh local model
         Call the api and refresh fields from response
         :return: Refreshed Object
-        :rtype: BaseModel
+        :rtype: T
         :raise APIException: No or more than one objects retrieved
         """
         data = self.request(method="GET", url=self.instance_url())

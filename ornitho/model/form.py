@@ -15,7 +15,7 @@ class Form(BaseModel):
         :type id_: int
         """
         super(Form, self).__init__(id_)
-        self._observations: Optional[List[BaseModel]] = None
+        self._observations: Optional[List[Observation]] = None
 
     def instance_url(self) -> str:
         """ Returns url for this instance
@@ -24,11 +24,11 @@ class Form(BaseModel):
         """
         return f"{self.ENDPOINT}"
 
-    def refresh(self) -> "BaseModel":
+    def refresh(self) -> "Form":
         """ Refresh local model
         Call the api and refresh fields from response
         :return: Refreshed Object
-        :rtype: BaseModel
+        :rtype: Form
         """
         with APIRequester() as requester:
             data, pagination_key = requester.request_raw(
@@ -141,7 +141,7 @@ class Form(BaseModel):
         )
 
     @property
-    def observations(self) -> List[BaseModel]:
+    def observations(self) -> List[Observation]:
         if self._observations is None:
             self._observations = [
                 Observation.create_from(observation)

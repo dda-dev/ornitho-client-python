@@ -30,7 +30,7 @@ class Observation(ListableModel, SearchableModel):
         self._place: Optional[Place] = None
 
     @classmethod
-    def create_from(cls, data: Dict[str, Any]) -> "BaseModel":
+    def create_from(cls, data: Dict[str, Any]) -> "Observation":
         identifier: int = int(data["observers"][0]["id_sighting"])
         obj = cls(identifier)
         obj._raw_data = data
@@ -158,7 +158,7 @@ class Observation(ListableModel, SearchableModel):
         id_observer: int,
         pagination_key: Optional[str] = None,
         **kwargs: Union[str, int, float, bool],
-    ) -> Tuple[List[BaseModel], Optional[str]]:
+    ) -> Tuple[List["Observation"], Optional[str]]:
         """ Retrieves a (paged) list of observations from one observer
         :param id_observer: Current data, probably received from the API
         :param pagination_key: Pagination key, which can be used to retrieve the next page
@@ -167,7 +167,7 @@ class Observation(ListableModel, SearchableModel):
         :type pagination_key: Optional[str]
         :type kwargs: Union[str, int, float, bool]
         :return: Tuple of observations and an optional pagination key
-        :rtype: Tuple[List[BaseModel], Optional[str]]
+        :rtype: Tuple[List[Observation], Optional[str]]
         """
         observations, pk = cls.list(
             request_all=False,
@@ -180,14 +180,14 @@ class Observation(ListableModel, SearchableModel):
     @classmethod
     def by_observer_all(
         cls, id_observer: int, **kwargs: Union[str, int, float, bool]
-    ) -> List[BaseModel]:
+    ) -> List["Observation"]:
         """Retrieves a list of all observations from one observer
         :param id_observer: Current data, probably received from the API
         :param kwargs: Additional filter values
         :type id_observer: int
         :type kwargs: Union[str, int, float, bool]
         :return: List of observations
-        :rtype: List[BaseModel]
+        :rtype: List[Observation]
         """
         observations = cls.list_all(id_observer=id_observer, **kwargs)
         return observations
@@ -201,7 +201,7 @@ class Observation(ListableModel, SearchableModel):
         only_protocol: Union[str, BaseModel] = None,
         only_form: bool = None,
         retrieve_observations: bool = False,
-    ) -> List[BaseModel]:
+    ) -> List["Observation"]:
         """Retrieves a list of observations which changed in between now and a given date
         :param date: Date in the past, to which changed observation should be searched
         :param modification_type: Type of modification.
@@ -216,7 +216,7 @@ class Observation(ListableModel, SearchableModel):
         :type only_form: bool
         :type retrieve_observations: bool
         :return: List of observations
-        :rtype: List[BaseModel]
+        :rtype: List[Observation]
         """
         url = f"{cls.ENDPOINT}/diff"
         params = dict()

@@ -3,7 +3,6 @@ from typing import List, Optional, Union
 from ornitho import APIException
 from ornitho.api_requester import APIRequester
 from ornitho.model.abstract import ListableModel
-from ornitho.model.abstract.base_model import BaseModel
 from ornitho.model.field_option import FieldOption
 
 
@@ -16,15 +15,15 @@ class Field(ListableModel):
         :type id_: int
         """
         super(Field, self).__init__(id_)
-        self._options: Optional[List[BaseModel]] = None
+        self._options: Optional[List[FieldOption]] = None
 
     @classmethod
-    def get(cls, id_: Union[int, str]):
+    def get(cls, id_: Union[int, str]) -> "Field":
         """ Retrieve Object from Biolovision with given ID
         :param id_: Unique identifier
         :type id_: Union[int, str]
         :return: Instance, retrieved from Biolovision with given ID
-        :rtype: BaseModel
+        :rtype: Field
         """
         fields = cls.list_all(short_version=False)
         for field in fields:
@@ -32,7 +31,7 @@ class Field(ListableModel):
                 return field
         raise APIException(f"Can't find field with ID {id_}")
 
-    def refresh(self) -> BaseModel:
+    def refresh(self) -> "Field":
         raise NotImplementedError
 
     @property
@@ -60,14 +59,12 @@ class Field(ListableModel):
         return False if self._raw_data.get("empty_choice") == "0" else True
 
     @property
-    def options(self) -> List[BaseModel]:
+    def options(self) -> List[FieldOption]:
         if self._options is None:
             with APIRequester() as requester:
                 url = f"fields/{self.id_}"
                 response, pagination_key = requester.request(
                     method="GET", url=url, params={"short_version": False}
                 )
-                self._options = []
-                for option in response:
-                    self._options.append(FieldOption.create_from(option))
+                self._options = [FieldOption.create_from(option) for option in response]
         return self._options

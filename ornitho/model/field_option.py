@@ -10,12 +10,12 @@ class FieldOption(ListableModel):
     ENDPOINT: str = ""
 
     @classmethod
-    def get(cls, id_: Union[int, str]):
+    def get(cls, id_: Union[int, str]) -> "FieldOption":
         """ Retrieve Object from Biolovision with given ID
         :param id_: Unique identifier
         :type id_: str
         :return: Instance, retrieved from Biolovision with given ID
-        :rtype: BaseModel
+        :rtype: FieldOption
         """
         with APIRequester() as requester:
             if isinstance(id_, str) and re.match(r"(.*)_(.*)", id_):
