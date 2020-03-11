@@ -4,6 +4,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 from ornitho.model.entity import Entity
+from ornitho.model.family import Family
 from ornitho.model.field import Field
 from ornitho.model.field_option import FieldOption
 from ornitho.model.form import Form

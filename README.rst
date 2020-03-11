@@ -8,6 +8,11 @@ The following "ornitho controllers / calls" are implemented:
   - List taxo groups
   - Get a single taxo group
 
+- families
+
+  - List families
+  - Get a single family
+
 - species
 
   - List species
@@ -48,11 +53,6 @@ The following "ornitho controllers / calls" are implemented:
   - Get a single field options
 
 Not yet Implemented:
-
-- families
-
-  - List families
-  - Get a single family
 
 - territorial units
 
