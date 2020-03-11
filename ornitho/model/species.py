@@ -1,8 +1,22 @@
+from typing import Optional
+
 from ornitho.model.abstract import ListableModel
+from ornitho.model.family import Family
+from ornitho.model.taxo_group import TaxonomicGroup
 
 
 class Species(ListableModel):
+
     ENDPOINT: str = "species"
+
+    def __init__(self, id_: int) -> None:
+        """ Species constructor
+        :param id_: ID, which is used to get the observation from Biolovison
+        :type id_: int
+        """
+        super(Species, self).__init__(id_)
+        self._taxo_group: Optional[TaxonomicGroup] = None
+        self._family: Optional[Family] = None
 
     @property
     def id_taxo_group(self) -> int:
@@ -63,3 +77,15 @@ class Species(ListableModel):
     @property
     def is_used(self) -> bool:
         return False if self._raw_data.get("is_used") == "0" else True
+
+    @property
+    def taxo_group(self) -> TaxonomicGroup:
+        if self._taxo_group is None:
+            self._taxo_group = TaxonomicGroup.get(self.id_taxo_group)
+        return self._taxo_group
+
+    @property
+    def family(self) -> Family:
+        if self._family is None:
+            self._family = Family.get(self.sempach_id_family)
+        return self._family

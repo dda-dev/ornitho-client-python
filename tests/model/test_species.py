@@ -1,4 +1,4 @@
-from unittest import TestCase
+from unittest import TestCase, mock
 
 import ornitho
 from ornitho.model.species import Species
@@ -90,3 +90,17 @@ class TestSpecies(TestCase):
         self.assertEqual(
             False if self.species_json["is_used"] == "0" else True, self.species.is_used
         )
+
+    @mock.patch("ornitho.model.species.TaxonomicGroup")
+    def test_taxo_group(self, mock_taxo_group):
+        mock_taxo_group.get.return_value = "Taxonomic Group retrieved"
+        taxo_group = self.species.taxo_group
+        mock_taxo_group.get.assert_called_with(self.species.id_taxo_group)
+        self.assertEqual(taxo_group, "Taxonomic Group retrieved")
+
+    @mock.patch("ornitho.model.species.Family")
+    def test_family(self, mock_family):
+        mock_family.get.return_value = "Family retrieved"
+        family = self.species.family
+        mock_family.get.assert_called_with(self.species.sempach_id_family)
+        self.assertEqual(family, "Family retrieved")
