@@ -59,7 +59,7 @@ class TestObservation(TestCase):
                     "is_exported": "1",
                     "export_date": "1576641307",
                     "resting_habitat": "1_5",
-                    "observation_detail": "4_2"
+                    "observation_detail": "4_2",
                 }
             ],
         }
@@ -163,28 +163,17 @@ class TestObservation(TestCase):
             "observers": [
                 {
                     "id_sighting": "44874562",
-                    "resting_habitat": {
-                        "@id": "1_5",
-                        "#text": "Grünland"
-                    },
+                    "resting_habitat": {"@id": "1_5", "#text": "Grünland"},
                 }
             ]
         }
         self.assertEqual(
             obs_json["observers"][0]["resting_habitat"]["@id"],
-            Observation.create_from(obs_json).id_resting_habitat
+            Observation.create_from(obs_json).id_resting_habitat,
         )
 
-        obs_json = {
-            "observers": [
-                {
-                    "id_sighting": "44874562",
-                }
-            ]
-        }
-        self.assertIsNone(
-            Observation.create_from(obs_json).id_resting_habitat
-        )
+        obs_json = {"observers": [{"id_sighting": "44874562",}]}
+        self.assertIsNone(Observation.create_from(obs_json).id_resting_habitat)
 
     def test_id_observation_detail(self):
         self.assertEqual(
@@ -196,28 +185,17 @@ class TestObservation(TestCase):
             "observers": [
                 {
                     "id_sighting": "44874562",
-                    "observation_detail": {
-                        "@id": "4_2",
-                        "#text": "Nahrung suchend"
-                    },
+                    "observation_detail": {"@id": "4_2", "#text": "Nahrung suchend"},
                 }
             ]
         }
         self.assertEqual(
             obs_json["observers"][0]["observation_detail"]["@id"],
-            Observation.create_from(obs_json).id_observation_detail
+            Observation.create_from(obs_json).id_observation_detail,
         )
 
-        obs_json = {
-            "observers": [
-                {
-                    "id_sighting": "44874562",
-                }
-            ]
-        }
-        self.assertIsNone(
-            Observation.create_from(obs_json).id_observation_detail
-        )
+        obs_json = {"observers": [{"id_sighting": "44874562",}]}
+        self.assertIsNone(Observation.create_from(obs_json).id_observation_detail)
 
     @mock.patch("ornitho.model.observation.Species")
     def test_species(self, mock_species):
