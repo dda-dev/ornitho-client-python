@@ -2,6 +2,8 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, Union
 
+from ornitho.model.field_option import FieldOption
+
 from ornitho.model.abstract import BaseModel, ListableModel, SearchableModel
 from ornitho.model.observer import Observer
 from ornitho.model.place import Place
@@ -28,6 +30,8 @@ class Observation(ListableModel, SearchableModel):
         self._species: Optional[Species] = None
         self._observer: Optional[Observer] = None
         self._place: Optional[Place] = None
+        self._resting_habitat: Optional[FieldOption] = None
+        self._observation_detail: Optional[FieldOption] = None
 
     @classmethod
     def create_from(cls, data: Dict[str, Any]) -> "Observation":
@@ -132,6 +136,24 @@ class Observation(ListableModel, SearchableModel):
         return int(self._raw_data["place"]["@id"])
 
     @property
+    def id_resting_habitat(self) -> Optional[str]:
+        if "resting_habitat" in self._raw_data["observers"][0]:
+            if type(self._raw_data["observers"][0]["resting_habitat"]) is dict:
+                return self._raw_data["observers"][0]["resting_habitat"]["@id"]
+            else:
+                return self._raw_data["observers"][0]["resting_habitat"]
+        return None
+
+    @property
+    def id_observation_detail(self) -> Optional[str]:
+        if "observation_detail" in self._raw_data["observers"][0]:
+            if type(self._raw_data["observers"][0]["observation_detail"]) is dict:
+                return self._raw_data["observers"][0]["observation_detail"]["@id"]
+            else:
+                return self._raw_data["observers"][0]["observation_detail"]
+        return None
+
+    @property
     def species(self) -> Species:
         """ Observed Species """
         if self._species is None:
@@ -151,6 +173,20 @@ class Observation(ListableModel, SearchableModel):
         if self._place is None:
             self._place = Place.get(self.id_place)
         return self._place
+
+    @property
+    def resting_habitat(self) -> Optional[FieldOption]:
+        """ Resting habitat of the observation """
+        if self._resting_habitat is None and self.id_resting_habitat:
+            self._resting_habitat = FieldOption.get(self.id_resting_habitat)
+        return self._resting_habitat
+
+    @property
+    def observation_detail(self) -> Optional[FieldOption]:
+        """ Observation detail of the observation """
+        if self._observation_detail is None and self.id_observation_detail:
+            self._observation_detail = FieldOption.get(self.id_observation_detail)
+        return self._observation_detail
 
     @classmethod
     def by_observer(

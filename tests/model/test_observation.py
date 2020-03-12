@@ -58,6 +58,8 @@ class TestObservation(TestCase):
                     "insert_date": "1573995175",
                     "is_exported": "1",
                     "export_date": "1576641307",
+                    "resting_habitat": "1_5",
+                    "observation_detail": "4_2"
                 }
             ],
         }
@@ -151,6 +153,72 @@ class TestObservation(TestCase):
             int(self.observation_json["place"]["@id"]), self.observation.id_place
         )
 
+    def test_id_resting_habitat(self):
+        self.assertEqual(
+            self.observation_json["observers"][0]["resting_habitat"],
+            self.observation.id_resting_habitat,
+        )
+
+        obs_json = {
+            "observers": [
+                {
+                    "id_sighting": "44874562",
+                    "resting_habitat": {
+                        "@id": "1_5",
+                        "#text": "Grünland"
+                    },
+                }
+            ]
+        }
+        self.assertEqual(
+            obs_json["observers"][0]["resting_habitat"]["@id"],
+            Observation.create_from(obs_json).id_resting_habitat
+        )
+
+        obs_json = {
+            "observers": [
+                {
+                    "id_sighting": "44874562",
+                }
+            ]
+        }
+        self.assertIsNone(
+            Observation.create_from(obs_json).id_resting_habitat
+        )
+
+    def test_id_observation_detail(self):
+        self.assertEqual(
+            self.observation_json["observers"][0]["observation_detail"],
+            self.observation.id_observation_detail,
+        )
+
+        obs_json = {
+            "observers": [
+                {
+                    "id_sighting": "44874562",
+                    "observation_detail": {
+                        "@id": "4_2",
+                        "#text": "Nahrung suchend"
+                    },
+                }
+            ]
+        }
+        self.assertEqual(
+            obs_json["observers"][0]["observation_detail"]["@id"],
+            Observation.create_from(obs_json).id_observation_detail
+        )
+
+        obs_json = {
+            "observers": [
+                {
+                    "id_sighting": "44874562",
+                }
+            ]
+        }
+        self.assertIsNone(
+            Observation.create_from(obs_json).id_observation_detail
+        )
+
     @mock.patch("ornitho.model.observation.Species")
     def test_species(self, mock_species):
         mock_species.get.return_value = "Species retrieved"
@@ -171,6 +239,20 @@ class TestObservation(TestCase):
         place = self.observation.place
         mock_place.get.assert_called_with(self.observation.id_place)
         self.assertEqual(place, "Place retrieved")
+
+    @mock.patch("ornitho.model.observation.FieldOption")
+    def test_resting_habitat(self, mock_field_option):
+        mock_field_option.get.return_value = "Resting habitat retrieved"
+        resting_habitat = self.observation.resting_habitat
+        mock_field_option.get.assert_called_with(self.observation.id_resting_habitat)
+        self.assertEqual(resting_habitat, "Resting habitat retrieved")
+
+    @mock.patch("ornitho.model.observation.FieldOption")
+    def test_observation_detail(self, mock_field_option):
+        mock_field_option.get.return_value = "Observation Detail retrieved"
+        observation_detail = self.observation.observation_detail
+        mock_field_option.get.assert_called_with(self.observation.id_observation_detail)
+        self.assertEqual(observation_detail, "Observation Detail retrieved")
 
     def test_by_observer(self):
         Observation.list = MagicMock(return_value=["obs", "pk"])
