@@ -33,6 +33,7 @@ from ornitho.model import (
     Site,
     Species,
     TaxonomicGroup,
+    Detail
 )
 
 __version__ = "0.0.1"

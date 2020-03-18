@@ -2,9 +2,9 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from ornitho.model.field_option import FieldOption
-
+from ornitho.model.detail import Detail
 from ornitho.model.abstract import BaseModel, ListableModel, SearchableModel
+from ornitho.model.field_option import FieldOption
 from ornitho.model.observer import Observer
 from ornitho.model.place import Place
 from ornitho.model.species import Species
@@ -97,6 +97,22 @@ class Observation(ListableModel, SearchableModel):
         )
 
     @property
+    def comment(self) -> Optional[str]:
+        return (
+            self._raw_data["observers"][0]["comment"]
+            if "comment" in self._raw_data["observers"][0]
+            else None
+        )
+
+    @property
+    def hidden_comment(self) -> Optional[str]:
+        return (
+            self._raw_data["observers"][0]["hidden_comment"]
+            if "hidden_comment" in self._raw_data["observers"][0]
+            else None
+        )
+
+    @property
     def atlas_code(self) -> Optional[int]:
         atlas_code = (
             None
@@ -106,6 +122,22 @@ class Observation(ListableModel, SearchableModel):
             else self._raw_data["observers"][0]["atlas_code"]
         )
         return atlas_code
+
+    @property
+    def details(self) -> Optional[List[Detail]]:
+        details = None
+        if "details" in self._raw_data["observers"][0]:
+            if "@id" in self._raw_data["observers"][0]["details"][0]["sex"]:
+                details = [
+                    Detail(int(detail['count']), detail['sex']['@id'], detail['age']['@id']) for detail in
+                    self._raw_data["observers"][0]["details"]
+                ]
+            else:
+                details = [
+                    Detail(int(detail['count']), detail['sex'], detail['age']) for detail in
+                    self._raw_data["observers"][0]["details"]
+                ]
+        return details
 
     @property
     def insert_date(self) -> datetime:

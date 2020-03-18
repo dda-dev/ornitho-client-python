@@ -5,7 +5,7 @@ from unittest.mock import MagicMock
 import pytz
 
 import ornitho
-from ornitho import ModificationType, Observation
+from ornitho import ModificationType, Observation, Detail
 
 ornitho.consumer_key = "ORNITHO_CONSUMER_KEY"
 ornitho.consumer_secret = "ORNITHO_CONSUMER_SECRET"
@@ -54,12 +54,26 @@ class TestObservation(TestCase):
                     "estimation_code": "EXACT_VALUE",
                     "count": "13",
                     "flight_number": "1",
+                    "comment": "comment",
+                    "hidden_comment": "hidden_comment",
                     "source": "WEB",
                     "insert_date": "1573995175",
                     "is_exported": "1",
                     "export_date": "1576641307",
                     "resting_habitat": "1_5",
                     "observation_detail": "4_2",
+                    "details": [
+                        {
+                            "count": "1",
+                            "sex": "U",
+                            "age": "PULL"
+                        },
+                        {
+                            "count": "12",
+                            "sex": "M",
+                            "age": "AD"
+                        }
+                    ]
                 }
             ],
         }
@@ -133,8 +147,54 @@ class TestObservation(TestCase):
             self.observation.flight_number,
         )
 
+    def test_comment(self):
+        self.assertEqual(
+            self.observation_json["observers"][0]["comment"], self.observation.comment,
+        )
+
+    def test_hidden_comment(self):
+        self.assertEqual(
+            self.observation_json["observers"][0]["hidden_comment"], self.observation.hidden_comment,
+        )
+
     def test_atlas_code(self):
         self.assertEqual(None, self.observation.atlas_code)
+
+    def test_details(self):
+        details = [Detail(1, "U", "PULL"), Detail(12, "M", "AD")]
+        self.assertEqual(details, self.observation.details)
+
+        obs_json = {
+            "observers": [
+                {
+                    "id_sighting": "44874562",
+                    "details": [
+                        {
+                            "count": "1",
+                            "sex": {
+                                "@id": "U",
+                                "#text": "unbekannt"
+                            },
+                            "age": {
+                                "@id": "PULL",
+                                "#text": "Pullus / nicht-flügge"
+                            }
+                        },
+                        {
+                            "count": "12",
+                            "sex": {
+                                "@id": "M",
+                                "#text": "Männchen"
+                            },
+                            "age": {
+                                "@id": "AD",
+                                "#text": "adult"
+                            }
+                        }]
+                }
+            ]
+        }
+        self.assertEqual(details, Observation.create_from(obs_json).details)
 
     def test_insert_date(self):
         self.assertEqual(

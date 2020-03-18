@@ -15,3 +15,4 @@ from ornitho.model.protocol import Protocol
 from ornitho.model.site import MapLayer, Site
 from ornitho.model.species import Species
 from ornitho.model.taxo_group import TaxonomicGroup
+from ornitho.model.detail import Detail
