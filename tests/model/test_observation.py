@@ -5,7 +5,7 @@ from unittest.mock import MagicMock
 import pytz
 
 import ornitho
-from ornitho import ModificationType, Observation, Detail
+from ornitho import Detail, ModificationType, Observation
 
 ornitho.consumer_key = "ORNITHO_CONSUMER_KEY"
 ornitho.consumer_secret = "ORNITHO_CONSUMER_SECRET"
@@ -63,17 +63,9 @@ class TestObservation(TestCase):
                     "resting_habitat": "1_5",
                     "observation_detail": "4_2",
                     "details": [
-                        {
-                            "count": "1",
-                            "sex": "U",
-                            "age": "PULL"
-                        },
-                        {
-                            "count": "12",
-                            "sex": "M",
-                            "age": "AD"
-                        }
-                    ]
+                        {"count": "1", "sex": "U", "age": "PULL"},
+                        {"count": "12", "sex": "M", "age": "AD"},
+                    ],
                 }
             ],
         }
@@ -147,6 +139,31 @@ class TestObservation(TestCase):
             self.observation.flight_number,
         )
 
+    def test_source(self):
+        self.assertEqual(
+            self.observation_json["observers"][0]["source"], self.observation.source,
+        )
+
+    @mock.patch("ornitho.model.observation.Media")
+    def test_medias(self, mock_media):
+        mock_media.get.return_value = "Media retrieved"
+
+        self.assertIsNone(self.observation.medias)
+
+        obs_json = {
+            "observers": [
+                {
+                    "id_sighting": "44874562",
+                    "medias": [{"@id": "111111",}, {"@id": "2222222",}],
+                }
+            ]
+        }
+        obs = Observation.create_from(obs_json)
+        medias = obs.medias
+        self.assertIsNotNone(medias)
+        self.assertEqual(len(obs_json["observers"][0]["medias"]), len(medias))
+        mock_media.get.assert_called_with(obs_json["observers"][0]["medias"][1]["@id"])
+
     def test_comment(self):
         self.assertEqual(
             self.observation_json["observers"][0]["comment"], self.observation.comment,
@@ -154,8 +171,12 @@ class TestObservation(TestCase):
 
     def test_hidden_comment(self):
         self.assertEqual(
-            self.observation_json["observers"][0]["hidden_comment"], self.observation.hidden_comment,
+            self.observation_json["observers"][0]["hidden_comment"],
+            self.observation.hidden_comment,
         )
+
+    def test_hidden(self):
+        self.assertFalse(self.observation.hidden)
 
     def test_atlas_code(self):
         self.assertEqual(None, self.observation.atlas_code)
@@ -171,26 +192,15 @@ class TestObservation(TestCase):
                     "details": [
                         {
                             "count": "1",
-                            "sex": {
-                                "@id": "U",
-                                "#text": "unbekannt"
-                            },
-                            "age": {
-                                "@id": "PULL",
-                                "#text": "Pullus / nicht-flügge"
-                            }
+                            "sex": {"@id": "U", "#text": "unbekannt"},
+                            "age": {"@id": "PULL", "#text": "Pullus / nicht-flügge"},
                         },
                         {
                             "count": "12",
-                            "sex": {
-                                "@id": "M",
-                                "#text": "Männchen"
-                            },
-                            "age": {
-                                "@id": "AD",
-                                "#text": "adult"
-                            }
-                        }]
+                            "sex": {"@id": "M", "#text": "Männchen"},
+                            "age": {"@id": "AD", "#text": "adult"},
+                        },
+                    ],
                 }
             ]
         }

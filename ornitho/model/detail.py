@@ -16,4 +16,8 @@ class Detail:
         return f"{self.count}-{self.sex}-{self.age}"
 
     def __eq__(self, other):
-        return self.count == other.count and self.sex == other.sex and self.age == other.age
+        return (
+            self.count == other.count
+            and self.sex == other.sex
+            and self.age == other.age
+        )

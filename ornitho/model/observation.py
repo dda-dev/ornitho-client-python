@@ -2,9 +2,10 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from ornitho.model.detail import Detail
 from ornitho.model.abstract import BaseModel, ListableModel, SearchableModel
+from ornitho.model.detail import Detail
 from ornitho.model.field_option import FieldOption
+from ornitho.model.media import Media
 from ornitho.model.observer import Observer
 from ornitho.model.place import Place
 from ornitho.model.species import Species
@@ -32,6 +33,7 @@ class Observation(ListableModel, SearchableModel):
         self._place: Optional[Place] = None
         self._resting_habitat: Optional[FieldOption] = None
         self._observation_detail: Optional[FieldOption] = None
+        self._medias: Optional[List[Media]] = None
 
     @classmethod
     def create_from(cls, data: Dict[str, Any]) -> "Observation":
@@ -97,6 +99,19 @@ class Observation(ListableModel, SearchableModel):
         )
 
     @property
+    def source(self) -> str:
+        return self._raw_data["observers"][0]["source"]
+
+    @property
+    def medias(self) -> Optional[List[Media]]:
+        if self._medias is None and "medias" in self._raw_data["observers"][0]:
+            self._medias = [
+                Media.get(media["@id"])
+                for media in self._raw_data["observers"][0]["medias"]
+            ]
+        return self._medias
+
+    @property
     def comment(self) -> Optional[str]:
         return (
             self._raw_data["observers"][0]["comment"]
@@ -110,6 +125,15 @@ class Observation(ListableModel, SearchableModel):
             self._raw_data["observers"][0]["hidden_comment"]
             if "hidden_comment" in self._raw_data["observers"][0]
             else None
+        )
+
+    @property
+    def hidden(self) -> bool:
+        return (
+            False
+            if "hidden" not in self._raw_data["observers"][0]
+            or self._raw_data["observers"][0]["hidden"] == "0"
+            else True
         )
 
     @property
@@ -129,13 +153,15 @@ class Observation(ListableModel, SearchableModel):
         if "details" in self._raw_data["observers"][0]:
             if "@id" in self._raw_data["observers"][0]["details"][0]["sex"]:
                 details = [
-                    Detail(int(detail['count']), detail['sex']['@id'], detail['age']['@id']) for detail in
-                    self._raw_data["observers"][0]["details"]
+                    Detail(
+                        int(detail["count"]), detail["sex"]["@id"], detail["age"]["@id"]
+                    )
+                    for detail in self._raw_data["observers"][0]["details"]
                 ]
             else:
                 details = [
-                    Detail(int(detail['count']), detail['sex'], detail['age']) for detail in
-                    self._raw_data["observers"][0]["details"]
+                    Detail(int(detail["count"]), detail["sex"], detail["age"])
+                    for detail in self._raw_data["observers"][0]["details"]
                 ]
         return details
 

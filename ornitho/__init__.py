@@ -19,12 +19,14 @@ from ornitho.api_exception import (
 )
 from ornitho.api_requester import APIRequester
 from ornitho.model import (
+    Detail,
     Entity,
     Family,
     Field,
     FieldOption,
     Form,
     MapLayer,
+    Media,
     ModificationType,
     Observation,
     Observer,
@@ -33,7 +35,6 @@ from ornitho.model import (
     Site,
     Species,
     TaxonomicGroup,
-    Detail
 )
 
 __version__ = "0.0.1"
