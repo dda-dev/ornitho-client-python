@@ -112,6 +112,15 @@ class Observation(ListableModel, SearchableModel):
         return self._medias
 
     @property
+    def media_urls(self) -> Optional[List[str]]:
+        if "medias" in self._raw_data["observers"][0]:
+            return [
+                f"{media['path']}/{media['filename']}"
+                for media in self._raw_data["observers"][0]["medias"]
+            ]
+        return None
+
+    @property
     def comment(self) -> Optional[str]:
         return (
             self._raw_data["observers"][0]["comment"]

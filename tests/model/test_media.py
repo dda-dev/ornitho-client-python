@@ -104,13 +104,61 @@ class TestMedia(TestCase):
 
     def test_photo(self):
         self.assertEqual(
-            self.media_json["photo"].replace("xsmall/", ""), self.media.photo
+            self.media_json["photo"].replace("xsmall", "large"), self.media.photo
         )
+
+        media_json = {
+            "obid": "2222",
+            "obs_hidden": "0",
+            "surname": "Test",
+            "name": "Name",
+            "advanced_observer": "1",
+            "traid": "2222",
+            "tra_hidden": "0",
+            "tra_surname": "Test",
+            "tra_name": "Name",
+            "obs_power_user": "0",
+            "tra_power_user": "0",
+            "id": "123123",
+            "media": "PHOTO",
+            "has_large": "0",
+            "insert_date": {
+                "@notime": "0",
+                "@offset": "3600",
+                "@timestamp": "1584206291",
+            },
+            "photo": "https://test.media/www.ornitho.de/1970-01/xsmall/1111-22222222-3333.jpg",
+        }
+
+        self.assertEqual(
+            media_json["photo"].replace("xsmall/", ""),
+            Media.create_from(media_json).photo,
+        )
+
+        sound_json = {
+            "obid": "2222",
+            "obs_hidden": "0",
+            "surname": "Test",
+            "name": "Name",
+            "advanced_observer": "1",
+            "traid": "2222",
+            "tra_hidden": "0",
+            "tra_surname": "Test",
+            "tra_name": "Name",
+            "obs_power_user": "0",
+            "tra_power_user": "0",
+            "id": "123123",
+            "media": "SOUND",
+            "has_large": "0",
+            "insert_date": {
+                "@notime": "0",
+                "@offset": "3600",
+                "@timestamp": "1584206291",
+            },
+            "photo": "https://test.media/www.ornitho.de/1970-01/1111-22222222-3333.mp3",
+        }
+
+        self.assertEqual(sound_json["photo"], Media.create_from(sound_json).photo)
 
     def test_photo_small(self):
         self.assertEqual(self.media_json["photo"], self.media.photo_small)
-
-    def test_photo_large(self):
-        self.assertEqual(
-            self.media_json["photo"].replace("xsmall", "large"), self.media.photo_large
-        )

@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 from ornitho.model.abstract import BaseModel
 
@@ -68,12 +69,13 @@ class Media(BaseModel):
 
     @property
     def photo(self) -> str:
-        return self._raw_data["photo"].replace("xsmall/", "")
+        if self.has_large and self.media == "PHOTO":
+            return self._raw_data["photo"].replace("xsmall", "large")
+        elif self.media == "PHOTO":
+            return self._raw_data["photo"].replace("xsmall/", "")
+        else:
+            return self._raw_data["photo"]
 
     @property
-    def photo_small(self) -> str:
-        return self._raw_data["photo"]
-
-    @property
-    def photo_large(self) -> str:
-        return self._raw_data["photo"].replace("xsmall", "large")
+    def photo_small(self) -> Optional[str]:
+        return self._raw_data["photo"] if self.media == "PHOTO" else None

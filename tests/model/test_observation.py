@@ -164,6 +164,41 @@ class TestObservation(TestCase):
         self.assertEqual(len(obs_json["observers"][0]["medias"]), len(medias))
         mock_media.get.assert_called_with(obs_json["observers"][0]["medias"][1]["@id"])
 
+    def test_media_urls(self):
+        self.assertIsNone(self.observation.media_urls)
+
+        obs_json = {
+            "observers": [
+                {
+                    "id_sighting": "44874562",
+                    "medias": [
+                        {
+                            "@id": "111111",
+                            "path": "https://test.media/www.ornitho.de/1970-01",
+                            "filename": "file1.jpg",
+                        },
+                        {
+                            "@id": "2222222",
+                            "path": "https://test.media/www.ornitho.de/1970-01",
+                            "filename": "file2.jpg",
+                        },
+                    ],
+                }
+            ]
+        }
+        obs = Observation.create_from(obs_json)
+        media_urls = obs.media_urls
+        self.assertIsNotNone(media_urls)
+        self.assertEqual(len(obs_json["observers"][0]["medias"]), len(media_urls))
+        self.assertEqual(
+            f"{obs_json['observers'][0]['medias'][0]['path']}/{obs_json['observers'][0]['medias'][0]['filename']}",
+            media_urls[0],
+        )
+        self.assertEqual(
+            f"{obs_json['observers'][0]['medias'][1]['path']}/{obs_json['observers'][0]['medias'][1]['filename']}",
+            media_urls[1],
+        )
+
     def test_comment(self):
         self.assertEqual(
             self.observation_json["observers"][0]["comment"], self.observation.comment,
