@@ -32,6 +32,14 @@ class TestForm(TestCase):
                 "sequence_number": "1",
                 "list_type": "-",
                 "waterbird_conditions": "GOOD_NORMAL",
+                "waterbird_coverage": "COMPLETE",
+                "waterbird_optical": "TELESCOPE",
+                "waterbird_countmethod": "GROUND",
+                "waterbird_ice": "NO_ICE",
+                "waterbird_snowcover": "NO_SNOW",
+                "waterbird_waterlevel": "NORMAL",
+                "nest_number": "11",
+                "occupied_nest_number": "12",
             },
             "sightings": [
                 {
@@ -196,11 +204,193 @@ class TestForm(TestCase):
             self.form_json["protocol"]["list_type"], self.form.list_type,
         )
 
-    def test_waterbird_conditions(self):
+    def test_id_waterbird_conditions(self):
         self.assertEqual(
             self.form_json["protocol"]["waterbird_conditions"],
-            self.form.waterbird_conditions,
+            self.form.id_waterbird_conditions,
         )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {
+                "waterbird_conditions": {
+                    "@id": "GOOD_NORMAL",
+                    "#text": "günstig / normal",
+                },
+            },
+        }
+        self.assertEqual(
+            form_json["protocol"]["waterbird_conditions"]["@id"],
+            Form.create_from(form_json).id_waterbird_conditions,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(Form.create_from(form_json).id_waterbird_conditions)
+
+    def test_id_waterbird_coverage(self):
+        self.assertEqual(
+            self.form_json["protocol"]["waterbird_coverage"],
+            self.form.id_waterbird_coverage,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {
+                "waterbird_coverage": {"@id": "COMPLETE", "#text": "± vollständig"},
+            },
+        }
+        self.assertEqual(
+            form_json["protocol"]["waterbird_coverage"]["@id"],
+            Form.create_from(form_json).id_waterbird_coverage,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(Form.create_from(form_json).id_waterbird_coverage)
+
+    def test_id_waterbird_optical(self):
+        self.assertEqual(
+            self.form_json["protocol"]["waterbird_optical"],
+            self.form.id_waterbird_optical,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {
+                "waterbird_optical": {"@id": "TELESCOPE", "#text": "Spektiv"},
+            },
+        }
+        self.assertEqual(
+            form_json["protocol"]["waterbird_optical"]["@id"],
+            Form.create_from(form_json).id_waterbird_optical,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(Form.create_from(form_json).id_waterbird_optical)
+
+    def test_id_waterbird_countmethod(self):
+        self.assertEqual(
+            self.form_json["protocol"]["waterbird_countmethod"],
+            self.form.id_waterbird_countmethod,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {
+                "waterbird_countmethod": {
+                    "@id": "GROUND",
+                    "#text": "Boden (Auto, Fahrrad, zu Fuß)",
+                },
+            },
+        }
+        self.assertEqual(
+            form_json["protocol"]["waterbird_countmethod"]["@id"],
+            Form.create_from(form_json).id_waterbird_countmethod,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(Form.create_from(form_json).id_waterbird_countmethod)
+
+    def test_id_waterbird_ice(self):
+        self.assertEqual(
+            self.form_json["protocol"]["waterbird_ice"], self.form.id_waterbird_ice,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {"waterbird_ice": {"@id": "NO_ICE", "#text": "kein Eis"},},
+        }
+        self.assertEqual(
+            form_json["protocol"]["waterbird_ice"]["@id"],
+            Form.create_from(form_json).id_waterbird_ice,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(Form.create_from(form_json).id_waterbird_ice)
+
+    def test_id_waterbird_snowcover(self):
+        self.assertEqual(
+            self.form_json["protocol"]["waterbird_snowcover"],
+            self.form.id_waterbird_snowcover,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {
+                "waterbird_snowcover": {"@id": "NO_SNOW", "#text": "kein Schnee"},
+            },
+        }
+        self.assertEqual(
+            form_json["protocol"]["waterbird_snowcover"]["@id"],
+            Form.create_from(form_json).id_waterbird_snowcover,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(Form.create_from(form_json).id_waterbird_snowcover)
+
+    def test_id_waterbird_waterlevel(self):
+        self.assertEqual(
+            self.form_json["protocol"]["waterbird_waterlevel"],
+            self.form.id_waterbird_waterlevel,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {
+                "waterbird_waterlevel": {"@id": "NO_SNOW", "#text": "kein Schnee"},
+            },
+        }
+        self.assertEqual(
+            form_json["protocol"]["waterbird_waterlevel"]["@id"],
+            Form.create_from(form_json).id_waterbird_waterlevel,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(Form.create_from(form_json).id_waterbird_waterlevel)
+
+    def test_nest_number(self):
+        self.assertEqual(
+            int(self.form_json["protocol"]["nest_number"]), self.form.nest_number,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {
+                "nest_number": {
+                    "@id": "11",
+                    "#text": "DISPLAY_PAGE_TEXT_NEST_NUMBER_11",
+                },
+            },
+        }
+        self.assertEqual(
+            int(form_json["protocol"]["nest_number"]["@id"]),
+            Form.create_from(form_json).nest_number,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(Form.create_from(form_json).nest_number)
+
+    def test_occupied_nest_number(self):
+        self.assertEqual(
+            int(self.form_json["protocol"]["occupied_nest_number"]),
+            self.form.occupied_nest_number,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {
+                "occupied_nest_number": {
+                    "@id": "12",
+                    "#text": "DISPLAY_PAGE_TEXT_OCCUPIED_NEST_NUMBER_12",
+                },
+            },
+        }
+        self.assertEqual(
+            int(form_json["protocol"]["occupied_nest_number"]["@id"]),
+            Form.create_from(form_json).occupied_nest_number,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(Form.create_from(form_json).occupied_nest_number)
 
     @mock.patch("ornitho.model.form.Observation")
     def test_observations(self, mock_observation):

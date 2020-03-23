@@ -52,6 +52,10 @@ The following "ornitho controllers / calls" are implemented:
   - List fields
   - Get a single field options
 
+- media
+
+  - Get a single media
+
 Not yet Implemented:
 
 - territorial units
@@ -91,10 +95,6 @@ Not yet Implemented:
   - Delete a record
   - Delete a list
 
-- media
-
-  - Get a single media
-  
 - import files
 
   - List import files

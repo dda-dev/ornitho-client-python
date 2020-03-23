@@ -43,8 +43,8 @@ class Field(ListableModel):
         return self._raw_data["name"]
 
     @property
-    def text(self) -> str:
-        return self._raw_data["text"]
+    def text(self) -> Optional[str]:
+        return self._raw_data["text"] if "text" in self._raw_data else None
 
     @property
     def default(self) -> int:

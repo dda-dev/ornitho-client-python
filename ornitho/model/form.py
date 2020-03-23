@@ -132,13 +132,109 @@ class Form(BaseModel):
         )
 
     @property
-    def waterbird_conditions(self) -> Optional[str]:
-        return (
-            self._raw_data["protocol"]["waterbird_conditions"]
-            if "protocol" in self._raw_data
+    def id_waterbird_conditions(self) -> Optional[str]:
+        if (
+            "protocol" in self._raw_data
             and "waterbird_conditions" in self._raw_data["protocol"]
-            else None
-        )
+        ):
+            if type(self._raw_data["protocol"]["waterbird_conditions"]) is dict:
+                return self._raw_data["protocol"]["waterbird_conditions"]["@id"]
+            else:
+                return self._raw_data["protocol"]["waterbird_conditions"]
+        return None
+
+    @property
+    def id_waterbird_coverage(self) -> Optional[str]:
+        if (
+            "protocol" in self._raw_data
+            and "waterbird_coverage" in self._raw_data["protocol"]
+        ):
+            if type(self._raw_data["protocol"]["waterbird_coverage"]) is dict:
+                return self._raw_data["protocol"]["waterbird_coverage"]["@id"]
+            else:
+                return self._raw_data["protocol"]["waterbird_coverage"]
+        return None
+
+    @property
+    def id_waterbird_optical(self) -> Optional[str]:
+        if (
+            "protocol" in self._raw_data
+            and "waterbird_optical" in self._raw_data["protocol"]
+        ):
+            if type(self._raw_data["protocol"]["waterbird_optical"]) is dict:
+                return self._raw_data["protocol"]["waterbird_optical"]["@id"]
+            else:
+                return self._raw_data["protocol"]["waterbird_optical"]
+        return None
+
+    @property
+    def id_waterbird_countmethod(self) -> Optional[str]:
+        if (
+            "protocol" in self._raw_data
+            and "waterbird_countmethod" in self._raw_data["protocol"]
+        ):
+            if type(self._raw_data["protocol"]["waterbird_countmethod"]) is dict:
+                return self._raw_data["protocol"]["waterbird_countmethod"]["@id"]
+            else:
+                return self._raw_data["protocol"]["waterbird_countmethod"]
+        return None
+
+    @property
+    def id_waterbird_ice(self) -> Optional[str]:
+        if (
+            "protocol" in self._raw_data
+            and "waterbird_ice" in self._raw_data["protocol"]
+        ):
+            if type(self._raw_data["protocol"]["waterbird_ice"]) is dict:
+                return self._raw_data["protocol"]["waterbird_ice"]["@id"]
+            else:
+                return self._raw_data["protocol"]["waterbird_ice"]
+        return None
+
+    @property
+    def id_waterbird_snowcover(self) -> Optional[str]:
+        if (
+            "protocol" in self._raw_data
+            and "waterbird_snowcover" in self._raw_data["protocol"]
+        ):
+            if type(self._raw_data["protocol"]["waterbird_snowcover"]) is dict:
+                return self._raw_data["protocol"]["waterbird_snowcover"]["@id"]
+            else:
+                return self._raw_data["protocol"]["waterbird_snowcover"]
+        return None
+
+    @property
+    def id_waterbird_waterlevel(self) -> Optional[str]:
+        if (
+            "protocol" in self._raw_data
+            and "waterbird_waterlevel" in self._raw_data["protocol"]
+        ):
+            if type(self._raw_data["protocol"]["waterbird_waterlevel"]) is dict:
+                return self._raw_data["protocol"]["waterbird_waterlevel"]["@id"]
+            else:
+                return self._raw_data["protocol"]["waterbird_waterlevel"]
+        return None
+
+    @property
+    def nest_number(self) -> Optional[int]:
+        if "protocol" in self._raw_data and "nest_number" in self._raw_data["protocol"]:
+            if type(self._raw_data["protocol"]["nest_number"]) is dict:
+                return int(self._raw_data["protocol"]["nest_number"]["@id"])
+            else:
+                return int(self._raw_data["protocol"]["nest_number"])
+        return None
+
+    @property
+    def occupied_nest_number(self) -> Optional[int]:
+        if (
+            "protocol" in self._raw_data
+            and "occupied_nest_number" in self._raw_data["protocol"]
+        ):
+            if type(self._raw_data["protocol"]["occupied_nest_number"]) is dict:
+                return int(self._raw_data["protocol"]["occupied_nest_number"]["@id"])
+            else:
+                return int(self._raw_data["protocol"]["occupied_nest_number"])
+        return None
 
     @property
     def observations(self) -> List[Observation]:
