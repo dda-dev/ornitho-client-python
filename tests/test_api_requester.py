@@ -337,13 +337,6 @@ class TestAPIRequester(TestCase):
         self.requester.session.request.assert_called_with(
             "get",
             f"ORNITHO_API_BASEtest?user_email=ORNITHO_USER_EMAIL&user_pw=ORNITHO_USER_PW&pagination_key=key&short_version=1",
-            data=json.dumps(
-                {
-                    "test": test_date.replace(microsecond=0)
-                    .astimezone(datetime.now().astimezone().tzinfo)
-                    .replace(tzinfo=None)
-                    .isoformat()
-                }
-            ),
+            data=json.dumps({"test": test_date.replace(microsecond=0).isoformat()}),
             headers=APIRequester.request_headers(),
         )

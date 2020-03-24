@@ -224,16 +224,7 @@ class APIRequester(object):
         if body:
             for key, value in body.items():
                 if isinstance(value, datetime):
-                    if value.tzinfo:
-                        new_value = (
-                            value.replace(microsecond=0)
-                            .astimezone(datetime.now().astimezone().tzinfo)
-                            .replace(tzinfo=None)
-                            .isoformat()
-                        )
-                    else:
-                        new_value = value.replace(microsecond=0).isoformat()
-                    body[key] = new_value
+                    body[key] = value.replace(microsecond=0).isoformat()
 
         data = json.dumps(body) if body else None
 
