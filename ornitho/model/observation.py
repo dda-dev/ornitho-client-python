@@ -337,13 +337,7 @@ class Observation(ListableModel, SearchableModel):
         if only_form:
             params["only_form"] = 1
 
-        # Converte timezone to local timezone and make it naive, since ornitho can't handle timezone in parameters
-        if date.tzinfo:
-            params["date"] = date.astimezone(
-                datetime.now().astimezone().tzinfo
-            ).replace(tzinfo=None)
-        else:
-            params["date"] = date
+        params["date"] = date
 
         changed_observations = cls.request(method="get", url=url, params=params)
         observations = []

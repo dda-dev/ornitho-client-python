@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List, Optional, Tuple, Union
 
 from ornitho.model.abstract import ListableModel
@@ -181,7 +182,7 @@ class Protocol(ListableModel):
         self,
         request_all: Optional[bool] = False,
         pagination_key: Optional[str] = None,
-        **kwargs: Union[str, int, float, bool],
+        **kwargs: Union[str, int, float, bool, datetime],
     ) -> Tuple[List[Observation], Optional[str]]:
         """ Get observations linked to the protocol
         The same search parameters can be used as for the observations (except 'only_protocol' which is automatically set)
@@ -191,7 +192,7 @@ class Protocol(ListableModel):
         :param kwargs: Additional filter values
         :type request_all: Optional[bool]
         :type pagination_key: Optional[str]
-        :type kwargs: Union[str, int, float, bool]
+        :type kwargs: Union[str, int, float, bool, datetime]
         :return: List of observations
         :rtype: Tuple[List[Observation], Optional[str]]
         """
@@ -205,12 +206,12 @@ class Protocol(ListableModel):
         )
 
     def get_all_observations(
-        self, **kwargs: Union[str, int, float, bool]
+        self, **kwargs: Union[str, int, float, bool, datetime]
     ) -> List[Observation]:
         """ Get observations linked to the protocol
         The same search parameters can be used as for the observations (except 'only_protocol' which is automatically set)
         :param kwargs: Additional filter values
-        :type kwargs: Union[str, int, float, bool]
+        :type kwargs: Union[str, int, float, bool, datetime]
         :return: List of observations
         :rtype: List[Observation]
         """

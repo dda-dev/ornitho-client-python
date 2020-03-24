@@ -29,7 +29,7 @@ class BaseModel(ABC):
         return self._id
 
     @classmethod
-    def get(cls: Type[T], id_: Union[int, str]):
+    def get(cls: Type[T], id_: Union[int, str]) -> T:
         """ Retrieve Object from Biolovision with given ID
         :param id_: Unique identifier
         :type id_: Union[int, str]

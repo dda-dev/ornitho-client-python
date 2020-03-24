@@ -1,5 +1,9 @@
+import json
+from datetime import datetime
 from unittest import TestCase
 from unittest.mock import MagicMock, Mock
+
+import pytz
 
 import ornitho
 from ornitho import (
@@ -235,4 +239,111 @@ class TestAPIRequester(TestCase):
         )
         self.assertRaises(
             APIException, lambda: self.requester.request_raw(method="post", url="test"),
+        )
+
+        # Case 7: Unaware datetime as parameter
+        self.requester.session.request = MagicMock(
+            return_value=Mock(
+                status_code=200,
+                headers={
+                    "pagination_key": "new_key",
+                    "Content-Type": "application/json; charset=utf-8",
+                    "Content-Length": 23,
+                },
+                content=b'{"data": [{"id": "1"}]}',
+            )
+        )
+        test_date = datetime.now()
+        response, pk = self.requester.request_raw(
+            method="get", url="test", pagination_key="key", params={"test": test_date},
+        )
+        self.assertEqual({"data": [{"id": "1"}]}, response)
+        self.assertEqual(pk, "new_key")
+        self.requester.session.request.assert_called_with(
+            "get",
+            f"ORNITHO_API_BASEtest?user_email=ORNITHO_USER_EMAIL&user_pw=ORNITHO_USER_PW&pagination_key=key&short_version=1&test={test_date.replace(microsecond=0).isoformat()}",
+            data=None,
+            headers=APIRequester.request_headers(),
+        )
+
+        # Case 8: Aware datetime as parameter
+        self.requester.session.request = MagicMock(
+            return_value=Mock(
+                status_code=200,
+                headers={
+                    "pagination_key": "new_key",
+                    "Content-Type": "application/json; charset=utf-8",
+                    "Content-Length": 23,
+                },
+                content=b'{"data": [{"id": "1"}]}',
+            )
+        )
+        test_date = datetime.now(pytz.timezone("Europe/Berlin"))
+        response, pk = self.requester.request_raw(
+            method="get", url="test", pagination_key="key", params={"test": test_date},
+        )
+        self.assertEqual({"data": [{"id": "1"}]}, response)
+        self.assertEqual(pk, "new_key")
+        self.requester.session.request.assert_called_with(
+            "get",
+            f"ORNITHO_API_BASEtest?user_email=ORNITHO_USER_EMAIL&user_pw=ORNITHO_USER_PW&pagination_key=key&short_version=1&test={test_date.replace(microsecond=0).astimezone(datetime.now().astimezone().tzinfo).replace(tzinfo=None).isoformat()}",
+            data=None,
+            headers=APIRequester.request_headers(),
+        )
+
+        # Case 9: Unaware datetime as body parameter
+        self.requester.session.request = MagicMock(
+            return_value=Mock(
+                status_code=200,
+                headers={
+                    "pagination_key": "new_key",
+                    "Content-Type": "application/json; charset=utf-8",
+                    "Content-Length": 23,
+                },
+                content=b'{"data": [{"id": "1"}]}',
+            )
+        )
+        test_date = datetime.now()
+        response, pk = self.requester.request_raw(
+            method="get", url="test", pagination_key="key", body={"test": test_date},
+        )
+        self.assertEqual({"data": [{"id": "1"}]}, response)
+        self.assertEqual(pk, "new_key")
+        self.requester.session.request.assert_called_with(
+            "get",
+            f"ORNITHO_API_BASEtest?user_email=ORNITHO_USER_EMAIL&user_pw=ORNITHO_USER_PW&pagination_key=key&short_version=1",
+            data=json.dumps({"test": test_date.replace(microsecond=0).isoformat()}),
+            headers=APIRequester.request_headers(),
+        )
+
+        # Case 10: Aware datetime as body parameter
+        self.requester.session.request = MagicMock(
+            return_value=Mock(
+                status_code=200,
+                headers={
+                    "pagination_key": "new_key",
+                    "Content-Type": "application/json; charset=utf-8",
+                    "Content-Length": 23,
+                },
+                content=b'{"data": [{"id": "1"}]}',
+            )
+        )
+        test_date = datetime.now(pytz.timezone("Europe/Berlin"))
+        response, pk = self.requester.request_raw(
+            method="get", url="test", pagination_key="key", body={"test": test_date},
+        )
+        self.assertEqual({"data": [{"id": "1"}]}, response)
+        self.assertEqual(pk, "new_key")
+        self.requester.session.request.assert_called_with(
+            "get",
+            f"ORNITHO_API_BASEtest?user_email=ORNITHO_USER_EMAIL&user_pw=ORNITHO_USER_PW&pagination_key=key&short_version=1",
+            data=json.dumps(
+                {
+                    "test": test_date.replace(microsecond=0)
+                    .astimezone(datetime.now().astimezone().tzinfo)
+                    .replace(tzinfo=None)
+                    .isoformat()
+                }
+            ),
+            headers=APIRequester.request_headers(),
         )

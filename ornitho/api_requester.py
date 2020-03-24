@@ -213,7 +213,27 @@ class APIRequester(object):
 
         if params:
             for key, value in params.items():
-                abs_url = f"{abs_url}&{key}={value if not isinstance(value, datetime) else value.isoformat()}"
+                if isinstance(value, datetime):
+                    if value.tzinfo:
+                        abs_url = f"{abs_url}&{key}={value.replace(microsecond=0).astimezone(datetime.now().astimezone().tzinfo).replace(tzinfo=None).isoformat()}"
+                    else:
+                        abs_url = f"{abs_url}&{key}={value.replace(microsecond=0).isoformat()}"
+                else:
+                    abs_url = f"{abs_url}&{key}={value}"
+
+        if body:
+            for key, value in body.items():
+                if isinstance(value, datetime):
+                    if value.tzinfo:
+                        new_value = (
+                            value.replace(microsecond=0)
+                            .astimezone(datetime.now().astimezone().tzinfo)
+                            .replace(tzinfo=None)
+                            .isoformat()
+                        )
+                    else:
+                        new_value = value.replace(microsecond=0).isoformat()
+                    body[key] = new_value
 
         data = json.dumps(body) if body else None
 

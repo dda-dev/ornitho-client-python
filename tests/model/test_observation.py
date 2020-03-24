@@ -403,10 +403,5 @@ class TestObservation(TestCase):
         Observation.request.assert_called_with(
             method="get",
             url="observations/diff",
-            params={
-                "date": date.astimezone(datetime.now().astimezone().tzinfo).replace(
-                    tzinfo=None
-                ),
-                "only_protocol": "CBBM-Mock",
-            },
+            params={"date": date, "only_protocol": "CBBM-Mock",},
         )
