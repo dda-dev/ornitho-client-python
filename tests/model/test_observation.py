@@ -360,7 +360,7 @@ class TestObservation(TestCase):
                 {
                     "id_sighting": "2",
                     "id_universal": "2",
-                    "modification_type": "updated",
+                    "modification_type": "deleted",
                 },
             ]
         )

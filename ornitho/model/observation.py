@@ -22,12 +22,15 @@ class Observation(ListableModel, SearchableModel):
 
     ENDPOINT: str = "observations"
 
-    def __init__(self, id_: int) -> None:
+    def __init__(self, id_: int, modification_type: ModificationType = None) -> None:
         """ Observation constructor
         :param id_: ID, which is used to get the observation from Biolovison
+        :param modification_type: Set, if the observation was retrieved via the 'diff' method
         :type id_: int
+        :type modification_type: ModificationType
         """
         super(Observation, self).__init__(id_)
+        self.modification_type = modification_type
         self._species: Optional[Species] = None
         self._observer: Optional[Observer] = None
         self._place: Optional[Place] = None
@@ -351,8 +354,19 @@ class Observation(ListableModel, SearchableModel):
         changed_observations = cls.request(method="get", url=url, params=params)
         observations = []
         for obs in changed_observations:
-            if retrieve_observations:
+            if obs["modification_type"] == "updated":
+                modification_type = ModificationType.ONLY_MODIFIED
+            else:
+                modification_type = ModificationType.ONLY_DELETED
+            if (
+                retrieve_observations
+                and modification_type == ModificationType.ONLY_MODIFIED
+            ):
                 observations.append(cls.get(int(obs["id_sighting"])))
             else:
-                observations.append(cls(id_=int(obs["id_sighting"])))
+                observations.append(
+                    cls(
+                        id_=int(obs["id_sighting"]), modification_type=modification_type
+                    )
+                )
         return observations
