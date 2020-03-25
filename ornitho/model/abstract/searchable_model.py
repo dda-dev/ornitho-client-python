@@ -1,5 +1,5 @@
 from abc import ABC
-from datetime import datetime
+from datetime import date, datetime
 from typing import List, Optional, Tuple, Type, TypeVar, Union
 
 from ornitho.api_requester import APIRequester
@@ -17,7 +17,7 @@ class SearchableModel(BaseModel, ABC):
         cls: Type[T],
         request_all: Optional[bool] = False,
         pagination_key: Optional[str] = None,
-        **kwargs: Union[str, int, float, bool, datetime]
+        **kwargs: Union[str, int, float, bool, date, datetime]
     ) -> Tuple[List[T], Optional[str]]:
         """ Search for instances at Biolovision via POST search
         If the list is chunked, a pagination key ist returned
@@ -45,7 +45,9 @@ class SearchableModel(BaseModel, ABC):
         return model_list, pk
 
     @classmethod
-    def search_all(cls: Type[T], **kwargs: Union[str, int, float, bool]) -> List[T]:
+    def search_all(
+        cls: Type[T], **kwargs: Union[str, int, float, bool, date, datetime]
+    ) -> List[T]:
         """Search for instances at Biolovision via POST search
         :param kwargs: Search values
         :type kwargs: Union[str, int, float, bool]

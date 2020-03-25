@@ -1,4 +1,5 @@
 from abc import ABC
+from datetime import date
 from typing import List, Optional, Tuple, Type, TypeVar, Union
 
 from ornitho.api_requester import APIRequester
@@ -16,7 +17,7 @@ class ListableModel(BaseModel, ABC):
         cls: Type[T],
         request_all: Optional[bool] = False,
         pagination_key: Optional[str] = None,
-        **kwargs: Union[str, int, float, bool]
+        **kwargs: Union[str, int, float, bool, date]
     ) -> Tuple[List[T], Optional[str]]:
         """ Retrieves a (paged) list of instances from Biolovison
         If the list is chunked, a pagination key ist returned
@@ -25,7 +26,7 @@ class ListableModel(BaseModel, ABC):
         :param kwargs: Additional filter values
         :type request_all: bool
         :type pagination_key: Optional[str]
-        :type kwargs: Union[str, int, float, bool]
+        :type kwargs: Union[str, int, float, bool, date]
         :return: Tuple of instances and pagination key
         :rtype: Tuple[List[T], Optional[str]]
         """
@@ -45,10 +46,10 @@ class ListableModel(BaseModel, ABC):
         return model_list, pk
 
     @classmethod
-    def list_all(cls: Type[T], **kwargs: Union[str, int, float, bool]) -> List[T]:
+    def list_all(cls: Type[T], **kwargs: Union[str, int, float, bool, date]) -> List[T]:
         """Retrieves a list of all instances from Biolovison
         :param kwargs: Additional filter values
-        :type kwargs: Union[str, int, float, bool]
+        :type kwargs: Union[str, int, float, bool, date]
         :return: List of instances
         :rtype: List[T]
         """

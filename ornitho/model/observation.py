@@ -337,7 +337,16 @@ class Observation(ListableModel, SearchableModel):
         if only_form:
             params["only_form"] = 1
 
-        params["date"] = date
+        date = date.replace(microsecond=0)
+        if date.tzinfo:
+            date = date.astimezone(datetime.now().astimezone().tzinfo).replace(
+                tzinfo=None
+            )
+        params[
+            "date"
+        ] = (
+            date.isoformat()
+        )  # Format here, because isoformat is mostly ignored, except here
 
         changed_observations = cls.request(method="get", url=url, params=params)
         observations = []

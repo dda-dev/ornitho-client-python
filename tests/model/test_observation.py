@@ -379,7 +379,7 @@ class TestObservation(TestCase):
             method="get",
             url="observations/diff",
             params={
-                "date": date,
+                "date": date.replace(microsecond=0).isoformat(),
                 "modification_type": ModificationType.ALL.value,
                 "id_taxo_group": 1,
                 "only_protocol": "CBBM",
@@ -403,5 +403,11 @@ class TestObservation(TestCase):
         Observation.request.assert_called_with(
             method="get",
             url="observations/diff",
-            params={"date": date, "only_protocol": "CBBM-Mock",},
+            params={
+                "date": date.replace(microsecond=0)
+                .astimezone(datetime.now().astimezone().tzinfo)
+                .replace(tzinfo=None)
+                .isoformat(),
+                "only_protocol": "CBBM-Mock",
+            },
         )

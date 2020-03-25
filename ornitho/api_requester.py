@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import date, datetime
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 from requests import Response
@@ -214,17 +214,34 @@ class APIRequester(object):
         if params:
             for key, value in params.items():
                 if isinstance(value, datetime):
+                    value = value.replace(microsecond=0)
                     if value.tzinfo:
-                        abs_url = f"{abs_url}&{key}={value.replace(microsecond=0).astimezone(datetime.now().astimezone().tzinfo).replace(tzinfo=None).isoformat()}"
-                    else:
-                        abs_url = f"{abs_url}&{key}={value.replace(microsecond=0).isoformat()}"
-                else:
-                    abs_url = f"{abs_url}&{key}={value}"
+                        value = value.astimezone(
+                            datetime.now().astimezone().tzinfo
+                        ).replace(tzinfo=None)
+                    # ISO Format (especially time) is accepted but mostly ignored – only known exception is /observations/diff
+                    # body[key] = value.replace(microsecond=0).isoformat()
+                    # value = value.isoformat()
+                    value = value.strftime("%d.%m.%Y")
+                    params[key] = value
+                elif isinstance(value, date):
+                    value = value.strftime("%d.%m.%Y")
+                    params[key] = value
+                abs_url = f"{abs_url}&{key}={value}"
 
         if body:
             for key, value in body.items():
                 if isinstance(value, datetime):
-                    body[key] = value.replace(microsecond=0).isoformat()
+                    # ISO Format (especially time) is accepted but mostly ignored
+                    # body[key] = value.replace(microsecond=0).isoformat()
+                    value = value.replace(microsecond=0)
+                    if value.tzinfo:
+                        value = value.astimezone(
+                            datetime.now().astimezone().tzinfo
+                        ).replace(tzinfo=None)
+                    body[key] = value.strftime("%d.%m.%Y")
+                elif isinstance(value, date):
+                    body[key] = value.strftime("%d.%m.%Y")
 
         data = json.dumps(body) if body else None
 
