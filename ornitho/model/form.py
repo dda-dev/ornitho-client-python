@@ -138,9 +138,11 @@ class Form(BaseModel):
             and "waterbird_conditions" in self._raw_data["protocol"]
         ):
             if type(self._raw_data["protocol"]["waterbird_conditions"]) is dict:
-                return self._raw_data["protocol"]["waterbird_conditions"]["@id"]
+                return self._raw_data["protocol"]["waterbird_conditions"]["@id"].split(
+                    ","
+                )[0]
             else:
-                return self._raw_data["protocol"]["waterbird_conditions"]
+                return self._raw_data["protocol"]["waterbird_conditions"].split(",")[0]
         return None
 
     @property
@@ -150,9 +152,11 @@ class Form(BaseModel):
             and "waterbird_coverage" in self._raw_data["protocol"]
         ):
             if type(self._raw_data["protocol"]["waterbird_coverage"]) is dict:
-                return self._raw_data["protocol"]["waterbird_coverage"]["@id"]
+                return self._raw_data["protocol"]["waterbird_coverage"]["@id"].split(
+                    ","
+                )[0]
             else:
-                return self._raw_data["protocol"]["waterbird_coverage"]
+                return self._raw_data["protocol"]["waterbird_coverage"].split(",")[0]
         return None
 
     @property
@@ -162,9 +166,11 @@ class Form(BaseModel):
             and "waterbird_optical" in self._raw_data["protocol"]
         ):
             if type(self._raw_data["protocol"]["waterbird_optical"]) is dict:
-                return self._raw_data["protocol"]["waterbird_optical"]["@id"]
+                return self._raw_data["protocol"]["waterbird_optical"]["@id"].split(
+                    ","
+                )[0]
             else:
-                return self._raw_data["protocol"]["waterbird_optical"]
+                return self._raw_data["protocol"]["waterbird_optical"].split(",")[0]
         return None
 
     @property
@@ -174,9 +180,11 @@ class Form(BaseModel):
             and "waterbird_countmethod" in self._raw_data["protocol"]
         ):
             if type(self._raw_data["protocol"]["waterbird_countmethod"]) is dict:
-                return self._raw_data["protocol"]["waterbird_countmethod"]["@id"]
+                return self._raw_data["protocol"]["waterbird_countmethod"]["@id"].split(
+                    ","
+                )[0]
             else:
-                return self._raw_data["protocol"]["waterbird_countmethod"]
+                return self._raw_data["protocol"]["waterbird_countmethod"].split(",")[0]
         return None
 
     @property
@@ -186,9 +194,9 @@ class Form(BaseModel):
             and "waterbird_ice" in self._raw_data["protocol"]
         ):
             if type(self._raw_data["protocol"]["waterbird_ice"]) is dict:
-                return self._raw_data["protocol"]["waterbird_ice"]["@id"]
+                return self._raw_data["protocol"]["waterbird_ice"]["@id"].split(",")[0]
             else:
-                return self._raw_data["protocol"]["waterbird_ice"]
+                return self._raw_data["protocol"]["waterbird_ice"].split(",")[0]
         return None
 
     @property
@@ -198,9 +206,11 @@ class Form(BaseModel):
             and "waterbird_snowcover" in self._raw_data["protocol"]
         ):
             if type(self._raw_data["protocol"]["waterbird_snowcover"]) is dict:
-                return self._raw_data["protocol"]["waterbird_snowcover"]["@id"]
+                return self._raw_data["protocol"]["waterbird_snowcover"]["@id"].split(
+                    ","
+                )[0]
             else:
-                return self._raw_data["protocol"]["waterbird_snowcover"]
+                return self._raw_data["protocol"]["waterbird_snowcover"].split(",")[0]
         return None
 
     @property
@@ -210,9 +220,11 @@ class Form(BaseModel):
             and "waterbird_waterlevel" in self._raw_data["protocol"]
         ):
             if type(self._raw_data["protocol"]["waterbird_waterlevel"]) is dict:
-                return self._raw_data["protocol"]["waterbird_waterlevel"]["@id"]
+                return self._raw_data["protocol"]["waterbird_waterlevel"]["@id"].split(
+                    ","
+                )[0]
             else:
-                return self._raw_data["protocol"]["waterbird_waterlevel"]
+                return self._raw_data["protocol"]["waterbird_waterlevel"].split(",")[0]
         return None
 
     @property

@@ -153,7 +153,7 @@ class Observation(ListableModel, SearchableModel):
         atlas_code = (
             None
             if "atlas_code" not in self._raw_data["observers"][0]
-            else self._raw_data["observers"][0]["atlas_code"]["@id"]
+            else self._raw_data["observers"][0]["atlas_code"]["@id"].split("_")[1]
             if type(self._raw_data["observers"][0]["atlas_code"]) is dict
             else self._raw_data["observers"][0]["atlas_code"]
         )
