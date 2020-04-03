@@ -2,10 +2,10 @@ from unittest import TestCase
 from unittest.mock import Mock
 from urllib.parse import parse_qs, urlsplit
 
-from ornitho import AuthenticationException
+from ornitho import AuthenticationException, ContentTypeException
 
 
-class TestAPIException(TestCase):
+class TestAPIHttpException(TestCase):
     """
     Error tests
     """
@@ -50,3 +50,38 @@ class TestAPIException(TestCase):
 
     def test_body(self):
         self.assertEqual(self.mock_response.text, self.exception.body)
+
+
+class TestContentTypeException(TestCase):
+    """
+    Error tests
+    """
+
+    def setUp(self):
+        self.mock_response = Mock()
+        self.mock_response.status_code = 200
+        self.mock_response.reason = "OK"
+        self.mock_response.text = "Weird content!"
+        self.mock_response.request.url = (
+            "https://www.foo.bar/api/test?param=1&user_email=***&user_pw=***"
+        )
+        self.mock_response.request.body = "Request body"
+        self.mock_response.headers = {"Content-Type": "application/weird"}
+        self.exception = ContentTypeException(self.mock_response)
+
+    def test_str(self):
+        self.assertEqual(
+            f"Unhandled Content-Typ '{self.mock_response.headers['Content-Type']}' received! Received body: {self.mock_response.text}",
+            self.exception.__str__(),
+        )
+
+    def test_repr(self):
+        self.assertEqual(
+            f"{self.exception.__class__.__name__}(http_status={self.mock_response.status_code}, "
+            f"reason='{self.mock_response.reason}', body='{self.mock_response.text}', "
+            f"path='{urlsplit(self.mock_response.request.url).path}', "
+            f"query='{parse_qs(urlsplit(self.mock_response.request.url).query)}', "
+            f"request_body='{self.mock_response.request.body}'), "
+            f"content_type={self.mock_response.headers['Content-Type']}",
+            self.exception.__repr__(),
+        )

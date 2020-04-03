@@ -264,14 +264,10 @@ class APIRequester(object):
                 raw_response.headers["Content-Type"]
                 == "application/json; charset=utf-8"
             ):
-                return json.loads(raw_response.content.decode("utf-8")), pagination_key
+                return json.loads(raw_response.text), pagination_key
             elif raw_response.headers["Content-Type"] == "application/pdf":
                 return raw_response.content, pagination_key
             else:
-                raise api_exception.ContentTypeException(
-                    f"Unhandled Content-Typ '{raw_response.headers['Content-Type']}' received!"
-                )
+                raise api_exception.ContentTypeException(raw_response)
         else:
-            raise api_exception.ContentTypeException(
-                f"Received header does not contain Content-Typ information!"
-            )
+            raise api_exception.ContentTypeException(raw_response)

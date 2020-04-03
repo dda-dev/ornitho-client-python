@@ -15,6 +15,7 @@ from ornitho.api_exception import (
     APIException,
     APIHttpException,
     AuthenticationException,
+    ContentTypeException,
     GatewayTimeoutException,
 )
 from ornitho.api_requester import APIRequester

@@ -166,7 +166,7 @@ class TestAPIRequester(TestCase):
                     "Content-Type": "application/json; charset=utf-8",
                     "Content-Length": 23,
                 },
-                content=b'{"data": [{"id": "1"}]}',
+                text='{"data": [{"id": "1"}]}',
             )
         )
         response, pk = self.requester.request_raw(
@@ -187,7 +187,7 @@ class TestAPIRequester(TestCase):
                     "Content-Type": "application/json; charset=utf-8",
                     "Content-Length": 23,
                 },
-                content=b'{"data": [{"id": "1"}]}',
+                text='{"data": [{"id": "1"}]}',
             )
         )
         response, pk = self.requester.request_raw(
@@ -222,11 +222,12 @@ class TestAPIRequester(TestCase):
             return_value=Mock(
                 status_code=200,
                 headers={"Content-Type": "application/foo", "Content-Length": 23},
-                content=b'{"data": [{"id": "1"}]}',
+                cotent=b'{"data": [{"id": "1"}]}',
             )
         )
         self.assertRaises(
-            APIException, lambda: self.requester.request_raw(method="post", url="test"),
+            APIHttpException,
+            lambda: self.requester.request_raw(method="post", url="test"),
         )
 
         # Case 6: No content type received
@@ -234,7 +235,7 @@ class TestAPIRequester(TestCase):
             return_value=Mock(
                 status_code=200,
                 headers={"Content-Length": 23},
-                content=b'{"data": [{"id": "1"}]}',
+                text=b'{"data": [{"id": "1"}]}',
             )
         )
         self.assertRaises(
@@ -250,7 +251,7 @@ class TestAPIRequester(TestCase):
                     "Content-Type": "application/json; charset=utf-8",
                     "Content-Length": 23,
                 },
-                content=b'{"data": [{"id": "1"}]}',
+                text='{"data": [{"id": "1"}]}',
             )
         )
         test_date = datetime.now().date()
@@ -275,7 +276,7 @@ class TestAPIRequester(TestCase):
                     "Content-Type": "application/json; charset=utf-8",
                     "Content-Length": 23,
                 },
-                content=b'{"data": [{"id": "1"}]}',
+                text='{"data": [{"id": "1"}]}',
             )
         )
         test_date = datetime.now()
@@ -300,7 +301,7 @@ class TestAPIRequester(TestCase):
                     "Content-Type": "application/json; charset=utf-8",
                     "Content-Length": 23,
                 },
-                content=b'{"data": [{"id": "1"}]}',
+                text='{"data": [{"id": "1"}]}',
             )
         )
         test_date = datetime.now().date()
@@ -325,7 +326,7 @@ class TestAPIRequester(TestCase):
                     "Content-Type": "application/json; charset=utf-8",
                     "Content-Length": 23,
                 },
-                content=b'{"data": [{"id": "1"}]}',
+                text='{"data": [{"id": "1"}]}',
             )
         )
         test_date = datetime.now(pytz.timezone("Europe/Berlin"))
@@ -350,7 +351,7 @@ class TestAPIRequester(TestCase):
                     "Content-Type": "application/json; charset=utf-8",
                     "Content-Length": 23,
                 },
-                content=b'{"data": [{"id": "1"}]}',
+                text='{"data": [{"id": "1"}]}',
             )
         )
         test_date = datetime.now()
@@ -377,7 +378,7 @@ class TestAPIRequester(TestCase):
                     "Content-Type": "application/json; charset=utf-8",
                     "Content-Length": 23,
                 },
-                content=b'{"data": [{"id": "1"}]}',
+                text='{"data": [{"id": "1"}]}',
             )
         )
         test_date = datetime.now(pytz.timezone("Europe/Berlin"))

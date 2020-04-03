@@ -7,16 +7,12 @@ class APIException(Exception):
     """Base API exception class"""
 
 
-class ContentTypeException(APIException):
-    """Content Type exception"""
-
-
 class APIHttpException(APIException):
     """HTTP exception class"""
 
     def __init__(self, response: Response) -> None:
         """API Exception constructor"""
-        super(APIHttpException, self).__init__(response)
+        super().__init__(response)
         self.response: Response = response
 
     def __str__(self) -> str:
@@ -76,3 +72,20 @@ class AuthenticationException(APIHttpException):
 
 class GatewayTimeoutException(APIHttpException):
     """Exception class indicating a gateway timeout error"""
+
+
+class ContentTypeException(APIHttpException):
+    """Content Type exception"""
+
+    def __str__(self) -> str:
+        """Readable string representation"""
+        return f"Unhandled Content-Typ '{self.content_type}' received! Received body: {self.body}"
+
+    def __repr__(self) -> str:
+        """Unambiguous string representation"""
+        return f"{super().__repr__()}, content_type={self.content_type}"
+
+    @property
+    def content_type(self) -> str:
+        """Path of the failed request"""
+        return self.response.headers["Content-Type"]
