@@ -1,3 +1,4 @@
+from datetime import date, datetime, time
 from typing import List, Optional
 
 from ornitho.api_exception import APIException
@@ -48,12 +49,30 @@ class Form(BaseModel):
         return self._raw_data["id_form_universal"]
 
     @property
-    def time_start(self) -> str:
-        return self._raw_data["time_start"]
+    def day(self) -> date:
+        return date.fromtimestamp(
+            int(self._raw_data["sightings"][0]["date"]["@timestamp"])
+        )
 
     @property
-    def time_stop(self) -> str:
-        return self._raw_data["time_stop"]
+    def time_start(self) -> time:
+        splitted = self._raw_data["time_start"].split(":")
+        return time(
+            hour=int(splitted[0]),
+            minute=int(splitted[1]),
+            second=int(splitted[2]),
+            tzinfo=datetime.now().astimezone().tzinfo,
+        )
+
+    @property
+    def time_stop(self) -> time:
+        splitted = self._raw_data["time_stop"].split(":")
+        return time(
+            hour=int(splitted[0]),
+            minute=int(splitted[1]),
+            second=int(splitted[2]),
+            tzinfo=datetime.now().astimezone().tzinfo,
+        )
 
     @property
     def full_form(self) -> bool:

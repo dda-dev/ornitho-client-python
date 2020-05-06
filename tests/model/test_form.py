@@ -1,3 +1,4 @@
+from datetime import date
 from unittest import TestCase, mock
 
 import ornitho
@@ -104,14 +105,14 @@ class TestForm(TestCase):
     def test_refresh(self, mock_requester):
         class MockRequesterClass:
             def request_raw(self, method, url, body):
-                return {"data": {"forms": [{"time_start": "NEW"}]}}, None
+                return {"data": {"forms": [{"time_start": "01:01:01"}]}}, None
 
         def enter_requester(requester):
             return MockRequesterClass()
 
         mock_requester.return_value.__enter__ = enter_requester
         form = self.form.refresh()
-        self.assertEqual("NEW", form.time_start)
+        self.assertEqual("01:01:01", form.time_start.strftime("%H:%M:%S"))
 
     @mock.patch("ornitho.model.form.APIRequester")
     def test_refresh_exception(self, mock_requester):
@@ -132,14 +133,22 @@ class TestForm(TestCase):
             self.form_json["id_form_universal"], self.form.id_form_universal,
         )
 
+    def test_day(self):
+        self.assertEqual(
+            date.fromtimestamp(
+                int(self.form_json["sightings"][0]["date"]["@timestamp"])
+            ),
+            self.form.day,
+        )
+
     def test_time_start(self):
         self.assertEqual(
-            self.form_json["time_start"], self.form.time_start,
+            self.form_json["time_start"], self.form.time_start.strftime("%H:%M:%S"),
         )
 
     def test_time_stop(self):
         self.assertEqual(
-            self.form_json["time_stop"], self.form.time_stop,
+            self.form_json["time_stop"], self.form.time_stop.strftime("%H:%M:%S"),
         )
 
     def test_full_form(self):
