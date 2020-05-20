@@ -1,10 +1,10 @@
 from datetime import date, datetime, time
 from typing import List, Optional
 
+import ornitho.model.observation
 from ornitho.api_exception import APIException
 from ornitho.api_requester import APIRequester
 from ornitho.model.abstract import BaseModel
-from ornitho.model.observation import Observation
 
 
 class Form(BaseModel):
@@ -16,7 +16,7 @@ class Form(BaseModel):
         :type id_: int
         """
         super(Form, self).__init__(id_)
-        self._observations: Optional[List[Observation]] = None
+        self._observations: Optional[List[ornitho.model.observation.Observation]] = None
 
     def instance_url(self) -> str:
         """ Returns url for this instance
@@ -93,6 +93,10 @@ class Form(BaseModel):
     @property
     def id_form_mobile(self) -> str:
         return self._raw_data["id_form_mobile"]
+
+    @property
+    def comment(self) -> Optional[str]:
+        return self._raw_data["comment"] if "comment" in self._raw_data else None
 
     @property
     def protocol_name(self) -> Optional[str]:
@@ -268,10 +272,10 @@ class Form(BaseModel):
         return None
 
     @property
-    def observations(self) -> List[Observation]:
+    def observations(self):
         if self._observations is None:
             self._observations = [
-                Observation.create_from(observation)
+                ornitho.model.observation.Observation.create_from(observation)
                 for observation in self._raw_data["sightings"]
             ]
         return self._observations

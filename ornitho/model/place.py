@@ -1,8 +1,15 @@
+from typing import Optional
+
 from ornitho.model.abstract import ListableModel
+from ornitho.model.local_admin_unit import LocalAdminUnit
 
 
 class Place(ListableModel):
     ENDPOINT: str = "places"
+
+    def __init__(self, id_: int) -> None:
+        super(Place, self).__init__(id_)
+        self._local_admin_unit: Optional[LocalAdminUnit] = None
 
     @property
     def id_commune(self) -> int:
@@ -44,3 +51,13 @@ class Place(ListableModel):
     @property
     def loc_precision(self) -> int:
         return int(self._raw_data["loc_precision"])
+
+    @property
+    def local_admin_unit(self) -> LocalAdminUnit:
+        if self._local_admin_unit is None:
+            self._local_admin_unit = LocalAdminUnit.get(self.id_commune)
+        return self._local_admin_unit
+
+    @property
+    def commune(self) -> LocalAdminUnit:
+        return self.local_admin_unit

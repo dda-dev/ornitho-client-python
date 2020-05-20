@@ -26,6 +26,7 @@ from ornitho.model import (
     Field,
     FieldOption,
     Form,
+    LocalAdminUnit,
     MapLayer,
     Media,
     ModificationType,
@@ -36,6 +37,7 @@ from ornitho.model import (
     Site,
     Species,
     TaxonomicGroup,
+    TerritorialUnit,
 )
 
 __version__ = "0.0.1"

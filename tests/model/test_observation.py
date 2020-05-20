@@ -54,6 +54,8 @@ class TestObservation(TestCase):
                     "estimation_code": "EXACT_VALUE",
                     "count": "13",
                     "flight_number": "1",
+                    "admin_hidden": "1",
+                    "admin_hidden_type": "question",
                     "comment": "comment",
                     "hidden_comment": "hidden_comment",
                     "source": "WEB",
@@ -123,6 +125,12 @@ class TestObservation(TestCase):
             self.observation.precision,
         )
 
+    def test_estimation_code(self):
+        self.assertEqual(
+            self.observation_json["observers"][0]["estimation_code"],
+            self.observation.estimation_code,
+        )
+
     def test_id_species(self):
         self.assertEqual(
             int(self.observation_json["species"]["@id"]), self.observation.id_species
@@ -137,6 +145,15 @@ class TestObservation(TestCase):
         self.assertEqual(
             int(self.observation_json["observers"][0]["flight_number"]),
             self.observation.flight_number,
+        )
+
+    def test_admin_hidden(self):
+        self.assertTrue(self.observation.admin_hidden,)
+
+    def test_admin_hidden_type(self):
+        self.assertEqual(
+            self.observation_json["observers"][0]["admin_hidden_type"],
+            self.observation.admin_hidden_type,
         )
 
     def test_source(self):
@@ -322,6 +339,13 @@ class TestObservation(TestCase):
         place = self.observation.place
         mock_place.get.assert_called_with(self.observation.id_place)
         self.assertEqual(place, "Place retrieved")
+
+    @mock.patch("ornitho.model.form.Form")
+    def test_form(self, mock_form):
+        mock_form.get.return_value = "Form retrieved"
+        form = self.observation.form
+        mock_form.get.assert_called_with(self.observation.id_form)
+        self.assertEqual(form, "Form retrieved")
 
     @mock.patch("ornitho.model.observation.FieldOption")
     def test_resting_habitat(self, mock_field_option):

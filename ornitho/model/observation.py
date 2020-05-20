@@ -2,6 +2,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, Union
 
+import ornitho.model.form
 from ornitho.model.abstract import BaseModel, ListableModel, SearchableModel
 from ornitho.model.detail import Detail
 from ornitho.model.field_option import FieldOption
@@ -34,6 +35,7 @@ class Observation(ListableModel, SearchableModel):
         self._species: Optional[Species] = None
         self._observer: Optional[Observer] = None
         self._place: Optional[Place] = None
+        self._form: Optional[ornitho.model.form.Form] = None
         self._resting_habitat: Optional[FieldOption] = None
         self._observation_detail: Optional[FieldOption] = None
         self._medias: Optional[List[Media]] = None
@@ -86,6 +88,14 @@ class Observation(ListableModel, SearchableModel):
         return self._raw_data["observers"][0]["precision"]
 
     @property
+    def estimation_code(self) -> Optional[str]:
+        return (
+            self._raw_data["observers"][0]["estimation_code"]
+            if "estimation_code" in self._raw_data["observers"][0]
+            else None
+        )
+
+    @property
     def id_species(self) -> int:
         return int(self._raw_data["species"]["@id"])
 
@@ -98,6 +108,23 @@ class Observation(ListableModel, SearchableModel):
         return (
             int(self._raw_data["observers"][0]["flight_number"])
             if "flight_number" in self._raw_data["observers"][0]
+            else None
+        )
+
+    @property
+    def admin_hidden(self) -> bool:
+        return (
+            False
+            if "admin_hidden" not in self._raw_data["observers"][0]
+            or self._raw_data["observers"][0]["admin_hidden"] == "0"
+            else True
+        )
+
+    @property
+    def admin_hidden_type(self) -> Optional[str]:
+        return (
+            self._raw_data["observers"][0]["admin_hidden_type"]
+            if "admin_hidden_type" in self._raw_data["observers"][0]
             else None
         )
 
@@ -243,6 +270,12 @@ class Observation(ListableModel, SearchableModel):
         if self._place is None:
             self._place = Place.get(self.id_place)
         return self._place
+
+    @property
+    def form(self):
+        if self._form is None:
+            self._form = ornitho.model.form.Form.get(self.id_form)
+        return self._form
 
     @property
     def resting_habitat(self) -> Optional[FieldOption]:

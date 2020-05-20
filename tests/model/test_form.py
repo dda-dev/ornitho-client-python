@@ -24,6 +24,7 @@ class TestForm(TestCase):
             "lat": "52.532542",
             "lon": "13.257572",
             "id_form_mobile": "40232_1583395608201_1",
+            "comment": "Begehung 3, 7 Grad , heiter",
             "protocol": {
                 "protocol_name": "CBBM",
                 "site_code": "DDA-1-Test",
@@ -174,6 +175,11 @@ class TestForm(TestCase):
     def test_id_form_mobile(self):
         self.assertEqual(
             self.form_json["id_form_mobile"], self.form.id_form_mobile,
+        )
+
+    def test_comment(self):
+        self.assertEqual(
+            self.form_json["comment"], self.form.comment,
         )
 
     def test_protocol_name(self):
@@ -401,7 +407,7 @@ class TestForm(TestCase):
         form_json = {"@id": "1"}
         self.assertIsNone(Form.create_from(form_json).occupied_nest_number)
 
-    @mock.patch("ornitho.model.form.Observation")
+    @mock.patch("ornitho.model.observation.Observation")
     def test_observations(self, mock_observation):
         mock_observation.create_from.return_value = "Observation"
         observations = self.form.observations

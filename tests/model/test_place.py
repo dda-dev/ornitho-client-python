@@ -1,4 +1,4 @@
-from unittest import TestCase
+from unittest import TestCase, mock
 
 import ornitho
 from ornitho.model.place import Place
@@ -63,3 +63,17 @@ class TestPlace(TestCase):
         self.assertEqual(
             int(self.place_json["loc_precision"]), self.place.loc_precision
         )
+
+    @mock.patch("ornitho.model.place.LocalAdminUnit")
+    def test_local_admin_unit(self, mock_local_admin_unit):
+        mock_local_admin_unit.get.return_value = "Local Admin Unit retrieved"
+        local_admin_unit = self.place.local_admin_unit
+        mock_local_admin_unit.get.assert_called_with(self.place.id_commune)
+        self.assertEqual(local_admin_unit, "Local Admin Unit retrieved")
+
+    @mock.patch("ornitho.model.place.LocalAdminUnit")
+    def test_commune(self, mock_local_admin_unit):
+        mock_local_admin_unit.get.return_value = "Local Admin Unit retrieved"
+        local_admin_unit = self.place.commune
+        mock_local_admin_unit.get.assert_called_with(self.place.id_commune)
+        self.assertEqual(local_admin_unit, "Local Admin Unit retrieved")

@@ -18,6 +18,16 @@ The following "ornitho controllers / calls" are implemented:
   - List species
   - Get a single species
 
+- territorial units
+
+  - List territorial units
+  - Get a single territorial unit
+
+- local admin units
+
+  - List local admin units
+  - Get a single local admin unit
+
 - places
 
   - List places
@@ -58,16 +68,9 @@ The following "ornitho controllers / calls" are implemented:
 
 Not yet Implemented:
 
-- territorial units
-
-  - List territorial units
-  - Get a single territorial unit
-
 - local admin units
 
-  - List local admin units
   - Search local admin units
-  - Get a single local admin unit
 
 - observers
 
