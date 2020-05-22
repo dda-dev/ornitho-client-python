@@ -80,12 +80,17 @@ class TestAPIRequester(TestCase):
         # Case 3: data is dict
         self.requester.request_raw = MagicMock(
             return_value=[
-                {"data": {"sightings": [], "forms": [{"sightings": [{"id": "1"}]}]}},
+                {
+                    "data": {
+                        "sightings": [],
+                        "forms": [{"full_form": "1", "sightings": [{"id": "1"}]}],
+                    }
+                },
                 "pagination_key",
             ]
         )
         response, pk = self.requester.request(method="post", url="test")
-        self.assertEqual(response, [{"id": "1"}])
+        self.assertEqual(response, [{"form": {"full_form": "1"}, "id": "1"}])
         self.assertEqual(pk, "pagination_key")
 
         # Case 4: request all

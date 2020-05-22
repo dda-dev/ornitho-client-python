@@ -17,6 +17,7 @@ ornitho.api_base = "ORNITHO_API_BASE"
 class TestObservation(TestCase):
     def setUp(self):
         self.observation_json = {
+            "form": {"@id": "1", "full_form": "1"},
             "date": {"@notime": "1", "@offset": "3600", "@timestamp": "1573858800"},
             "species": {
                 "@id": "94",
@@ -37,6 +38,7 @@ class TestObservation(TestCase):
                 {
                     "@id": "10156",
                     "@uid": "53742",
+                    "id_form": "1",
                     "traid": "10156",
                     "id_sighting": "43050307",
                     "id_universal": "28_43050307",
@@ -117,7 +119,10 @@ class TestObservation(TestCase):
         )
 
     def test_id_form(self):
-        self.assertEqual(None, self.observation.id_form)
+        self.assertEqual(
+            int(self.observation_json["observers"][0]["id_form"]),
+            self.observation.id_form,
+        )
 
     def test_precision(self):
         self.assertEqual(
@@ -340,12 +345,9 @@ class TestObservation(TestCase):
         mock_place.get.assert_called_with(self.observation.id_place)
         self.assertEqual(place, "Place retrieved")
 
-    @mock.patch("ornitho.model.form.Form")
-    def test_form(self, mock_form):
-        mock_form.get.return_value = "Form retrieved"
+    def test_form(self):
         form = self.observation.form
-        mock_form.get.assert_called_with(self.observation.id_form)
-        self.assertEqual(form, "Form retrieved")
+        self.assertEqual(form._raw_data, self.observation_json["form"])
 
     @mock.patch("ornitho.model.observation.FieldOption")
     def test_resting_habitat(self, mock_field_option):

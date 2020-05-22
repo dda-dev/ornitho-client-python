@@ -50,9 +50,7 @@ class Form(BaseModel):
 
     @property
     def day(self) -> date:
-        return date.fromtimestamp(
-            int(self._raw_data["sightings"][0]["date"]["@timestamp"])
-        )
+        return self.observations[0].timing.date()
 
     @property
     def time_start(self) -> time:
@@ -273,7 +271,9 @@ class Form(BaseModel):
 
     @property
     def observations(self):
-        if self._observations is None:
+        if "sightings" not in self._raw_data:
+            self.refresh()
+        if self._observations is None and "sightings" in self._raw_data:
             self._observations = [
                 ornitho.model.observation.Observation.create_from(observation)
                 for observation in self._raw_data["sightings"]

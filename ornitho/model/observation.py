@@ -273,8 +273,9 @@ class Observation(ListableModel, SearchableModel):
 
     @property
     def form(self):
-        if self._form is None:
-            self._form = ornitho.model.form.Form.get(self.id_form)
+        if self._form is None and self.id_form is not None:
+            self._form = ornitho.model.form.Form.create_from(self._raw_data["form"])
+            # self._form = ornitho.model.form.Form.get(self.id_form)
         return self._form
 
     @property

@@ -1,5 +1,6 @@
 from datetime import date
 from unittest import TestCase, mock
+from unittest.mock import MagicMock
 
 import ornitho
 from ornitho import Form
@@ -409,7 +410,14 @@ class TestForm(TestCase):
 
     @mock.patch("ornitho.model.observation.Observation")
     def test_observations(self, mock_observation):
+        self.form.refresh = MagicMock(return_value=self.form_json)
         mock_observation.create_from.return_value = "Observation"
         observations = self.form.observations
         mock_observation.create_from.assert_called_with(self.form_json["sightings"][0])
+        self.assertEqual(observations, ["Observation"])
+
+        del self.form_json["sightings"]
+        self.form.refresh = MagicMock(return_value=self.form_json)
+        mock_observation.create_from.return_value = "Observation"
+        observations = self.form.observations
         self.assertEqual(observations, ["Observation"])

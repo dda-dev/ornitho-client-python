@@ -1,4 +1,5 @@
 import json
+from copy import deepcopy
 from datetime import date, datetime
 from typing import Any, Dict, List, Optional, Tuple, Union
 
@@ -109,11 +110,15 @@ class APIRequester(object):
             data += responds
         elif "data" in responds.keys():
             if isinstance(responds["data"], dict):
-                if "sightings" in responds["data"].keys():
+                if "sightings" in responds["data"]:
                     data += responds["data"]["sightings"]
-                if "forms" in responds["data"].keys():
+                if "forms" in responds["data"]:
                     for form in responds["data"]["forms"]:
-                        data += form["sightings"]
+                        form_copy_wihtout_sightings = deepcopy(form)
+                        del form_copy_wihtout_sightings["sightings"]
+                        for sighting in form["sightings"]:
+                            sighting["form"] = form_copy_wihtout_sightings
+                            data.append(sighting)
             else:
                 data += responds["data"]
         else:
