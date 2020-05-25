@@ -69,7 +69,7 @@ class APIRequester(object):
         method: str,
         url: str,
         pagination_key: Optional[str] = None,
-        short_version: Optional[bool] = True,
+        short_version: Optional[bool] = False,
         request_all: Optional[bool] = False,
         params: Optional[Dict[str, Any]] = None,
         body: Optional[Dict[str, Any]] = None,
@@ -81,7 +81,7 @@ class APIRequester(object):
         :param url: API URL to call
         :param pagination_key: Additional pagination key, to get the next page
         :param short_version: Indicates, if a short version with foreign keys should be returned by the API.
-            Default: 'True'
+            Default: 'False'
         :param request_all:  Indicates, if all pages should be returned. May result in many API calls. Default: 'False'
         :param params: Additional URL parameters.
         :param body: Request body
@@ -179,7 +179,7 @@ class APIRequester(object):
         method: str,
         url: str,
         pagination_key: Optional[str] = None,
-        short_version: Optional[bool] = True,
+        short_version: Optional[bool] = False,
         params: Dict[str, Any] = None,
         body: Dict[str, Any] = None,
     ) -> Tuple[Any, Any]:
@@ -188,7 +188,7 @@ class APIRequester(object):
         :param url: API URL to call
         :param pagination_key: Additional pagination key, to get the next page
         :param short_version: Indicates, if a short version with foreign keys should be returned by the API.
-            Default: 'True'
+            Default: 'False'
         :param params: Additional URL parameters.
         :param body: Request body
         :type method: str

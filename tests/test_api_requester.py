@@ -217,7 +217,7 @@ class TestAPIRequester(TestCase):
             )
         )
         response, pk = self.requester.request_raw(
-            method="post", url="test", pagination_key="key", body={"test": "filter"}
+            method="post", url="test", pagination_key="key", body={"test": "filter"}, short_version=True,
         )
         self.assertEqual(b"PDF", response)
         self.assertEqual(pk, None)
@@ -261,7 +261,7 @@ class TestAPIRequester(TestCase):
         )
         test_date = datetime.now().date()
         response, pk = self.requester.request_raw(
-            method="get", url="test", pagination_key="key", params={"test": test_date},
+            method="get", url="test", pagination_key="key", params={"test": test_date}, short_version=True,
         )
         self.assertEqual({"data": [{"id": "1"}]}, response)
         self.assertEqual(pk, "new_key")
@@ -286,7 +286,7 @@ class TestAPIRequester(TestCase):
         )
         test_date = datetime.now()
         response, pk = self.requester.request_raw(
-            method="get", url="test", pagination_key="key", params={"test": test_date},
+            method="get", url="test", pagination_key="key", params={"test": test_date}, short_version=True
         )
         self.assertEqual({"data": [{"id": "1"}]}, response)
         self.assertEqual(pk, "new_key")
@@ -311,7 +311,7 @@ class TestAPIRequester(TestCase):
         )
         test_date = datetime.now().date()
         response, pk = self.requester.request_raw(
-            method="get", url="test", pagination_key="key", body={"test": test_date},
+            method="get", url="test", pagination_key="key", body={"test": test_date}, short_version=True,
         )
         self.assertEqual({"data": [{"id": "1"}]}, response)
         self.assertEqual(pk, "new_key")
@@ -336,7 +336,7 @@ class TestAPIRequester(TestCase):
         )
         test_date = datetime.now(pytz.timezone("Europe/Berlin"))
         response, pk = self.requester.request_raw(
-            method="get", url="test", pagination_key="key", params={"test": test_date},
+            method="get", url="test", pagination_key="key", params={"test": test_date}, short_version=True,
         )
         self.assertEqual({"data": [{"id": "1"}]}, response)
         self.assertEqual(pk, "new_key")
@@ -361,7 +361,7 @@ class TestAPIRequester(TestCase):
         )
         test_date = datetime.now()
         response, pk = self.requester.request_raw(
-            method="get", url="test", pagination_key="key", body={"test": test_date},
+            method="get", url="test", pagination_key="key", body={"test": test_date}, short_version=True,
         )
         self.assertEqual({"data": [{"id": "1"}]}, response)
         self.assertEqual(pk, "new_key")
@@ -388,7 +388,7 @@ class TestAPIRequester(TestCase):
         )
         test_date = datetime.now(pytz.timezone("Europe/Berlin"))
         response, pk = self.requester.request_raw(
-            method="get", url="test", pagination_key="key", body={"test": test_date},
+            method="get", url="test", pagination_key="key", body={"test": test_date}, short_version=True,
         )
         self.assertEqual({"data": [{"id": "1"}]}, response)
         self.assertEqual(pk, "new_key")
