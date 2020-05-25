@@ -3,6 +3,7 @@ from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import ornitho.model.form
+from ornitho import APIException
 from ornitho.model.abstract import BaseModel, ListableModel, SearchableModel
 from ornitho.model.detail import Detail
 from ornitho.model.field_option import FieldOption
@@ -42,6 +43,10 @@ class Observation(ListableModel, SearchableModel):
 
     @classmethod
     def create_from(cls, data: Dict[str, Any]) -> "Observation":
+        if len(data["observers"]) > 1:
+            raise APIException(
+                f"More than one observer in sightings json found!\n{data['observers']}"
+            )
         identifier: int = int(data["observers"][0]["id_sighting"])
         obj = cls(identifier)
         obj._raw_data = data

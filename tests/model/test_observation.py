@@ -5,7 +5,7 @@ from unittest.mock import MagicMock
 import pytz
 
 import ornitho
-from ornitho import Detail, ModificationType, Observation
+from ornitho import APIException, Detail, ModificationType, Observation
 
 ornitho.consumer_key = "ORNITHO_CONSUMER_KEY"
 ornitho.consumer_secret = "ORNITHO_CONSUMER_SECRET"
@@ -79,6 +79,11 @@ class TestObservation(TestCase):
         observation = Observation.create_from(self.observation_json)
         self.assertEqual(43050307, observation.id_)
         self.assertEqual(self.observation_json, observation._raw_data)
+
+        # Test Exception
+        self.assertRaises(
+            APIException, lambda: Observation.create_from({"observers": ["1", "2"]}),
+        )
 
     def test_id_observer(self):
         self.assertEqual(
