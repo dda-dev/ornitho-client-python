@@ -333,19 +333,13 @@ class TestObservation(TestCase):
         species = self.observation.species
         self.assertEqual(species._raw_data, self.observation_json["species"])
 
-    @mock.patch("ornitho.model.observation.Observer")
-    def test_observer(self, mock_observer):
-        mock_observer.get.return_value = "Observer retrieved"
+    def test_observer(self):
         observer = self.observation.observer
-        mock_observer.get.assert_called_with(self.observation.id_observer)
-        self.assertEqual(observer, "Observer retrieved")
+        self.assertEqual(observer._raw_data, self.observation_json["observers"][0])
 
-    @mock.patch("ornitho.model.observation.Place")
-    def test_place(self, mock_place):
-        mock_place.get.return_value = "Place retrieved"
+    def test_place(self):
         place = self.observation.place
-        mock_place.get.assert_called_with(self.observation.id_place)
-        self.assertEqual(place, "Place retrieved")
+        self.assertEqual(place._raw_data, self.observation_json["place"])
 
     def test_form(self):
         form = self.observation.form

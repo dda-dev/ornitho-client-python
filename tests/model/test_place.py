@@ -24,6 +24,7 @@ class TestPlace(TestCase):
             "is_private": "0",
             "place_type": "municipality",
             "loc_precision": "750",
+            "municipality": "municipality",
         }
         self.place = Place.create_from(self.place_json)
 
@@ -77,3 +78,14 @@ class TestPlace(TestCase):
         local_admin_unit = self.place.commune
         mock_local_admin_unit.get.assert_called_with(self.place.id_commune)
         self.assertEqual(local_admin_unit, "Local Admin Unit retrieved")
+
+    def test_municipality(self):
+        self.assertEqual(
+            self.place_json["municipality"], self.place.municipality
+        )
+
+    def test_county(self):
+        self.assertIsNone(self.place.county)
+
+    def test_country(self):
+        self.assertIsNone(self.place.country)

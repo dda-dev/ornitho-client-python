@@ -267,21 +267,23 @@ class Observation(ListableModel, SearchableModel):
     def observer(self) -> Observer:
         """ Observing user """
         if self._observer is None:
-            self._observer = Observer.get(self.id_observer)
+            # self._observer = Observer.get(self.id_observer)
+            self._observer = Observer.create_from(self._raw_data["observers"][0])
         return self._observer
 
     @property
     def place(self) -> Place:
         """ Place of the observation """
         if self._place is None:
-            self._place = Place.get(self.id_place)
+            # self._place = Place.get(self.id_place)
+            self._place = Place.create_from(self._raw_data["place"])
         return self._place
 
     @property
     def form(self):
         if self._form is None and self.id_form is not None:
-            self._form = ornitho.model.form.Form.create_from(self._raw_data["form"])
             # self._form = ornitho.model.form.Form.get(self.id_form)
+            self._form = ornitho.model.form.Form.create_from(self._raw_data["form"])
         return self._form
 
     @property
