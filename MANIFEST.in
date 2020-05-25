@@ -1,8 +1,0 @@
-# Miscellany files
-include LICENSE
-include README.md
-include Pipfile
-
-# Tests
-recursive-exclude tests *.pyc
-recursive-exclude tests *.pyo

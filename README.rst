@@ -143,6 +143,21 @@ Not yet Implemented:
   - List observer cache for a given polygon or group
   - List observer species cache for a given polygon or group
 
+Installing
+----------
+**Currently not published on pypi!**
+
+.. The project will be offered as a `Pypi
+   package <https://pypi.python.org/pypi/ornitho>`__, and using pip /
+   pipenv is the preferred way to install it. For this use the following
+   command:
+
+   ``$ pip install ornitho``
+
+Manual installation can be done with following command:
+
+``$ pip install .``
+
 Usage
 -----
 Before the client can be used  **consumer_key**, **consumer_secret**, **user_email**, **user_pw** and **api_base** must be set:
@@ -182,39 +197,11 @@ More examples can be found the `examples <https://github.com/dda-dev/ornitho-cli
 Prerequisites
 ~~~~~~~~~~~~~
 
-The project has been tested in the following versions of the
-interpreter:
+The project has been tested with the following python versions:
 
 - Python 3.6
 - Python 3.7
 - Python 3.8
-
-All other dependencies are indicated in the Pipfile.
-
-These can be installed with pipenv:
-
-``$ pipenv install``
-
-``$ pipenv install --dev``
-
-Installing
-~~~~~~~~~~
-**Currently not published on pypi!**
-
-.. The project will be offered as a `Pypi
-   package <https://pypi.python.org/pypi/ornitho>`__, and using pip /
-   pipenv is the preferred way to install it. For this use the following
-   command:
-
-   ``$ pip install ornitho``
-
-Manual installation can be done with following command:
-
-``$ python setup.py install``
-
-Used Libraries
---------------
-https://github.com/requests/requests-oauthlib
 
 Collaborate
 -----------
@@ -238,6 +225,10 @@ Testing
 The tests included with the project can be run with:
 
 ``$ pytest``
+
+or with a coverage report:
+
+``$ pytest --cov=ornitho tests/``
 
 To test all supported Python versions, use tox:
 
