@@ -329,12 +329,9 @@ class TestObservation(TestCase):
         obs_json = {"observers": [{"id_sighting": "44874562",}]}
         self.assertIsNone(Observation.create_from(obs_json).id_observation_detail)
 
-    @mock.patch("ornitho.model.observation.Species")
-    def test_species(self, mock_species):
-        mock_species.get.return_value = "Species retrieved"
+    def test_species(self):
         species = self.observation.species
-        mock_species.get.assert_called_with(self.observation.id_species)
-        self.assertEqual(species, "Species retrieved")
+        self.assertEqual(species._raw_data, self.observation_json["species"])
 
     @mock.patch("ornitho.model.observation.Observer")
     def test_observer(self, mock_observer):

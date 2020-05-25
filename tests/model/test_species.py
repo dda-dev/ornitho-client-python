@@ -71,7 +71,9 @@ class TestSpecies(TestCase):
         )
 
     def test_german_name(self):
-        self.assertEqual(self.species_json["german_name"], self.species.german_name)
+        self.assertEqual(
+            self.species_json["german_name"].replace("|", ""), self.species.german_name
+        )
 
     def test_german_name_plur(self):
         self.assertEqual(
@@ -104,3 +106,18 @@ class TestSpecies(TestCase):
         family = self.species.family
         mock_family.get.assert_called_with(self.species.sempach_id_family)
         self.assertEqual(family, "Family retrieved")
+
+    def test_taxonomy(self):
+        self.assertEqual(self.species.id_taxo_group, self.species.taxonomy)
+
+    def test_category(self):
+        self.assertEqual(self.species.category, self.species.category)
+
+    def test_name(self):
+        self.assertEqual(self.species.german_name, self.species.name)
+
+    def test_dda_id_species(self):
+        self.assertEqual(None, self.species.dda_id_species)
+
+    def test_dda_euring_id_species(self):
+        self.assertEqual(None, self.species.euring_id_species)

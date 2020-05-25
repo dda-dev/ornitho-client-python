@@ -97,3 +97,12 @@ class BaseModel(ABC):
         :rtype: str
         """
         return f"{self.ENDPOINT}/{self.id_}"
+
+
+def check_refresh(func):
+    def wrapper(self: T):
+        if func.__name__ not in self._raw_data:
+            self.refresh()
+        return func(self)
+
+    return wrapper

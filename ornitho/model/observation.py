@@ -259,7 +259,8 @@ class Observation(ListableModel, SearchableModel):
     def species(self) -> Species:
         """ Observed Species """
         if self._species is None:
-            self._species = Species.get(self.id_species)
+            # self._species = Species.get(self.id_species)
+            self._species = Species.create_from(self._raw_data["species"])
         return self._species
 
     @property
