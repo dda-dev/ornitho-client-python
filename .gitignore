@@ -72,5 +72,8 @@ out/
 # Pipenv
 Pipfile.lock
 
+# Poetry
+poetry.lock
+
 # mypy
 .mypy_cache/
