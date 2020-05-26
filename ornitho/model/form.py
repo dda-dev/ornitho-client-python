@@ -50,6 +50,8 @@ class Form(BaseModel):
 
     @property
     def day(self) -> date:
+        if "day" in self._raw_data:
+            return date.fromtimestamp(int(self._raw_data["day"]["@timestamp"]),)
         return self.observations[0].timing.date()
 
     @property

@@ -83,14 +83,30 @@ class TestAPIRequester(TestCase):
                 {
                     "data": {
                         "sightings": [],
-                        "forms": [{"full_form": "1", "sightings": [{"id": "1"}]}],
+                        "forms": [
+                            {
+                                "full_form": "1",
+                                "sightings": [
+                                    {"id": "1", "date": {"@timestamp": "1584918000"}}
+                                ],
+                            }
+                        ],
                     }
                 },
                 "pagination_key",
             ]
         )
         response, pk = self.requester.request(method="post", url="test")
-        self.assertEqual(response, [{"form": {"full_form": "1"}, "id": "1"}])
+        self.assertEqual(
+            response,
+            [
+                {
+                    "date": {"@timestamp": "1584918000"},
+                    "form": {"day": {"@timestamp": "1584918000"}, "full_form": "1"},
+                    "id": "1",
+                }
+            ],
+        )
         self.assertEqual(pk, "pagination_key")
 
         # Case 4: request all

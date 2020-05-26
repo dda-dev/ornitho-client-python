@@ -114,7 +114,9 @@ class APIRequester(object):
                     data += responds["data"]["sightings"]
                 if "forms" in responds["data"]:
                     for form in responds["data"]["forms"]:
+                        day = deepcopy(form["sightings"][0]["date"])
                         form_copy_wihtout_sightings = deepcopy(form)
+                        form_copy_wihtout_sightings["day"] = day
                         del form_copy_wihtout_sightings["sightings"]
                         for sighting in form["sightings"]:
                             sighting["form"] = form_copy_wihtout_sightings

@@ -136,6 +136,17 @@ class TestForm(TestCase):
         )
 
     def test_day(self):
+        form_json = {
+            "@id": "1",
+            "day": {"@timestamp": "1583396828"},
+        }
+        self.assertEqual(
+            date.fromtimestamp(
+                int(self.form_json["sightings"][0]["date"]["@timestamp"])
+            ),
+            Form.create_from(form_json).day,
+        )
+
         self.assertEqual(
             date.fromtimestamp(
                 int(self.form_json["sightings"][0]["date"]["@timestamp"])
