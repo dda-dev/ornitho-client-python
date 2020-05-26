@@ -80,9 +80,7 @@ class TestPlace(TestCase):
         self.assertEqual(local_admin_unit, "Local Admin Unit retrieved")
 
     def test_municipality(self):
-        self.assertEqual(
-            self.place_json["municipality"], self.place.municipality
-        )
+        self.assertEqual(self.place_json["municipality"], self.place.municipality)
 
     def test_county(self):
         self.assertIsNone(self.place.county)

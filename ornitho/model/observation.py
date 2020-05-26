@@ -39,6 +39,7 @@ class Observation(ListableModel, SearchableModel):
         self._form: Optional[ornitho.model.form.Form] = None
         self._resting_habitat: Optional[FieldOption] = None
         self._observation_detail: Optional[FieldOption] = None
+        self._atlas_code: Optional[FieldOption] = None
         self._medias: Optional[List[Media]] = None
 
     @classmethod
@@ -181,15 +182,25 @@ class Observation(ListableModel, SearchableModel):
         )
 
     @property
-    def atlas_code(self) -> Optional[int]:
-        atlas_code = (
+    def id_atlas_code(self) -> Optional[int]:
+        id_atlas_code = (
             None
             if "atlas_code" not in self._raw_data["observers"][0]
             else self._raw_data["observers"][0]["atlas_code"]["@id"].split("_")[1]
             if type(self._raw_data["observers"][0]["atlas_code"]) is dict
             else self._raw_data["observers"][0]["atlas_code"]
         )
-        return atlas_code
+        return id_atlas_code
+
+    @property
+    def atlas_code_text(self) -> Optional[str]:
+        atlas_code_text = (
+            self._raw_data["observers"][0]["atlas_code"]["#text"]
+            if "atlas_code" in self._raw_data["observers"][0]
+            and "#text" in self._raw_data["observers"][0]["atlas_code"]
+            else None
+        )
+        return atlas_code_text
 
     @property
     def details(self) -> Optional[List[Detail]]:
@@ -299,6 +310,13 @@ class Observation(ListableModel, SearchableModel):
         if self._observation_detail is None and self.id_observation_detail:
             self._observation_detail = FieldOption.get(self.id_observation_detail)
         return self._observation_detail
+
+    @property
+    def atlas_code(self) -> Optional[FieldOption]:
+        """ Atlas Code of the observation """
+        if self._atlas_code is None and self.id_atlas_code:
+            self._atlas_code = FieldOption.get(f"3_{self.id_atlas_code}")
+        return self._atlas_code
 
     @classmethod
     def by_observer(

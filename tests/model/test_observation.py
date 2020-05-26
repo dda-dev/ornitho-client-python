@@ -70,6 +70,7 @@ class TestObservation(TestCase):
                         {"count": "1", "sex": "U", "age": "PULL"},
                         {"count": "12", "sex": "M", "age": "AD"},
                     ],
+                    "atlas_code": {"@id": "3_3", "#text": "A2"},
                 }
             ],
         }
@@ -240,8 +241,17 @@ class TestObservation(TestCase):
     def test_hidden(self):
         self.assertFalse(self.observation.hidden)
 
-    def test_atlas_code(self):
-        self.assertEqual(None, self.observation.atlas_code)
+    def test_id_atlas_code(self):
+        self.assertEqual(
+            self.observation_json["observers"][0]["atlas_code"]["@id"].split("_")[1],
+            self.observation.id_atlas_code,
+        )
+
+    def test_atlas_code_text(self):
+        self.assertEqual(
+            self.observation_json["observers"][0]["atlas_code"]["#text"],
+            self.observation.atlas_code_text,
+        )
 
     def test_details(self):
         details = [Detail(1, "U", "PULL"), Detail(12, "M", "AD")]
@@ -358,6 +368,13 @@ class TestObservation(TestCase):
         observation_detail = self.observation.observation_detail
         mock_field_option.get.assert_called_with(self.observation.id_observation_detail)
         self.assertEqual(observation_detail, "Observation Detail retrieved")
+
+    @mock.patch("ornitho.model.observation.FieldOption")
+    def test_atlas_code(self, mock_field_option):
+        mock_field_option.get.return_value = "Atlas Code retrieved"
+        atlas_code = self.observation.atlas_code
+        mock_field_option.get.assert_called_with(f"3_{self.observation.id_atlas_code}")
+        self.assertEqual(atlas_code, "Atlas Code retrieved")
 
     def test_by_observer(self):
         Observation.list = MagicMock(return_value=["obs", "pk"])

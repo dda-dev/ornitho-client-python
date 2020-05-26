@@ -24,11 +24,19 @@ class Place(ListableModel):
 
     @property
     def coord_lon(self) -> float:
-        return float(self._raw_data["coord_lon"]) if "coord_lon" in self._raw_data else self._raw_data["lon"]
+        return (
+            float(self._raw_data["coord_lon"])
+            if "coord_lon" in self._raw_data
+            else self._raw_data["lon"]
+        )
 
     @property
     def coord_lat(self) -> float:
-        return float(self._raw_data["coord_lat"]) if "coord_lat" in self._raw_data else self._raw_data["lat"]
+        return (
+            float(self._raw_data["coord_lat"])
+            if "coord_lat" in self._raw_data
+            else self._raw_data["lat"]
+        )
 
     @property  # type: ignore
     @check_refresh
@@ -80,16 +88,8 @@ class Place(ListableModel):
 
     @property
     def county(self) -> Optional[str]:
-        return (
-            self._raw_data["county"]
-            if "county" in self._raw_data
-            else None
-        )
+        return self._raw_data["county"] if "county" in self._raw_data else None
 
     @property
     def country(self) -> Optional[str]:
-        return (
-            self._raw_data["country"]
-            if "country" in self._raw_data
-            else None
-        )
+        return self._raw_data["country"] if "country" in self._raw_data else None
