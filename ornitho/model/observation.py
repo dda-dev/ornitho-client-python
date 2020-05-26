@@ -65,8 +65,7 @@ class Observation(ListableModel, SearchableModel):
     def timing(self) -> datetime:
         timing = datetime.fromtimestamp(
             int(self._raw_data["observers"][0].get("timing")["@timestamp"]),
-            datetime.now().astimezone().tzinfo,
-        )
+        ).astimezone()
         return timing
 
     @property
@@ -226,8 +225,7 @@ class Observation(ListableModel, SearchableModel):
             int(self._raw_data["observers"][0]["insert_date"]["@timestamp"])
             if type(self._raw_data["observers"][0]["insert_date"]) is dict
             else int(self._raw_data["observers"][0]["insert_date"]),
-            datetime.now().astimezone().tzinfo,
-        )
+        ).astimezone()
         return insert_date
 
     @property
@@ -237,8 +235,7 @@ class Observation(ListableModel, SearchableModel):
                 int(self._raw_data["observers"][0]["update_date"]["@timestamp"])
                 if type(self._raw_data["observers"][0]["update_date"]) is dict
                 else int(self._raw_data["observers"][0]["update_date"]),
-                datetime.now().astimezone().tzinfo,
-            )
+            ).astimezone()
             if "update_date" in self._raw_data["observers"][0]
             else None
         )

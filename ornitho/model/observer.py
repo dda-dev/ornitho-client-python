@@ -98,8 +98,7 @@ class Observer(ListableModel):
     def registration_date(self) -> datetime:
         registration_date = datetime.fromtimestamp(
             int(self._raw_data["registration_date"]["@timestamp"]),
-            datetime.now().astimezone().tzinfo,
-        )
+        ).astimezone()
         return registration_date
 
     @property  # type: ignore
@@ -108,8 +107,7 @@ class Observer(ListableModel):
         last_inserted_data = (
             datetime.fromtimestamp(
                 int(self._raw_data["last_inserted_data"]["@timestamp"]),
-                datetime.now().astimezone().tzinfo,
-            )
+            ).astimezone()
             if "last_inserted_data" in self._raw_data
             else None
         )
@@ -120,8 +118,7 @@ class Observer(ListableModel):
     def last_login(self) -> datetime:
         last_login = datetime.fromtimestamp(
             int(self._raw_data["last_login"]["@timestamp"]),
-            datetime.now().astimezone().tzinfo,
-        )
+        ).astimezone()
         return last_login
 
     @property  # type: ignore

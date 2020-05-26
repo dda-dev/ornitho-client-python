@@ -63,8 +63,7 @@ class Media(BaseModel):
     def insert_date(self) -> datetime:
         timing = datetime.fromtimestamp(
             int(self._raw_data["insert_date"]["@timestamp"]),
-            datetime.now().astimezone().tzinfo,
-        )
+        ).astimezone()
         return timing
 
     @property

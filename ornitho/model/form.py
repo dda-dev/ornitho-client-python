@@ -1,4 +1,4 @@
-from datetime import date, datetime, time
+from datetime import date, time
 from typing import List, Optional
 
 import ornitho.model.observation
@@ -56,20 +56,14 @@ class Form(BaseModel):
     def time_start(self) -> time:
         splitted = self._raw_data["time_start"].split(":")
         return time(
-            hour=int(splitted[0]),
-            minute=int(splitted[1]),
-            second=int(splitted[2]),
-            tzinfo=datetime.now().astimezone().tzinfo,
+            hour=int(splitted[0]), minute=int(splitted[1]), second=int(splitted[2]),
         )
 
     @property
     def time_stop(self) -> time:
         splitted = self._raw_data["time_stop"].split(":")
         return time(
-            hour=int(splitted[0]),
-            minute=int(splitted[1]),
-            second=int(splitted[2]),
-            tzinfo=datetime.now().astimezone().tzinfo,
+            hour=int(splitted[0]), minute=int(splitted[1]), second=int(splitted[2]),
         )
 
     @property
