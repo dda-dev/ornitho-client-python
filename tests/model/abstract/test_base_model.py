@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, Mock
 import ornitho
 from ornitho.api_exception import APIException
 from ornitho.model.abstract import BaseModel
-from ornitho.model.abstract.base_model import check_refresh
+from ornitho.model.abstract.base_model import check_raw_data, check_refresh
 
 ornitho.consumer_key = "ORNITHO_CONSUMER_KEY"
 ornitho.consumer_secret = "ORNITHO_CONSUMER_SECRET"
@@ -83,6 +83,24 @@ def test_check_refresh():
     base_mode_mock2 = MagicMock()
     base_mode_mock2._raw_data = {"foo": 1}
     decorated_func = check_refresh(func2)
+    decorated_func(base_mode_mock2)
+    assert not base_mode_mock2.refresh.called
+    assert func2.called
+
+
+def test_check_raw_data():
+    func = Mock()
+    base_mode_mock = MagicMock()
+    base_mode_mock._raw_data = {"bar": 1}
+    decorated_func = check_raw_data("foo")(func)
+    decorated_func(base_mode_mock)
+    assert base_mode_mock.refresh.called
+    assert func.called
+
+    func2 = Mock()
+    base_mode_mock2 = MagicMock()
+    base_mode_mock2._raw_data = {"foo": 1}
+    decorated_func = check_raw_data("foo")(func2)
     decorated_func(base_mode_mock2)
     assert not base_mode_mock2.refresh.called
     assert func2.called

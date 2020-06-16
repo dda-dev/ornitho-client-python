@@ -106,3 +106,15 @@ def check_refresh(func):
         return func(self)
 
     return wrapper
+
+
+def check_raw_data(key):
+    def decorator(func):
+        def wrapper(self: T):
+            if key not in self._raw_data:
+                self.refresh()
+            return func(self)
+
+        return wrapper
+
+    return decorator

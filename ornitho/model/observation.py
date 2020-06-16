@@ -5,6 +5,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 import ornitho.model.form
 from ornitho import APIException
 from ornitho.model.abstract import BaseModel, ListableModel, SearchableModel
+from ornitho.model.abstract.base_model import check_raw_data
 from ornitho.model.detail import Detail
 from ornitho.model.field_option import FieldOption
 from ornitho.model.media import Media
@@ -53,34 +54,41 @@ class Observation(ListableModel, SearchableModel):
         obj._raw_data = data
         return obj
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("observers")
     def id_observer(self) -> int:
         return int(self._raw_data["observers"][0]["@id"])
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("observers")
     def traid(self) -> int:
         return int(self._raw_data["observers"][0]["traid"])
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("observers")
     def timing(self) -> datetime:
         timing = datetime.fromtimestamp(
             int(self._raw_data["observers"][0].get("timing")["@timestamp"]),
         ).astimezone()
         return timing
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("observers")
     def coord_lat(self) -> float:
         return float(self._raw_data["observers"][0]["coord_lat"])
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("observers")
     def coord_lon(self) -> float:
         return float(self._raw_data["observers"][0]["coord_lon"])
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("observers")
     def altitude(self) -> int:
         return int(self._raw_data["observers"][0]["altitude"])
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("observers")
     def id_form(self) -> Optional[int]:
         return (
             int(self._raw_data["observers"][0]["id_form"])
@@ -88,11 +96,13 @@ class Observation(ListableModel, SearchableModel):
             else None
         )
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("observers")
     def precision(self) -> str:
         return self._raw_data["observers"][0]["precision"]
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("observers")
     def estimation_code(self) -> Optional[str]:
         return (
             self._raw_data["observers"][0]["estimation_code"]
@@ -100,15 +110,18 @@ class Observation(ListableModel, SearchableModel):
             else None
         )
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("species")
     def id_species(self) -> int:
         return int(self._raw_data["species"]["@id"])
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("observers")
     def count(self) -> int:
         return int(self._raw_data["observers"][0]["count"])
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("observers")
     def flight_number(self) -> Optional[int]:
         return (
             int(self._raw_data["observers"][0]["flight_number"])
@@ -116,7 +129,8 @@ class Observation(ListableModel, SearchableModel):
             else None
         )
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("observers")
     def admin_hidden(self) -> bool:
         return (
             False
@@ -125,7 +139,8 @@ class Observation(ListableModel, SearchableModel):
             else True
         )
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("observers")
     def admin_hidden_type(self) -> Optional[str]:
         return (
             self._raw_data["observers"][0]["admin_hidden_type"]
@@ -133,11 +148,13 @@ class Observation(ListableModel, SearchableModel):
             else None
         )
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("observers")
     def source(self) -> str:
         return self._raw_data["observers"][0]["source"]
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("observers")
     def medias(self) -> Optional[List[Media]]:
         if self._medias is None and "medias" in self._raw_data["observers"][0]:
             self._medias = [
@@ -146,7 +163,8 @@ class Observation(ListableModel, SearchableModel):
             ]
         return self._medias
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("observers")
     def media_urls(self) -> Optional[List[str]]:
         if "medias" in self._raw_data["observers"][0]:
             return [
@@ -155,7 +173,8 @@ class Observation(ListableModel, SearchableModel):
             ]
         return None
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("observers")
     def comment(self) -> Optional[str]:
         return (
             self._raw_data["observers"][0]["comment"]
@@ -163,7 +182,8 @@ class Observation(ListableModel, SearchableModel):
             else None
         )
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("observers")
     def hidden_comment(self) -> Optional[str]:
         return (
             self._raw_data["observers"][0]["hidden_comment"]
@@ -171,7 +191,8 @@ class Observation(ListableModel, SearchableModel):
             else None
         )
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("observers")
     def hidden(self) -> bool:
         return (
             False
@@ -180,7 +201,8 @@ class Observation(ListableModel, SearchableModel):
             else True
         )
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("observers")
     def id_atlas_code(self) -> Optional[int]:
         id_atlas_code = (
             None
@@ -191,7 +213,8 @@ class Observation(ListableModel, SearchableModel):
         )
         return id_atlas_code
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("observers")
     def atlas_code_text(self) -> Optional[str]:
         atlas_code_text = (
             self._raw_data["observers"][0]["atlas_code"]["#text"]
@@ -201,7 +224,8 @@ class Observation(ListableModel, SearchableModel):
         )
         return atlas_code_text
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("observers")
     def details(self) -> Optional[List[Detail]]:
         details = None
         if "details" in self._raw_data["observers"][0]:
@@ -219,7 +243,8 @@ class Observation(ListableModel, SearchableModel):
                 ]
         return details
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("observers")
     def insert_date(self) -> datetime:
         insert_date = datetime.fromtimestamp(
             int(self._raw_data["observers"][0]["insert_date"]["@timestamp"])
@@ -228,7 +253,8 @@ class Observation(ListableModel, SearchableModel):
         ).astimezone()
         return insert_date
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("observers")
     def update_date(self) -> Optional[datetime]:
         update_date = (
             datetime.fromtimestamp(
@@ -241,11 +267,13 @@ class Observation(ListableModel, SearchableModel):
         )
         return update_date
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("place")
     def id_place(self) -> int:
         return int(self._raw_data["place"]["@id"])
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("observers")
     def id_resting_habitat(self) -> Optional[str]:
         if "resting_habitat" in self._raw_data["observers"][0]:
             if type(self._raw_data["observers"][0]["resting_habitat"]) is dict:
@@ -254,7 +282,8 @@ class Observation(ListableModel, SearchableModel):
                 return self._raw_data["observers"][0]["resting_habitat"]
         return None
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("observers")
     def id_observation_detail(self) -> Optional[str]:
         if "observation_detail" in self._raw_data["observers"][0]:
             if type(self._raw_data["observers"][0]["observation_detail"]) is dict:
@@ -263,19 +292,19 @@ class Observation(ListableModel, SearchableModel):
                 return self._raw_data["observers"][0]["observation_detail"]
         return None
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("species")
     def species(self) -> Species:
         """ Observed Species """
         if self._species is None:
-            # self._species = Species.get(self.id_species)
             self._species = Species.create_from(self._raw_data["species"])
         return self._species
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("observers")
     def observer(self) -> Observer:
         """ Observing user """
         if self._observer is None:
-            # self._observer = Observer.get(self.id_observer)
             self._observer = Observer.create_from(self._raw_data["observers"][0])
         return self._observer
 
@@ -283,14 +312,12 @@ class Observation(ListableModel, SearchableModel):
     def place(self) -> Place:
         """ Place of the observation """
         if self._place is None:
-            # self._place = Place.get(self.id_place)
             self._place = Place.create_from(self._raw_data["place"])
         return self._place
 
     @property
     def form(self):
         if self._form is None and self.id_form is not None:
-            # self._form = ornitho.model.form.Form.get(self.id_form)
             self._form = ornitho.model.form.Form.create_from(self._raw_data["form"])
         return self._form
 
