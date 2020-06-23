@@ -41,7 +41,7 @@ class TestProtocol(TestCase):
             "default_atlas_code": "",
             "default_count": "",
         }
-        self.protocol = Protocol.create_from(self.protocol_json)
+        self.protocol = Protocol.create_from_ornitho_json(self.protocol_json)
 
     def test_name(self):
         self.assertEqual(self.protocol_json["name"], self.protocol.name)

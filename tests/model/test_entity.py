@@ -13,7 +13,7 @@ class TestEntity(TestCase):
             "url": "",
             "description_german": "Description",
         }
-        self.entity = Entity.create_from(self.entity_json)
+        self.entity = Entity.create_from_ornitho_json(self.entity_json)
 
     def test_short_name(self):
         self.assertEqual(self.entity_json["short_name"], self.entity.short_name)

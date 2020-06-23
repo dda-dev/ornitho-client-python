@@ -20,7 +20,9 @@ class TestLocalAdminUnit(TestCase):
             "coord_lon": "9.43977095617034",
             "coord_lat": "54.0686078708784",
         }
-        self.local_admin_unit = LocalAdminUnit.create_from(self.local_admin_unit_json)
+        self.local_admin_unit = LocalAdminUnit.create_from_ornitho_json(
+            self.local_admin_unit_json
+        )
 
     def test_id_canton(self):
         self.assertEqual(

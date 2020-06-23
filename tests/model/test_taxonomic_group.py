@@ -19,7 +19,7 @@ class TestTaxonomicGroup(TestCase):
             "name_constant": "TAXO_GROUP_BIRD",
             "access_mode": "full",
         }
-        self.taxo_group = TaxonomicGroup.create_from(self.taxo_group_json)
+        self.taxo_group = TaxonomicGroup.create_from_ornitho_json(self.taxo_group_json)
 
     def test_name(self):
         self.assertEqual(self.taxo_group_json["name"], self.taxo_group.name)

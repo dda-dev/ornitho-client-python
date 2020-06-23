@@ -175,7 +175,9 @@ class Protocol(ListableModel):
             sites_object = self.request(method="get", url=url, params=params)[0][
                 "sites"
             ]
-            self._sites = [Site.create_from(site) for site in sites_object.values()]
+            self._sites = [
+                Site.create_from_ornitho_json(site) for site in sites_object.values()
+            ]
         return self._sites
 
     def get_observations(

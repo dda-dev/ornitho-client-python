@@ -26,7 +26,7 @@ class TestPlace(TestCase):
             "loc_precision": "750",
             "municipality": "municipality",
         }
-        self.place = Place.create_from(self.place_json)
+        self.place = Place.create_from_ornitho_json(self.place_json)
 
     def test_id_commune(self):
         self.assertEqual(int(self.place_json["id_commune"]), self.place.id_commune)

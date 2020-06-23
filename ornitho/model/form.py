@@ -274,7 +274,9 @@ class Form(BaseModel):
             self.refresh()
         if self._observations is None and "sightings" in self._raw_data:
             self._observations = [
-                ornitho.model.observation.Observation.create_from(observation)
+                ornitho.model.observation.Observation.create_from_ornitho_json(
+                    observation
+                )
                 for observation in self._raw_data["sightings"]
             ]
         return self._observations

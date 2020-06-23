@@ -76,7 +76,7 @@ class BaseModel(ABC):
         return response
 
     @classmethod
-    def create_from(cls: Type[T], data: Dict[str, Any]) -> T:
+    def create_from_ornitho_json(cls: Type[T], data: Dict[str, Any]) -> T:
         identifier: Union[int, str]
         if "@id" in data:
             identifier = int(data["@id"]) if data["@id"].isdigit() else data["@id"]

@@ -11,7 +11,7 @@ class TestSite(TestCase):
             "custom_name": "TEST",
             "reference_locality": "TEST-Site",
         }
-        self.site = Site.create_from(self.site_json)
+        self.site = Site.create_from_ornitho_json(self.site_json)
 
     def test_request(self):
         self.assertRaises(

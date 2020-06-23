@@ -45,7 +45,7 @@ class ListableModel(BaseModel, ABC):
             )
             model_list: List[T] = []
             for ele in response:
-                obj = cls.create_from(ele)
+                obj = cls.create_from_ornitho_json(ele)
                 model_list.append(obj)
         return model_list, pk
 

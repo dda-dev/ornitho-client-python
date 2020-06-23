@@ -28,7 +28,7 @@ class TestBaseModel(TestCase):
         return [[], None]
 
     def setUp(self):
-        self.my_model = self.MyModel.create_from({"id": "1"})
+        self.my_model = self.MyModel.create_from_ornitho_json({"id": "1"})
 
     def test_id_(self):
         self.assertEqual(1, self.my_model.id_)
@@ -45,7 +45,7 @@ class TestBaseModel(TestCase):
         self.assertEqual("data", model)
 
     def test_create_from(self):
-        model = self.MyModel.create_from({"id": "1", "foo": "bar"})
+        model = self.MyModel.create_from_ornitho_json({"id": "1", "foo": "bar"})
         self.assertEqual(1, model.id_)
         self.assertEqual({"id": "1", "foo": "bar"}, model._raw_data)
 

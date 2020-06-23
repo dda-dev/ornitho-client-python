@@ -35,7 +35,7 @@ class TestMedia(TestCase):
             },
             "photo": "https://test.media/www.ornitho.de/1970-01/xsmall/1111-22222222-3333.jpg",
         }
-        self.media = Media.create_from(self.media_json)
+        self.media = Media.create_from_ornitho_json(self.media_json)
 
     def test_obid(self):
         self.assertEqual(int(self.media_json["obid"]), self.media.obid)
@@ -132,7 +132,7 @@ class TestMedia(TestCase):
 
         self.assertEqual(
             media_json["photo"].replace("xsmall/", ""),
-            Media.create_from(media_json).photo,
+            Media.create_from_ornitho_json(media_json).photo,
         )
 
         sound_json = {
@@ -158,7 +158,9 @@ class TestMedia(TestCase):
             "photo": "https://test.media/www.ornitho.de/1970-01/1111-22222222-3333.mp3",
         }
 
-        self.assertEqual(sound_json["photo"], Media.create_from(sound_json).photo)
+        self.assertEqual(
+            sound_json["photo"], Media.create_from_ornitho_json(sound_json).photo
+        )
 
     def test_photo_small(self):
         self.assertEqual(self.media_json["photo"], self.media.photo_small)

@@ -66,5 +66,7 @@ class Field(ListableModel):
             with APIRequester() as requester:
                 url = f"fields/{self.id_}"
                 response, pagination_key = requester.request(method="GET", url=url)
-                self._options = [FieldOption.create_from(option) for option in response]
+                self._options = [
+                    FieldOption.create_from_ornitho_json(option) for option in response
+                ]
         return self._options

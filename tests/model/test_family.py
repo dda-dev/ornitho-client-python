@@ -19,7 +19,7 @@ class TestFamily(TestCase):
             "latin_name": "Gaviidae",
             "generic": "0",
         }
-        self.family = Family.create_from(self.family_json)
+        self.family = Family.create_from_ornitho_json(self.family_json)
 
     def test_id_taxo_group(self):
         self.assertEqual(

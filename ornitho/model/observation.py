@@ -44,7 +44,7 @@ class Observation(ListableModel, SearchableModel):
         self._medias: Optional[List[Media]] = None
 
     @classmethod
-    def create_from(cls, data: Dict[str, Any]) -> "Observation":
+    def create_from_ornitho_json(cls, data: Dict[str, Any]) -> "Observation":
         if len(data["observers"]) > 1:
             raise APIException(
                 f"More than one observer in sightings json found!\n{data['observers']}"
@@ -297,7 +297,7 @@ class Observation(ListableModel, SearchableModel):
     def species(self) -> Species:
         """ Observed Species """
         if self._species is None:
-            self._species = Species.create_from(self._raw_data["species"])
+            self._species = Species.create_from_ornitho_json(self._raw_data["species"])
         return self._species
 
     @property  # type: ignore
@@ -305,20 +305,24 @@ class Observation(ListableModel, SearchableModel):
     def observer(self) -> Observer:
         """ Observing user """
         if self._observer is None:
-            self._observer = Observer.create_from(self._raw_data["observers"][0])
+            self._observer = Observer.create_from_ornitho_json(
+                self._raw_data["observers"][0]
+            )
         return self._observer
 
     @property
     def place(self) -> Place:
         """ Place of the observation """
         if self._place is None:
-            self._place = Place.create_from(self._raw_data["place"])
+            self._place = Place.create_from_ornitho_json(self._raw_data["place"])
         return self._place
 
     @property
     def form(self):
         if self._form is None and self.id_form is not None:
-            self._form = ornitho.model.form.Form.create_from(self._raw_data["form"])
+            self._form = ornitho.model.form.Form.create_from_ornitho_json(
+                self._raw_data["form"]
+            )
         return self._form
 
     @property

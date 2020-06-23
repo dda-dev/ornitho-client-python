@@ -98,7 +98,7 @@ class TestForm(TestCase):
                 },
             ],
         }
-        self.form = Form.create_from(self.form_json)
+        self.form = Form.create_from_ornitho_json(self.form_json)
 
     def test_instance_url(self):
         self.assertEqual("observations/search", self.form.instance_url())
@@ -144,7 +144,7 @@ class TestForm(TestCase):
             date.fromtimestamp(
                 int(self.form_json["sightings"][0]["date"]["@timestamp"])
             ),
-            Form.create_from(form_json).day,
+            Form.create_from_ornitho_json(form_json).day,
         )
 
         self.assertEqual(
@@ -248,11 +248,13 @@ class TestForm(TestCase):
         }
         self.assertEqual(
             form_json["protocol"]["waterbird_conditions"]["@id"],
-            Form.create_from(form_json).id_waterbird_conditions,
+            Form.create_from_ornitho_json(form_json).id_waterbird_conditions,
         )
 
         form_json = {"@id": "1"}
-        self.assertIsNone(Form.create_from(form_json).id_waterbird_conditions)
+        self.assertIsNone(
+            Form.create_from_ornitho_json(form_json).id_waterbird_conditions
+        )
 
     def test_id_waterbird_coverage(self):
         self.assertEqual(
@@ -268,11 +270,13 @@ class TestForm(TestCase):
         }
         self.assertEqual(
             form_json["protocol"]["waterbird_coverage"]["@id"],
-            Form.create_from(form_json).id_waterbird_coverage,
+            Form.create_from_ornitho_json(form_json).id_waterbird_coverage,
         )
 
         form_json = {"@id": "1"}
-        self.assertIsNone(Form.create_from(form_json).id_waterbird_coverage)
+        self.assertIsNone(
+            Form.create_from_ornitho_json(form_json).id_waterbird_coverage
+        )
 
     def test_id_waterbird_optical(self):
         self.assertEqual(
@@ -288,11 +292,11 @@ class TestForm(TestCase):
         }
         self.assertEqual(
             form_json["protocol"]["waterbird_optical"]["@id"],
-            Form.create_from(form_json).id_waterbird_optical,
+            Form.create_from_ornitho_json(form_json).id_waterbird_optical,
         )
 
         form_json = {"@id": "1"}
-        self.assertIsNone(Form.create_from(form_json).id_waterbird_optical)
+        self.assertIsNone(Form.create_from_ornitho_json(form_json).id_waterbird_optical)
 
     def test_id_waterbird_countmethod(self):
         self.assertEqual(
@@ -311,11 +315,13 @@ class TestForm(TestCase):
         }
         self.assertEqual(
             form_json["protocol"]["waterbird_countmethod"]["@id"],
-            Form.create_from(form_json).id_waterbird_countmethod,
+            Form.create_from_ornitho_json(form_json).id_waterbird_countmethod,
         )
 
         form_json = {"@id": "1"}
-        self.assertIsNone(Form.create_from(form_json).id_waterbird_countmethod)
+        self.assertIsNone(
+            Form.create_from_ornitho_json(form_json).id_waterbird_countmethod
+        )
 
     def test_id_waterbird_ice(self):
         self.assertEqual(
@@ -328,11 +334,11 @@ class TestForm(TestCase):
         }
         self.assertEqual(
             form_json["protocol"]["waterbird_ice"]["@id"],
-            Form.create_from(form_json).id_waterbird_ice,
+            Form.create_from_ornitho_json(form_json).id_waterbird_ice,
         )
 
         form_json = {"@id": "1"}
-        self.assertIsNone(Form.create_from(form_json).id_waterbird_ice)
+        self.assertIsNone(Form.create_from_ornitho_json(form_json).id_waterbird_ice)
 
     def test_id_waterbird_snowcover(self):
         self.assertEqual(
@@ -348,11 +354,13 @@ class TestForm(TestCase):
         }
         self.assertEqual(
             form_json["protocol"]["waterbird_snowcover"]["@id"],
-            Form.create_from(form_json).id_waterbird_snowcover,
+            Form.create_from_ornitho_json(form_json).id_waterbird_snowcover,
         )
 
         form_json = {"@id": "1"}
-        self.assertIsNone(Form.create_from(form_json).id_waterbird_snowcover)
+        self.assertIsNone(
+            Form.create_from_ornitho_json(form_json).id_waterbird_snowcover
+        )
 
     def test_id_waterbird_waterlevel(self):
         self.assertEqual(
@@ -368,11 +376,13 @@ class TestForm(TestCase):
         }
         self.assertEqual(
             form_json["protocol"]["waterbird_waterlevel"]["@id"],
-            Form.create_from(form_json).id_waterbird_waterlevel,
+            Form.create_from_ornitho_json(form_json).id_waterbird_waterlevel,
         )
 
         form_json = {"@id": "1"}
-        self.assertIsNone(Form.create_from(form_json).id_waterbird_waterlevel)
+        self.assertIsNone(
+            Form.create_from_ornitho_json(form_json).id_waterbird_waterlevel
+        )
 
     def test_nest_number(self):
         self.assertEqual(
@@ -390,11 +400,11 @@ class TestForm(TestCase):
         }
         self.assertEqual(
             int(form_json["protocol"]["nest_number"]["@id"]),
-            Form.create_from(form_json).nest_number,
+            Form.create_from_ornitho_json(form_json).nest_number,
         )
 
         form_json = {"@id": "1"}
-        self.assertIsNone(Form.create_from(form_json).nest_number)
+        self.assertIsNone(Form.create_from_ornitho_json(form_json).nest_number)
 
     def test_occupied_nest_number(self):
         self.assertEqual(
@@ -413,22 +423,24 @@ class TestForm(TestCase):
         }
         self.assertEqual(
             int(form_json["protocol"]["occupied_nest_number"]["@id"]),
-            Form.create_from(form_json).occupied_nest_number,
+            Form.create_from_ornitho_json(form_json).occupied_nest_number,
         )
 
         form_json = {"@id": "1"}
-        self.assertIsNone(Form.create_from(form_json).occupied_nest_number)
+        self.assertIsNone(Form.create_from_ornitho_json(form_json).occupied_nest_number)
 
     @mock.patch("ornitho.model.observation.Observation")
     def test_observations(self, mock_observation):
         self.form.refresh = MagicMock(return_value=self.form_json)
-        mock_observation.create_from.return_value = "Observation"
+        mock_observation.create_from_ornitho_json.return_value = "Observation"
         observations = self.form.observations
-        mock_observation.create_from.assert_called_with(self.form_json["sightings"][0])
+        mock_observation.create_from_ornitho_json.assert_called_with(
+            self.form_json["sightings"][0]
+        )
         self.assertEqual(observations, ["Observation"])
 
         del self.form_json["sightings"]
         self.form.refresh = MagicMock(return_value=self.form_json)
-        mock_observation.create_from.return_value = "Observation"
+        mock_observation.create_from_ornitho_json.return_value = "Observation"
         observations = self.form.observations
         self.assertEqual(observations, ["Observation"])

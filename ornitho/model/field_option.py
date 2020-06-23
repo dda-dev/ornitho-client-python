@@ -28,7 +28,7 @@ class FieldOption(ListableModel):
                 method="GET", url=url, short_version=short_version
             )
             for option in response:
-                field_option = cls.create_from(option)
+                field_option = cls.create_from_ornitho_json(option)
                 if field_option.id_ == id_:
                     return field_option
             raise APIException(f"Can't find field option with ID {id_}")

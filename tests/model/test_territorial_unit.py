@@ -18,7 +18,9 @@ class TestTerritorialUnit(TestCase):
             "name": "Dithmarschen",
             "short_name": "HEI",
         }
-        self.territorial_unit = TerritorialUnit.create_from(self.territorial_unit_json)
+        self.territorial_unit = TerritorialUnit.create_from_ornitho_json(
+            self.territorial_unit_json
+        )
 
     def test_id_country(self):
         self.assertEqual(

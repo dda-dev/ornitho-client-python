@@ -13,7 +13,7 @@ class TestFieldOption(TestCase):
             "value": "1",
             "order_id": "10",
         }
-        self.field_option = FieldOption.create_from(self.field_option_json)
+        self.field_option = FieldOption.create_from_ornitho_json(self.field_option_json)
 
     @mock.patch("ornitho.model.field_option.APIRequester")
     def test_get(self, mock_requester):

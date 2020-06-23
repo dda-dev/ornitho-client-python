@@ -16,12 +16,12 @@ class TestField(TestCase):
             "mandatory": "0",
             "empty_choice": "1",
         }
-        self.field = Field.create_from(self.field_json)
+        self.field = Field.create_from_ornitho_json(self.field_json)
 
     def test_get(self):
         Field.list_all = MagicMock(
             return_value=[
-                Field.create_from(
+                Field.create_from_ornitho_json(
                     {
                         "id": "1",
                         "group": "OBS",
@@ -32,7 +32,7 @@ class TestField(TestCase):
                         "empty_choice": "1",
                     }
                 ),
-                Field.create_from(
+                Field.create_from_ornitho_json(
                     {
                         "id": "2",
                         "group": "OBS",
@@ -93,12 +93,12 @@ class TestField(TestCase):
 
         mock_requester.return_value.__enter__ = enter_requester
 
-        mock_field_option.create_from.return_value = ["Created!"]
+        mock_field_option.create_from_ornitho_json.return_value = ["Created!"]
 
         self.assertEqual(
             [
-                mock_field_option.create_from.return_value,
-                mock_field_option.create_from.return_value,
+                mock_field_option.create_from_ornitho_json.return_value,
+                mock_field_option.create_from_ornitho_json.return_value,
             ],
             self.field.options,
         )

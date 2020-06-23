@@ -75,7 +75,7 @@ class TestObserver(TestCase):
             "mobile_use_protocol": "0",
             "mobile_use_trace": "0",
         }
-        self.observer = Observer.create_from(self.observer_json)
+        self.observer = Observer.create_from_ornitho_json(self.observer_json)
 
     def test_external_id(self):
         self.assertEqual(

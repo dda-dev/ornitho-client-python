@@ -16,7 +16,7 @@ class TestListableModel(TestCase):
         ENDPOINT = "my_model"
 
         @classmethod
-        def create_from(cls, data):
+        def create_from_ornitho_json(cls, data):
             identifier: int = int(data["id"])
             obj = cls(identifier)
             obj._raw_data = data

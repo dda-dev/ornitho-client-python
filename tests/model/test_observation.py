@@ -74,16 +74,17 @@ class TestObservation(TestCase):
                 }
             ],
         }
-        self.observation = Observation.create_from(self.observation_json)
+        self.observation = Observation.create_from_ornitho_json(self.observation_json)
 
     def test_create_from(self):
-        observation = Observation.create_from(self.observation_json)
+        observation = Observation.create_from_ornitho_json(self.observation_json)
         self.assertEqual(43050307, observation.id_)
         self.assertEqual(self.observation_json, observation._raw_data)
 
         # Test Exception
         self.assertRaises(
-            APIException, lambda: Observation.create_from({"observers": ["1", "2"]}),
+            APIException,
+            lambda: Observation.create_from_ornitho_json({"observers": ["1", "2"]}),
         )
 
     def test_id_observer(self):
@@ -186,7 +187,7 @@ class TestObservation(TestCase):
                 }
             ]
         }
-        obs = Observation.create_from(obs_json)
+        obs = Observation.create_from_ornitho_json(obs_json)
         medias = obs.medias
         self.assertIsNotNone(medias)
         self.assertEqual(len(obs_json["observers"][0]["medias"]), len(medias))
@@ -214,7 +215,7 @@ class TestObservation(TestCase):
                 }
             ]
         }
-        obs = Observation.create_from(obs_json)
+        obs = Observation.create_from_ornitho_json(obs_json)
         media_urls = obs.media_urls
         self.assertIsNotNone(media_urls)
         self.assertEqual(len(obs_json["observers"][0]["medias"]), len(media_urls))
@@ -276,7 +277,9 @@ class TestObservation(TestCase):
                 }
             ]
         }
-        self.assertEqual(details, Observation.create_from(obs_json).details)
+        self.assertEqual(
+            details, Observation.create_from_ornitho_json(obs_json).details
+        )
 
     def test_insert_date(self):
         self.assertEqual(
@@ -311,11 +314,13 @@ class TestObservation(TestCase):
         }
         self.assertEqual(
             obs_json["observers"][0]["resting_habitat"]["@id"],
-            Observation.create_from(obs_json).id_resting_habitat,
+            Observation.create_from_ornitho_json(obs_json).id_resting_habitat,
         )
 
         obs_json = {"observers": [{"id_sighting": "44874562",}]}
-        self.assertIsNone(Observation.create_from(obs_json).id_resting_habitat)
+        self.assertIsNone(
+            Observation.create_from_ornitho_json(obs_json).id_resting_habitat
+        )
 
     def test_id_observation_detail(self):
         self.assertEqual(
@@ -333,11 +338,13 @@ class TestObservation(TestCase):
         }
         self.assertEqual(
             obs_json["observers"][0]["observation_detail"]["@id"],
-            Observation.create_from(obs_json).id_observation_detail,
+            Observation.create_from_ornitho_json(obs_json).id_observation_detail,
         )
 
         obs_json = {"observers": [{"id_sighting": "44874562",}]}
-        self.assertIsNone(Observation.create_from(obs_json).id_observation_detail)
+        self.assertIsNone(
+            Observation.create_from_ornitho_json(obs_json).id_observation_detail
+        )
 
     def test_species(self):
         species = self.observation.species
