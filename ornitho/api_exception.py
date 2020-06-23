@@ -50,10 +50,11 @@ class APIHttpException(APIException):
     def query(self) -> dict:
         """Path of the failed request"""
         query = parse_qs(str(urlsplit(self.response.request.url).query))
-        # if "user_email" in query.keys():
-        #    query["user_email"] = ["***"]
-        # if "user_pw" in query.keys():
-        #    query["user_pw"] = ["***"]
+        # Remove sensible data
+        if "user_email" in query.keys():
+            query["user_email"] = ["***"]
+        if "user_pw" in query.keys():
+            query["user_pw"] = ["***"]
         return query
 
     @property

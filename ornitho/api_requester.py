@@ -2,6 +2,7 @@ import json
 from copy import deepcopy
 from datetime import date, datetime
 from typing import Any, Dict, List, Optional, Tuple, Union
+from urllib.parse import urlencode
 
 from requests import Response
 from requests_oauthlib import OAuth1Session
@@ -208,15 +209,16 @@ class APIRequester(object):
         :raise ContentTypeException: Unhandled Content Type received or no information about content typ found
         """
 
-        abs_url = (
-            f"{self.api_base}{url}?user_email={self.user_email}&user_pw={self.user_pw}"
-        )
+        params_dict: Dict[str, Any] = {
+            "user_email": self.user_email,
+            "user_pw": self.user_pw,
+        }
 
         if pagination_key:
-            abs_url = f"{abs_url}&pagination_key={pagination_key}"
+            params_dict["pagination_key"] = pagination_key
 
         if short_version:
-            abs_url = f"{abs_url}&short_version={'1'}"
+            params_dict["short_version"] = 1
 
         if params:
             for key, value in params.items():
@@ -234,7 +236,9 @@ class APIRequester(object):
                 elif isinstance(value, date):
                     value = value.strftime("%d.%m.%Y")
                     params[key] = value
-                abs_url = f"{abs_url}&{key}={value}"
+                params_dict[key] = value
+
+        abs_url = f"{self.api_base}{url}?{urlencode(params_dict)}"
 
         if body:
             for key, value in body.items():
