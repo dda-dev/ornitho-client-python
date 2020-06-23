@@ -37,6 +37,7 @@ The following "ornitho controllers / calls" are implemented:
 
   - List Observers
   - Get a single observer
+  - Get current observers info
 
 - entities
 
@@ -75,7 +76,6 @@ Not yet Implemented:
 - observers
 
   - Get an observer rights list
-  - Get current observers info
 
 - export organizations
 

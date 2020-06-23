@@ -1,5 +1,6 @@
 from datetime import datetime
 from unittest import TestCase
+from unittest.mock import MagicMock
 
 import ornitho
 from ornitho.model.observer import Observer
@@ -76,6 +77,28 @@ class TestObserver(TestCase):
             "mobile_use_trace": "0",
         }
         self.observer = Observer.create_from_ornitho_json(self.observer_json)
+
+
+    def test_current(self):
+        Observer.request = MagicMock(
+            return_value=[
+                {
+                    "id": "42",
+                    "external_id": "0",
+                    "name": "TEST_NAME",
+                    "surname": "TEST_SURNAME",
+                }
+            ]
+        )
+        observer = Observer.current()
+        self.assertEqual(observer.id_, 42)
+        self.assertEqual(observer.external_id, 0)
+        self.assertEqual(observer.name, "TEST_NAME")
+        self.assertEqual(observer.surname, "TEST_SURNAME")
+        Observer.request.assert_called_with(
+            method="GET",
+            url="observers/current",
+        )
 
     def test_external_id(self):
         self.assertEqual(
