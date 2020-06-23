@@ -10,10 +10,12 @@ class FieldOption(ListableModel):
     ENDPOINT: str = ""
 
     @classmethod
-    def get(cls, id_: Union[int, str]) -> "FieldOption":
+    def get(cls, id_: Union[int, str], short_version: bool = False) -> "FieldOption":
         """ Retrieve Object from Biolovision with given ID
         :param id_: Unique identifier
+        :param short_version: Indicates, if a short version with foreign keys should be returned by the API.
         :type id_: str
+        :type short_version: bool
         :return: Instance, retrieved from Biolovision with given ID
         :rtype: FieldOption
         """
@@ -23,7 +25,7 @@ class FieldOption(ListableModel):
             else:
                 raise APIException("ID must be string matching (.*)_(.*)")
             response, pagination_key = requester.request(
-                method="GET", url=url, params={"short_version": False}
+                method="GET", url=url, short_version=short_version
             )
             for option in response:
                 field_option = cls.create_from(option)

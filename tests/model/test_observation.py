@@ -380,13 +380,13 @@ class TestObservation(TestCase):
         Observation.list = MagicMock(return_value=["obs", "pk"])
         Observation.by_observer(id_observer=1)
         Observation.list.assert_called_with(
-            request_all=False, pagination_key=None, id_observer=1
+            request_all=False, pagination_key=None, short_version=False, id_observer=1
         )
 
     def test_by_observer_all(self):
         Observation.list_all = MagicMock(return_value=["obs", "pk"])
         Observation.by_observer_all(id_observer=1)
-        Observation.list_all.assert_called_with(id_observer=1)
+        Observation.list_all.assert_called_with(id_observer=1, short_version=False)
 
     def test_diff(self):
         Observation.request = MagicMock(

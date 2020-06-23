@@ -29,15 +29,17 @@ class BaseModel(ABC):
         return self._id
 
     @classmethod
-    def get(cls: Type[T], id_: Union[int, str]) -> T:
+    def get(cls: Type[T], id_: Union[int, str], short_version: bool = False,) -> T:
         """ Retrieve Object from Biolovision with given ID
         :param id_: Unique identifier
+        :param short_version: Indicates, if a short version with foreign keys should be returned by the API.
         :type id_: Union[int, str]
+        :type short_version: bool
         :return: Instance, retrieved from Biolovision with given ID
         :rtype: T
         """
         instance = cls(id_)
-        instance.refresh()
+        instance.refresh(short_version=short_version)
         return instance
 
     @staticmethod
@@ -46,22 +48,29 @@ class BaseModel(ABC):
         url: str,
         params: Dict[str, Any] = None,
         body: Dict[str, Any] = None,
+        short_version: bool = False,
     ) -> List[Any]:
         """ Send request to Biolovision and returns response
         :param method: HTTP Method (e.g. 'GET', 'POST', ...)
         :param url: Url to request
         :param params: Additional URL parameters.
         :param body: Request body
+        :param short_version: Indicates, if a short version with foreign keys should be returned by the API.
         :type method: str
         :type url: str
         :type params: Dict[str, Any]
         :type body: Dict[str, Any]
+        :type short_version: bool
         :return: Response map from Biolovision
         :rtype: List[Any]
         """
         with APIRequester() as requester:
             response, pagination_key = requester.request(
-                method=method, url=url, params=params, body=body
+                method=method,
+                url=url,
+                params=params,
+                body=body,
+                short_version=short_version,
             )
         # noinspection PyTypeChecker
         return response
@@ -77,14 +86,16 @@ class BaseModel(ABC):
         obj._raw_data = data
         return obj
 
-    def refresh(self: T) -> T:
+    def refresh(self: T, short_version: bool = False) -> T:
         """ Refresh local model
         Call the api and refresh fields from response
         :return: Refreshed Object
         :rtype: T
         :raise APIException: No or more than one objects retrieved
         """
-        data = self.request(method="GET", url=self.instance_url())
+        data = self.request(
+            method="GET", url=self.instance_url(), short_version=short_version
+        )
         if len(data) != 1:
             raise APIException(f"Get {len(data)} objects for {self.instance_url()}")
         self._previous = self._raw_data

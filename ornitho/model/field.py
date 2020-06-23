@@ -18,20 +18,22 @@ class Field(ListableModel):
         self._options: Optional[List[FieldOption]] = None
 
     @classmethod
-    def get(cls, id_: Union[int, str]) -> "Field":
+    def get(cls, id_: Union[int, str], short_version: bool = False) -> "Field":
         """ Retrieve Object from Biolovision with given ID
         :param id_: Unique identifier
+        :param short_version: Indicates, if a short version with foreign keys should be returned by the API.
         :type id_: Union[int, str]
+        :type short_version: bool
         :return: Instance, retrieved from Biolovision with given ID
         :rtype: Field
         """
-        fields = cls.list_all(short_version=False)
+        fields = cls.list_all(short_version=short_version)
         for field in fields:
             if field.id_ == id_:
                 return field
         raise APIException(f"Can't find field with ID {id_}")
 
-    def refresh(self) -> "Field":
+    def refresh(self, short_version: bool = False) -> "Field":
         raise NotImplementedError
 
     @property
@@ -63,8 +65,6 @@ class Field(ListableModel):
         if self._options is None:
             with APIRequester() as requester:
                 url = f"fields/{self.id_}"
-                response, pagination_key = requester.request(
-                    method="GET", url=url, params={"short_version": False}
-                )
+                response, pagination_key = requester.request(method="GET", url=url)
                 self._options = [FieldOption.create_from(option) for option in response]
         return self._options

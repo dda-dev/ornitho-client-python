@@ -347,14 +347,17 @@ class Observation(ListableModel, SearchableModel):
         cls,
         id_observer: int,
         pagination_key: Optional[str] = None,
+        short_version: bool = False,
         **kwargs: Union[str, int, float, bool],
     ) -> Tuple[List["Observation"], Optional[str]]:
         """ Retrieves a (paged) list of observations from one observer
         :param id_observer: Current data, probably received from the API
         :param pagination_key: Pagination key, which can be used to retrieve the next page
+        :param short_version: Indicates, if a short version with foreign keys should be returned by the API.
         :param kwargs: Additional filter values
         :type id_observer: int
         :type pagination_key: Optional[str]
+        :type short_version: bool
         :type kwargs: Union[str, int, float, bool]
         :return: Tuple of observations and an optional pagination key
         :rtype: Tuple[List[Observation], Optional[str]]
@@ -362,6 +365,7 @@ class Observation(ListableModel, SearchableModel):
         observations, pk = cls.list(
             request_all=False,
             pagination_key=pagination_key,
+            short_version=short_version,
             id_observer=id_observer,
             **kwargs,
         )
@@ -369,17 +373,24 @@ class Observation(ListableModel, SearchableModel):
 
     @classmethod
     def by_observer_all(
-        cls, id_observer: int, **kwargs: Union[str, int, float, bool]
+        cls,
+        id_observer: int,
+        short_version: bool = False,
+        **kwargs: Union[str, int, float, bool],
     ) -> List["Observation"]:
         """Retrieves a list of all observations from one observer
         :param id_observer: Current data, probably received from the API
+        :param short_version: Indicates, if a short version with foreign keys should be returned by the API.
         :param kwargs: Additional filter values
         :type id_observer: int
+        :type short_version: bool
         :type kwargs: Union[str, int, float, bool]
         :return: List of observations
         :rtype: List[Observation]
         """
-        observations = cls.list_all(id_observer=id_observer, **kwargs)
+        observations = cls.list_all(
+            id_observer=id_observer, short_version=short_version, **kwargs
+        )
         return observations
 
     @classmethod

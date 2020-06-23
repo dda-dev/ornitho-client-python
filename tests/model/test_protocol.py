@@ -192,6 +192,7 @@ class TestProtocol(TestCase):
         mock_observation.search.assert_called_with(
             request_all=False,
             pagination_key=None,
+            short_version=False,
             only_protocol=self.protocol.name,
             period_choice="all",
         )
@@ -207,6 +208,7 @@ class TestProtocol(TestCase):
         mock_observation.search.assert_called_with(
             request_all=True,
             pagination_key=None,
+            short_version=False,
             only_protocol=self.protocol.name,
             period_choice="range",
         )

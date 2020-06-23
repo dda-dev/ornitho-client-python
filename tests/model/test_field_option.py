@@ -18,7 +18,7 @@ class TestFieldOption(TestCase):
     @mock.patch("ornitho.model.field_option.APIRequester")
     def test_get(self, mock_requester):
         class MockRequesterClass:
-            def request(self, method, url, params):
+            def request(self, method, url, short_version=False, params=None):
                 return (
                     [
                         {

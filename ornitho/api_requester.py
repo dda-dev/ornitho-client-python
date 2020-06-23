@@ -69,8 +69,8 @@ class APIRequester(object):
         method: str,
         url: str,
         pagination_key: Optional[str] = None,
-        short_version: Optional[bool] = False,
-        request_all: Optional[bool] = False,
+        short_version: bool = False,
+        request_all: bool = False,
         params: Optional[Dict[str, Any]] = None,
         body: Optional[Dict[str, Any]] = None,
     ) -> Tuple[Union[bytes, List[Dict[str, str]]], Optional[str]]:
@@ -181,7 +181,7 @@ class APIRequester(object):
         method: str,
         url: str,
         pagination_key: Optional[str] = None,
-        short_version: Optional[bool] = False,
+        short_version: bool = False,
         params: Dict[str, Any] = None,
         body: Dict[str, Any] = None,
     ) -> Tuple[Any, Any]:
@@ -254,7 +254,7 @@ class APIRequester(object):
 
         headers = self.request_headers()
         ornitho.logger.info(
-            f"Request to Ornitho api. method={method}, url=/{url}, params={params}, body={body}"
+            f"Request to Ornitho api. method={method}, url=/{url}, params={params}, short_version={short_version}, body={body}"
         )
         raw_response = self.session.request(method, abs_url, data=data, headers=headers)
 

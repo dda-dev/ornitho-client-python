@@ -85,7 +85,7 @@ class TestField(TestCase):
     @mock.patch("ornitho.model.field.FieldOption")
     def test_options(self, mock_field_option, mock_requester):
         class MockRequesterClass:
-            def request(self, method, url, params):
+            def request(self, method, url):
                 return ["option1", "option2"], "pk"
 
         def enter_requester(requester):

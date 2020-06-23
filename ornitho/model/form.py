@@ -25,7 +25,7 @@ class Form(BaseModel):
         """
         return f"{self.ENDPOINT}"
 
-    def refresh(self) -> "Form":
+    def refresh(self, short_version: bool = False) -> "Form":
         """ Refresh local model
         Call the api and refresh fields from response
         :return: Refreshed Object
@@ -33,7 +33,10 @@ class Form(BaseModel):
         """
         with APIRequester() as requester:
             data, pagination_key = requester.request_raw(
-                method="POST", url=self.instance_url(), body={"id_form": self.id_}
+                method="POST",
+                url=self.instance_url(),
+                short_version=short_version,
+                body={"id_form": self.id_},
             )
             if "data" in data and "forms" in data["data"]:
                 data = data["data"]["forms"][0]

@@ -106,7 +106,7 @@ class TestForm(TestCase):
     @mock.patch("ornitho.model.form.APIRequester")
     def test_refresh(self, mock_requester):
         class MockRequesterClass:
-            def request_raw(self, method, url, body):
+            def request_raw(self, method, url, short_version, body):
                 return {"data": {"forms": [{"time_start": "01:01:01"}]}}, None
 
         def enter_requester(requester):
@@ -119,7 +119,7 @@ class TestForm(TestCase):
     @mock.patch("ornitho.model.form.APIRequester")
     def test_refresh_exception(self, mock_requester):
         class MockRequesterClass:
-            def request_raw(self, method, url, body):
+            def request_raw(self, method, url, short_version, body):
                 return {"data": {"WRONG": [{"time_start": "NEW"}]}}, None
 
         def enter_requester(requester):

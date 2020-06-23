@@ -29,6 +29,7 @@ class Site(BaseModel):
         url: str,
         params: Dict[str, Any] = None,
         body: Dict[str, Any] = None,
+        short_version: bool = False,
     ) -> List[Any]:
         raise NotImplementedError
 
