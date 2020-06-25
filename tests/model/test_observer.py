@@ -78,7 +78,6 @@ class TestObserver(TestCase):
         }
         self.observer = Observer.create_from_ornitho_json(self.observer_json)
 
-
     def test_current(self):
         Observer.request = MagicMock(
             return_value=[
@@ -96,8 +95,7 @@ class TestObserver(TestCase):
         self.assertEqual(observer.name, "TEST_NAME")
         self.assertEqual(observer.surname, "TEST_SURNAME")
         Observer.request.assert_called_with(
-            method="GET",
-            url="observers/current",
+            method="GET", url="observers/current",
         )
 
     def test_external_id(self):

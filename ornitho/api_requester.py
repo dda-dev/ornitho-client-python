@@ -109,7 +109,7 @@ class APIRequester(object):
             return responds, pk
         elif isinstance(responds, list):
             data += responds
-        elif "data" in responds.keys():
+        elif isinstance(responds, dict) and "data" in responds.keys():
             if isinstance(responds["data"], dict):
                 if "sightings" in responds["data"]:
                     data += responds["data"]["sightings"]
@@ -278,6 +278,8 @@ class APIRequester(object):
                 return json.loads(raw_response.text), pagination_key
             elif raw_response.headers["Content-Type"] == "application/pdf":
                 return raw_response.content, pagination_key
+            elif raw_response.headers["Content-Type"] == "text/html; charset=UTF-8":
+                return raw_response.text, pagination_key
             else:
                 raise api_exception.ContentTypeException(raw_response)
         else:

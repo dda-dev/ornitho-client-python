@@ -29,9 +29,21 @@ class TestBaseModel(TestCase):
 
     def setUp(self):
         self.my_model = self.MyModel.create_from_ornitho_json({"id": "1"})
+        self.my_model_2 = self.MyModel.create_from_ornitho_json({"@id": "2"})
 
     def test_id_(self):
         self.assertEqual(1, self.my_model.id_)
+        self.assertEqual(2, self.my_model_2.id_)
+
+        my_model_3 = self.MyModel()
+        self.assertIsNone(my_model_3.id_)
+        my_model_3._raw_data = {"id": 3}
+        self.assertEqual(3, my_model_3.id_)
+
+        my_model_4 = self.MyModel()
+        self.assertIsNone(my_model_4.id_)
+        my_model_4._raw_data = {"@id": 4}
+        self.assertEqual(4, my_model_4.id_)
 
     def test_retrieve(self):
         self.MyModel.refresh = MagicMock()

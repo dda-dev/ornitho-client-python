@@ -444,3 +444,24 @@ class TestAPIRequester(TestCase):
             ),
             headers=APIRequester.request_headers(),
         )
+
+        # Case 14: HTML Content Type
+        self.requester.session.request = MagicMock(
+            return_value=Mock(
+                status_code=200,
+                headers={
+                    "Content-Type": "text/html; charset=UTF-8",
+                    "Content-Length": 4,
+                },
+                text="HTML",
+            )
+        )
+        response, pk = self.requester.request_raw(
+            method="get",
+            url="test",
+            pagination_key="key",
+            body={"test": "filter"},
+            short_version=True,
+        )
+        self.assertEqual("HTML", response)
+        self.assertEqual(pk, None)

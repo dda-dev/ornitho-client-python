@@ -22,6 +22,7 @@ from ornitho.api_requester import APIRequester
 from ornitho.model import (
     Detail,
     Entity,
+    EstimationCode,
     Family,
     Field,
     FieldOption,
@@ -33,6 +34,7 @@ from ornitho.model import (
     Observation,
     Observer,
     Place,
+    Precision,
     Protocol,
     Site,
     Species,

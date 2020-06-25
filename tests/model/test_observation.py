@@ -5,7 +5,14 @@ from unittest.mock import MagicMock
 import pytz
 
 import ornitho
-from ornitho import APIException, Detail, ModificationType, Observation
+from ornitho import (
+    APIException,
+    Detail,
+    EstimationCode,
+    ModificationType,
+    Observation,
+    Precision,
+)
 
 ornitho.consumer_key = "ORNITHO_CONSUMER_KEY"
 ornitho.consumer_secret = "ORNITHO_CONSUMER_SECRET"
@@ -93,6 +100,14 @@ class TestObservation(TestCase):
             self.observation.id_observer,
         )
 
+        obs = Observation()
+        obs._raw_data = {"observers": [{"id": 2}]}
+        self.assertEqual(2, obs.id_observer)
+
+        obs = Observation()
+        obs.id_observer = 3
+        self.assertEqual(3, obs.id_observer)
+
     def test_traid(self):
         self.assertEqual(
             int(self.observation_json["observers"][0]["traid"]), self.observation.traid
@@ -107,11 +122,27 @@ class TestObservation(TestCase):
             self.observation.timing,
         )
 
+        obs = Observation()
+        now = datetime.now().replace(microsecond=0)
+        obs.timing = now
+        self.assertEqual(now.astimezone(), obs.timing)
+        now2 = datetime.now().replace(microsecond=0).astimezone()
+        obs.timing = now2
+        self.assertEqual(now2, obs.timing)
+
     def test_coord_lat(self):
         self.assertEqual(
             float(self.observation_json["observers"][0]["coord_lat"]),
             self.observation.coord_lat,
         )
+
+        obs = Observation()
+        coord_lat = 1.23
+        obs.coord_lat = coord_lat
+        self.assertEqual(coord_lat, obs.coord_lat)
+        coord_lat2 = 2.34
+        obs.coord_lat = coord_lat2
+        self.assertEqual(coord_lat2, obs.coord_lat)
 
     def test_coord_lon(self):
         self.assertEqual(
@@ -119,11 +150,27 @@ class TestObservation(TestCase):
             self.observation.coord_lon,
         )
 
+        obs = Observation()
+        coord_lon = 1.23
+        obs.coord_lon = coord_lon
+        self.assertEqual(coord_lon, obs.coord_lon)
+        coord_lon2 = 2.34
+        obs.coord_lon = coord_lon2
+        self.assertEqual(coord_lon2, obs.coord_lon)
+
     def test_altitude(self):
         self.assertEqual(
             int(self.observation_json["observers"][0]["altitude"]),
             self.observation.altitude,
         )
+
+        obs = Observation()
+        altitude = 1
+        obs.altitude = altitude
+        self.assertEqual(altitude, obs.altitude)
+        altitude2 = 2
+        obs.altitude = altitude2
+        self.assertEqual(altitude2, obs.altitude)
 
     def test_id_form(self):
         self.assertEqual(
@@ -133,25 +180,56 @@ class TestObservation(TestCase):
 
     def test_precision(self):
         self.assertEqual(
-            self.observation_json["observers"][0]["precision"],
+            Precision(self.observation_json["observers"][0]["precision"]),
             self.observation.precision,
         )
 
+        obs = Observation()
+        precision = Precision.PRECISE
+        obs.precision = precision
+        self.assertEqual(precision, obs.precision)
+        precision2 = Precision.PLACE
+        obs.precision = precision2
+        self.assertEqual(precision2, obs.precision)
+
     def test_estimation_code(self):
         self.assertEqual(
-            self.observation_json["observers"][0]["estimation_code"],
+            EstimationCode(self.observation_json["observers"][0]["estimation_code"]),
             self.observation.estimation_code,
         )
+
+        obs = Observation()
+        estimation_code = EstimationCode.EXACT_VALUE
+        obs.estimation_code = estimation_code
+        self.assertEqual(estimation_code, obs.estimation_code)
+        estimation_code2 = EstimationCode.ESTIMATION
+        obs.estimation_code = estimation_code2
+        self.assertEqual(estimation_code2, obs.estimation_code)
 
     def test_id_species(self):
         self.assertEqual(
             int(self.observation_json["species"]["@id"]), self.observation.id_species
         )
 
+        obs = Observation()
+        obs._raw_data = {"species": {"id": 1}}
+        self.assertEqual(1, obs.id_species)
+
+        obs.id_species = 2
+        self.assertEqual(2, obs.id_species)
+
     def test_count(self):
         self.assertEqual(
             int(self.observation_json["observers"][0]["count"]), self.observation.count
         )
+
+        obs = Observation()
+        count = 1
+        obs.count = count
+        self.assertEqual(count, obs.count)
+        count2 = 2
+        obs.count = count2
+        self.assertEqual(count2, obs.count)
 
     def test_flight_number(self):
         self.assertEqual(
@@ -233,20 +311,53 @@ class TestObservation(TestCase):
             self.observation_json["observers"][0]["comment"], self.observation.comment,
         )
 
+        obs = Observation()
+        comment = "comment"
+        obs.comment = comment
+        self.assertEqual(comment, obs.comment)
+        comment2 = "comment2"
+        obs.comment = comment2
+        self.assertEqual(comment2, obs.comment)
+
     def test_hidden_comment(self):
         self.assertEqual(
             self.observation_json["observers"][0]["hidden_comment"],
             self.observation.hidden_comment,
         )
 
+        obs = Observation()
+        hidden_comment = "hidden_comment"
+        obs.hidden_comment = hidden_comment
+        self.assertEqual(hidden_comment, obs.hidden_comment)
+        hidden_comment2 = "hidden_comment2"
+        obs.hidden_comment = hidden_comment2
+        self.assertEqual(hidden_comment2, obs.hidden_comment)
+
     def test_hidden(self):
         self.assertFalse(self.observation.hidden)
 
+        obs = Observation()
+        hidden = True
+        obs.hidden = hidden
+        self.assertTrue(obs.hidden)
+        hidden2 = False
+        obs.hidden = hidden2
+        self.assertFalse(obs.hidden_comment)
+
     def test_id_atlas_code(self):
         self.assertEqual(
-            self.observation_json["observers"][0]["atlas_code"]["@id"].split("_")[1],
+            int(
+                self.observation_json["observers"][0]["atlas_code"]["@id"].split("_")[1]
+            ),
             self.observation.id_atlas_code,
         )
+
+        obs = Observation()
+        obs.id_atlas_code = "3_1"
+        self.assertEqual(1, obs.id_atlas_code)
+
+        obs.id_atlas_code = "3_2"
+        self.assertEqual(2, obs.id_atlas_code)
 
     def test_atlas_code_text(self):
         self.assertEqual(
@@ -280,6 +391,13 @@ class TestObservation(TestCase):
         self.assertEqual(
             details, Observation.create_from_ornitho_json(obs_json).details
         )
+
+        obs = Observation()
+        obs.details = details
+        self.assertEqual(details, obs.details)
+        details2 = [Detail(1, "U", "PULL"), Detail(12, "M", "AD"), Detail(4, "F", "AD")]
+        obs.details = details2
+        self.assertEqual(details2, obs.details)
 
     def test_insert_date(self):
         self.assertEqual(
@@ -322,6 +440,13 @@ class TestObservation(TestCase):
             Observation.create_from_ornitho_json(obs_json).id_resting_habitat
         )
 
+        obs = Observation()
+        obs.id_resting_habitat = "1_1"
+        self.assertEqual("1_1", obs.id_resting_habitat)
+
+        obs.id_resting_habitat = "2_2"
+        self.assertEqual("2_2", obs.id_resting_habitat)
+
     def test_id_observation_detail(self):
         self.assertEqual(
             self.observation_json["observers"][0]["observation_detail"],
@@ -346,13 +471,43 @@ class TestObservation(TestCase):
             Observation.create_from_ornitho_json(obs_json).id_observation_detail
         )
 
+        obs = Observation()
+        obs.id_observation_detail = "4_1"
+        self.assertEqual("4_1", obs.id_observation_detail)
+
+        obs.id_observation_detail = "4_2"
+        self.assertEqual("4_2", obs.id_observation_detail)
+
     def test_species(self):
         species = self.observation.species
         self.assertEqual(species._raw_data, self.observation_json["species"])
 
+        with mock.patch("ornitho.model.observation.Species") as mock_species:
+            mock_species.id_.return_value = 1
+            mock_species._raw_data.return_value = {"id": 1}
+            mock_species.get.return_value = mock_species
+
+            obs = Observation()
+            obs.species = mock_species.get(1)
+            self.assertEqual(mock_species.get.return_value, obs.species)
+
+            obs2 = Observation()
+            obs2._raw_data = {"species": {"id": 2}}
+            self.assertEqual(mock_species.get.return_value, obs2.species)
+            mock_species.get.assert_called_with(2)
+
     def test_observer(self):
         observer = self.observation.observer
         self.assertEqual(observer._raw_data, self.observation_json["observers"][0])
+
+        with mock.patch("ornitho.model.observation.Observer") as mock_observer:
+            mock_observer.id_.return_value = 1
+            mock_observer._raw_data.return_value = {"id": 1}
+            mock_observer.get.return_value = mock_observer
+
+            obs = Observation()
+            obs.observer = mock_observer
+            self.assertEqual(mock_observer.get.return_value, obs.observer)
 
     def test_place(self):
         place = self.observation.place
@@ -365,23 +520,41 @@ class TestObservation(TestCase):
     @mock.patch("ornitho.model.observation.FieldOption")
     def test_resting_habitat(self, mock_field_option):
         mock_field_option.get.return_value = "Resting habitat retrieved"
+        mock_field_option.id_.return_value = "1_1"
+
         resting_habitat = self.observation.resting_habitat
         mock_field_option.get.assert_called_with(self.observation.id_resting_habitat)
         self.assertEqual(resting_habitat, "Resting habitat retrieved")
 
+        obs = Observation()
+        obs.resting_habitat = mock_field_option
+        self.assertEqual(mock_field_option.id_, obs.resting_habitat.id_)
+
     @mock.patch("ornitho.model.observation.FieldOption")
     def test_observation_detail(self, mock_field_option):
         mock_field_option.get.return_value = "Observation Detail retrieved"
+        mock_field_option.id_.return_value = "4_1"
+
         observation_detail = self.observation.observation_detail
         mock_field_option.get.assert_called_with(self.observation.id_observation_detail)
         self.assertEqual(observation_detail, "Observation Detail retrieved")
 
+        obs = Observation()
+        obs.observation_detail = mock_field_option
+        self.assertEqual(mock_field_option.id_, obs.observation_detail.id_)
+
     @mock.patch("ornitho.model.observation.FieldOption")
     def test_atlas_code(self, mock_field_option):
         mock_field_option.get.return_value = "Atlas Code retrieved"
+        mock_field_option.id_.return_value = "2"
+
         atlas_code = self.observation.atlas_code
         mock_field_option.get.assert_called_with(f"3_{self.observation.id_atlas_code}")
         self.assertEqual(atlas_code, "Atlas Code retrieved")
+
+        obs = Observation()
+        obs.atlas_code = mock_field_option
+        self.assertEqual(mock_field_option.id_, obs.atlas_code.id_)
 
     def test_by_observer(self):
         Observation.list = MagicMock(return_value=["obs", "pk"])
@@ -457,3 +630,81 @@ class TestObservation(TestCase):
                 "only_protocol": "CBBM-Mock",
             },
         )
+
+    @mock.patch("ornitho.model.observation.CreateableModel.create_in_ornitho")
+    def test_create(self, mock_createable_model):
+        mock_createable_model.return_value = 1
+        mock_detail = mock.Mock(spec=Detail)
+        mock_detail.count = 1
+        mock_detail.sex = "F"
+        mock_detail.age = "AD"
+
+        obs = Observation.create(
+            observer=1,
+            species=1,
+            timing=datetime.now(),
+            coord_lat=1.23,
+            coord_lon=4.56,
+            altitude=1,
+            precision=Precision.PRECISE,
+            estimation_code=EstimationCode.EXACT_VALUE,
+            count=2,
+            comment="TEST",
+            hidden_comment="HIDDEN TEST",
+            hidden=True,
+            atlas_code="3_2",
+            details=[mock_detail],
+            resting_habitat="1_1",
+            observation_detail="4_1",
+        )
+        mock_createable_model.assert_called()
+        self.assertEqual(1, obs.id_)
+        self.assertEqual(1, obs.observer.id_)
+        self.assertEqual(1, obs.species.id_)
+        self.assertEqual(1.23, obs.coord_lat)
+        self.assertEqual(4.56, obs.coord_lon)
+        self.assertEqual(1, obs.altitude)
+        self.assertEqual(2, obs.count)
+        self.assertEqual("TEST", obs.comment)
+        self.assertEqual("HIDDEN TEST", obs.hidden_comment)
+        self.assertTrue(obs.hidden)
+        self.assertEqual([mock_detail], obs.details)
+
+        mock_createable_model.return_value = 2
+        mock_observer = mock.Mock(spec=ornitho.Observer)
+        mock_observer.id_ = 2
+        mock_species = mock.Mock(spec=ornitho.Species)
+        mock_species.id_ = 2
+        mock_atlas_code = mock.Mock(spec=ornitho.FieldOption)
+        mock_atlas_code.id_ = "3_4"
+        mock_resting_habitat = mock.Mock(spec=ornitho.FieldOption)
+        mock_resting_habitat.id_ = "1_4"
+        mock_observation_detail = mock.Mock(spec=ornitho.FieldOption)
+        mock_observation_detail.id_ = "4_4"
+
+        obs2 = Observation.create(
+            observer=mock_observer,
+            species=mock_species,
+            timing=datetime.now(),
+            coord_lat=1.23,
+            coord_lon=4.56,
+            altitude=1,
+            precision=Precision.PRECISE,
+            estimation_code=EstimationCode.EXACT_VALUE,
+            count=2,
+            comment="TEST",
+            hidden_comment="HIDDEN TEST",
+            hidden=True,
+            atlas_code=mock_atlas_code,
+            resting_habitat=mock_resting_habitat,
+            observation_detail=mock_observation_detail,
+        )
+        mock_createable_model.assert_called()
+        self.assertEqual(2, obs2.id_)
+        self.assertEqual(2, obs2.observer.id_)
+        self.assertEqual(2, obs2.species.id_)
+        self.assertEqual(Precision.PRECISE, obs2.precision)
+        self.assertEqual(EstimationCode.EXACT_VALUE, obs2.estimation_code)
+        self.assertEqual("3_4", obs2.atlas_code.id_)
+        self.assertEqual("1_4", obs2.resting_habitat.id_)
+        self.assertEqual("4_4", obs2.observation_detail.id_)

@@ -4,7 +4,13 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 import ornitho.model.form
 from ornitho import APIException
-from ornitho.model.abstract import BaseModel, ListableModel, SearchableModel
+from ornitho.model.abstract import (
+    BaseModel,
+    CreateableModel,
+    DeletableModel,
+    ListableModel,
+    SearchableModel,
+)
 from ornitho.model.abstract.base_model import check_raw_data
 from ornitho.model.detail import Detail
 from ornitho.model.field_option import FieldOption
@@ -20,15 +26,30 @@ class ModificationType(Enum):
     ALL = "all"
 
 
-class Observation(ListableModel, SearchableModel):
+class EstimationCode(Enum):
+    EXACT_VALUE = "EXACT_VALUE"
+    ESTIMATION = "ESTIMATION"
+    MINIMUM = "MINIMUM"
+    NO_VALUE = "NO_VALUE"
+
+
+class Precision(Enum):
+    PRECISE = "precise"
+    SQUARE = "square"
+    PLACE = "place"
+
+
+class Observation(ListableModel, SearchableModel, CreateableModel, DeletableModel):
     """Representation of on Observation"""
 
     ENDPOINT: str = "observations"
 
-    def __init__(self, id_: int, modification_type: ModificationType = None) -> None:
+    def __init__(
+        self, id_: int = None, modification_type: ModificationType = None
+    ) -> None:
         """ Observation constructor
-        :param id_: ID, which is used to get the observation from Biolovison
-        :param modification_type: Set, if the observation was retrieved via the 'diff' method
+        :param id_: ID, which is used to get the observation from Biolovison – None if a new observation will be created
+        :param modification_type: Set if the observation was retrieved via the 'diff' method
         :type id_: int
         :type modification_type: ModificationType
         """
@@ -57,7 +78,15 @@ class Observation(ListableModel, SearchableModel):
     @property  # type: ignore
     @check_raw_data("observers")
     def id_observer(self) -> int:
-        return int(self._raw_data["observers"][0]["@id"])
+        if "id" in self._raw_data["observers"][0]:
+            return int(self._raw_data["observers"][0]["id"])
+        else:
+            return int(self._raw_data["observers"][0]["@id"])
+
+    @id_observer.setter
+    def id_observer(self, value: int):
+        self._observer = None
+        self._raw_data["observers"] = [{"@id": value.__str__()}]
 
     @property  # type: ignore
     @check_raw_data("observers")
@@ -68,24 +97,58 @@ class Observation(ListableModel, SearchableModel):
     @check_raw_data("observers")
     def timing(self) -> datetime:
         timing = datetime.fromtimestamp(
-            int(self._raw_data["observers"][0].get("timing")["@timestamp"]),
+            int(self._raw_data["observers"][0]["timing"]["@timestamp"]),
         ).astimezone()
         return timing
+
+    @timing.setter
+    def timing(self, value: datetime):
+        if "observers" in self._raw_data:
+            self._raw_data["observers"][0]["timing"] = {
+                "@timestamp": int(value.timestamp()).__str__()
+            }
+        else:
+            self._raw_data["observers"] = [
+                {"timing": {"@timestamp": int(value.timestamp()).__str__()}}
+            ]
+        # Add date to raw_data, so ornitho can process it
+        self._raw_data["date"] = {"@timestamp": int(value.timestamp()).__str__()}
 
     @property  # type: ignore
     @check_raw_data("observers")
     def coord_lat(self) -> float:
         return float(self._raw_data["observers"][0]["coord_lat"])
 
+    @coord_lat.setter
+    def coord_lat(self, value: float):
+        if "observers" in self._raw_data:
+            self._raw_data["observers"][0]["coord_lat"] = value.__str__()
+        else:
+            self._raw_data["observers"] = [{"coord_lat": value.__str__()}]
+
     @property  # type: ignore
     @check_raw_data("observers")
     def coord_lon(self) -> float:
         return float(self._raw_data["observers"][0]["coord_lon"])
 
+    @coord_lon.setter
+    def coord_lon(self, value: float):
+        if "observers" in self._raw_data:
+            self._raw_data["observers"][0]["coord_lon"] = value.__str__()
+        else:
+            self._raw_data["observers"] = [{"coord_lon": value.__str__()}]
+
     @property  # type: ignore
     @check_raw_data("observers")
     def altitude(self) -> int:
         return int(self._raw_data["observers"][0]["altitude"])
+
+    @altitude.setter
+    def altitude(self, value: int):
+        if "observers" in self._raw_data:
+            self._raw_data["observers"][0]["altitude"] = value.__str__()
+        else:
+            self._raw_data["observers"] = [{"altitude": value.__str__()}]
 
     @property  # type: ignore
     @check_raw_data("observers")
@@ -98,27 +161,56 @@ class Observation(ListableModel, SearchableModel):
 
     @property  # type: ignore
     @check_raw_data("observers")
-    def precision(self) -> str:
-        return self._raw_data["observers"][0]["precision"]
+    def precision(self) -> Precision:
+        return Precision(self._raw_data["observers"][0]["precision"])
+
+    @precision.setter
+    def precision(self, value: Precision):
+        if "observers" in self._raw_data:
+            self._raw_data["observers"][0]["precision"] = value.value
+        else:
+            self._raw_data["observers"] = [{"precision": value.value}]
 
     @property  # type: ignore
     @check_raw_data("observers")
-    def estimation_code(self) -> Optional[str]:
+    def estimation_code(self) -> Optional[EstimationCode]:
         return (
-            self._raw_data["observers"][0]["estimation_code"]
+            EstimationCode(self._raw_data["observers"][0]["estimation_code"])
             if "estimation_code" in self._raw_data["observers"][0]
             else None
         )
 
+    @estimation_code.setter
+    def estimation_code(self, value: EstimationCode):
+        if "observers" in self._raw_data:
+            self._raw_data["observers"][0]["estimation_code"] = value.value
+        else:
+            self._raw_data["observers"] = [{"estimation_code": value.value}]
+
     @property  # type: ignore
     @check_raw_data("species")
     def id_species(self) -> int:
-        return int(self._raw_data["species"]["@id"])
+        if "id" in self._raw_data["species"]:
+            return int(self._raw_data["species"]["id"])
+        else:
+            return int(self._raw_data["species"]["@id"])
+
+    @id_species.setter
+    def id_species(self, value: int):
+        self._species = None
+        self._raw_data["species"] = {"@id": value.__str__()}
 
     @property  # type: ignore
     @check_raw_data("observers")
     def count(self) -> int:
         return int(self._raw_data["observers"][0]["count"])
+
+    @count.setter
+    def count(self, value: str):
+        if "observers" in self._raw_data:
+            self._raw_data["observers"][0]["count"] = value.__str__()
+        else:
+            self._raw_data["observers"] = [{"count": value.__str__()}]
 
     @property  # type: ignore
     @check_raw_data("observers")
@@ -182,6 +274,13 @@ class Observation(ListableModel, SearchableModel):
             else None
         )
 
+    @comment.setter
+    def comment(self, value: str):
+        if "observers" in self._raw_data:
+            self._raw_data["observers"][0]["comment"] = value
+        else:
+            self._raw_data["observers"] = [{"comment": value}]
+
     @property  # type: ignore
     @check_raw_data("observers")
     def hidden_comment(self) -> Optional[str]:
@@ -190,6 +289,13 @@ class Observation(ListableModel, SearchableModel):
             if "hidden_comment" in self._raw_data["observers"][0]
             else None
         )
+
+    @hidden_comment.setter
+    def hidden_comment(self, value: str):
+        if "observers" in self._raw_data:
+            self._raw_data["observers"][0]["hidden_comment"] = value
+        else:
+            self._raw_data["observers"] = [{"hidden_comment": value}]
 
     @property  # type: ignore
     @check_raw_data("observers")
@@ -201,17 +307,32 @@ class Observation(ListableModel, SearchableModel):
             else True
         )
 
+    @hidden.setter
+    def hidden(self, value: bool):
+        if "observers" in self._raw_data:
+            self._raw_data["observers"][0]["hidden"] = value
+        else:
+            self._raw_data["observers"] = [{"hidden": value}]
+
     @property  # type: ignore
     @check_raw_data("observers")
     def id_atlas_code(self) -> Optional[int]:
         id_atlas_code = (
             None
             if "atlas_code" not in self._raw_data["observers"][0]
-            else self._raw_data["observers"][0]["atlas_code"]["@id"].split("_")[1]
+            else int(self._raw_data["observers"][0]["atlas_code"]["@id"].split("_")[1])
             if type(self._raw_data["observers"][0]["atlas_code"]) is dict
-            else self._raw_data["observers"][0]["atlas_code"]
+            else int(self._raw_data["observers"][0]["atlas_code"])
         )
         return id_atlas_code
+
+    @id_atlas_code.setter
+    def id_atlas_code(self, value: str):
+        self._atlas_code = None
+        if "observers" in self._raw_data:
+            self._raw_data["observers"][0]["atlas_code"] = {"@id": value}
+        else:
+            self._raw_data["observers"] = [{"atlas_code": {"@id": value}}]
 
     @property  # type: ignore
     @check_raw_data("observers")
@@ -242,6 +363,21 @@ class Observation(ListableModel, SearchableModel):
                     for detail in self._raw_data["observers"][0]["details"]
                 ]
         return details
+
+    @details.setter
+    def details(self, value: List[Detail]):
+        details_ornitho_format = [
+            {
+                "count": detail.count.__str__(),
+                "sex": {"@id": detail.sex},
+                "age": {"@id": detail.age},
+            }
+            for detail in value
+        ]
+        if "observers" in self._raw_data:
+            self._raw_data["observers"][0]["details"] = details_ornitho_format
+        else:
+            self._raw_data["observers"] = [{"details": details_ornitho_format}]
 
     @property  # type: ignore
     @check_raw_data("observers")
@@ -282,6 +418,13 @@ class Observation(ListableModel, SearchableModel):
                 return self._raw_data["observers"][0]["resting_habitat"]
         return None
 
+    @id_resting_habitat.setter
+    def id_resting_habitat(self, value: str):
+        if "observers" in self._raw_data:
+            self._raw_data["observers"][0]["resting_habitat"] = value
+        else:
+            self._raw_data["observers"] = [{"resting_habitat": value}]
+
     @property  # type: ignore
     @check_raw_data("observers")
     def id_observation_detail(self) -> Optional[str]:
@@ -292,13 +435,31 @@ class Observation(ListableModel, SearchableModel):
                 return self._raw_data["observers"][0]["observation_detail"]
         return None
 
+    @id_observation_detail.setter
+    def id_observation_detail(self, value: str):
+        if "observers" in self._raw_data:
+            self._raw_data["observers"][0]["observation_detail"] = value
+        else:
+            self._raw_data["observers"] = [{"observation_detail": value}]
+
     @property  # type: ignore
     @check_raw_data("species")
     def species(self) -> Species:
         """ Observed Species """
         if self._species is None:
-            self._species = Species.create_from_ornitho_json(self._raw_data["species"])
+            if "@id" in self._raw_data["species"]:
+                self._species = Species.create_from_ornitho_json(
+                    self._raw_data["species"]
+                )
+            else:
+                self._species = Species.get(self._raw_data["species"]["id"])
+                self._raw_data["species"] = self._species._raw_data
         return self._species
+
+    @species.setter
+    def species(self, value: Species):
+        self.id_species = value.id_
+        self._species = value
 
     @property  # type: ignore
     @check_raw_data("observers")
@@ -310,7 +471,13 @@ class Observation(ListableModel, SearchableModel):
             )
         return self._observer
 
-    @property
+    @observer.setter
+    def observer(self, value: Observer):
+        self.id_observer = value.id_
+        self._observer = value
+
+    @property  # type: ignore
+    @check_raw_data("place")
     def place(self) -> Place:
         """ Place of the observation """
         if self._place is None:
@@ -332,6 +499,11 @@ class Observation(ListableModel, SearchableModel):
             self._resting_habitat = FieldOption.get(self.id_resting_habitat)
         return self._resting_habitat
 
+    @resting_habitat.setter
+    def resting_habitat(self, value: FieldOption):
+        self.id_resting_habitat = value.id_
+        self._resting_habitat = value
+
     @property
     def observation_detail(self) -> Optional[FieldOption]:
         """ Observation detail of the observation """
@@ -339,12 +511,22 @@ class Observation(ListableModel, SearchableModel):
             self._observation_detail = FieldOption.get(self.id_observation_detail)
         return self._observation_detail
 
+    @observation_detail.setter
+    def observation_detail(self, value: FieldOption):
+        self.id_observation_detail = value.id_
+        self._observation_detail = value
+
     @property
     def atlas_code(self) -> Optional[FieldOption]:
         """ Atlas Code of the observation """
         if self._atlas_code is None and self.id_atlas_code:
             self._atlas_code = FieldOption.get(f"3_{self.id_atlas_code}")
         return self._atlas_code
+
+    @atlas_code.setter
+    def atlas_code(self, value: FieldOption):
+        self.id_atlas_code = value.id_
+        self._atlas_code = value
 
     @classmethod
     def by_observer(
@@ -469,3 +651,96 @@ class Observation(ListableModel, SearchableModel):
                     )
                 )
         return observations
+
+    @classmethod
+    def create(  # type: ignore
+        cls,
+        observer: Union[int, Observer],
+        species: Union[int, Species],
+        timing: datetime,
+        coord_lat: float,
+        coord_lon: float,
+        precision: Precision,
+        estimation_code: EstimationCode,
+        count: int = None,
+        altitude: int = None,
+        comment: str = None,
+        hidden_comment: str = None,
+        hidden: bool = False,
+        atlas_code: Union[str, FieldOption] = None,
+        details: List[Detail] = None,
+        resting_habitat: Union[str, FieldOption] = None,
+        observation_detail: Union[str, FieldOption] = None,
+    ) -> "Observation":
+        observation = cls()
+
+        if isinstance(observer, Observer):
+            observation.observer = observer
+        else:
+            observation.id_observer = observer
+
+        if isinstance(species, Species):
+            observation.species = species
+        else:
+            observation.id_species = species
+
+        observation.timing = timing
+        observation.coord_lat = coord_lat
+        observation.coord_lon = coord_lon
+        observation.precision = precision
+        observation.estimation_code = estimation_code
+        if count:
+            observation.count = count
+        if altitude:
+            observation.altitude = altitude
+        if comment:
+            observation.comment = comment
+
+        if hidden_comment:
+            observation.hidden_comment = hidden_comment
+
+        if hidden:
+            observation.hidden = hidden
+
+        if atlas_code:
+            if isinstance(atlas_code, FieldOption):
+                observation.atlas_code = atlas_code
+            else:
+                observation.id_atlas_code = atlas_code
+
+        if details:
+            observation.details = details
+
+        if resting_habitat:
+            if isinstance(resting_habitat, FieldOption):
+                observation.resting_habitat = resting_habitat
+                # Adjust raw_data before sending to ornitho (api inconsistency)
+                resting_habitat_id_adjusted = resting_habitat.id_.__str__().split("_")[
+                    1
+                ]
+            else:
+                observation.id_resting_habitat = resting_habitat
+                resting_habitat_id_adjusted = resting_habitat.split("_")[1]
+            # Adjust raw_data before sending to ornitho (api inconsistency)
+            observation._raw_data["observers"][0][
+                "resting_habitat"
+            ] = resting_habitat_id_adjusted
+
+        if observation_detail:
+            if isinstance(observation_detail, FieldOption):
+                observation.observation_detail = observation_detail
+                observation_detail_id_adjusted = observation_detail.id_.__str__().split(
+                    "_"
+                )[1]
+            else:
+                observation.id_observation_detail = observation_detail
+                observation_detail_id_adjusted = observation_detail.split("_")[1]
+            # Adjust raw_data before sending to ornitho (api inconsistency)
+            observation._raw_data["observers"][0][
+                "observation_detail"
+            ] = observation_detail_id_adjusted
+
+        observation._id = cls.create_in_ornitho(
+            data={"sightings": [observation._raw_data]}
+        )
+        return observation

@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Any, Dict, List, Type, TypeVar, Union
+from typing import Any, Dict, List, Optional, Type, TypeVar, Union
 
 from ornitho.api_exception import APIException
 from ornitho.api_requester import APIRequester
@@ -13,19 +13,24 @@ class BaseModel(ABC):
 
     ENDPOINT: str
 
-    def __init__(self, id_: Union[int, str]):
+    def __init__(self, id_: Union[int, str] = None):
         """ Base model constructor
         :param id_: Unique identifier
         :type id_: Union[int, str]
         """
         super(BaseModel, self).__init__()
-        self._id: Union[int, str] = id_
+        self._id: Optional[Union[int, str]] = id_
         self._raw_data: Dict[str, Any] = dict()
         self._previous: Dict[str, Any] = dict()
 
     @property
-    def id_(self) -> Union[int, str]:
+    def id_(self) -> Optional[Union[int, str]]:
         """ Unique identifier """
+        if self._id is None:
+            if "id" in self._raw_data:
+                self._id = self._raw_data["id"]
+            elif "@id" in self._raw_data:
+                self._id = self._raw_data["@id"]
         return self._id
 
     @classmethod
@@ -123,7 +128,8 @@ def check_raw_data(key):
     def decorator(func):
         def wrapper(self: T):
             if key not in self._raw_data:
-                self.refresh()
+                if self._id is not None:
+                    self.refresh()
             return func(self)
 
         return wrapper

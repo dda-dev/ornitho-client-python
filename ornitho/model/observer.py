@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import Optional
 
-from ornitho import APIRequester
 from ornitho.model.abstract import ListableModel
 from ornitho.model.abstract.base_model import check_refresh
 
@@ -12,9 +11,7 @@ class Observer(ListableModel):
     @classmethod
     def current(cls) -> "Observer":
         url = f"{cls.ENDPOINT}/current"
-        response = cls.request(
-            method="GET", url=url
-        )
+        response = cls.request(method="GET", url=url)
         return cls.create_from_ornitho_json(response[0])
 
     @property  # type: ignore
