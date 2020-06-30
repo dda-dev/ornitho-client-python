@@ -93,3 +93,15 @@ class Place(ListableModel):
     @property
     def country(self) -> Optional[str]:
         return self._raw_data["country"] if "country" in self._raw_data else None
+
+    @classmethod
+    def find_closest_place(
+        cls, coord_lat: float, coord_lon: float, get_hidden: bool = False, **kwargs
+    ) -> "Place":
+        return cls.list_all(
+            find_closest_place="1",
+            coord_lat=coord_lat,
+            coord_lon=coord_lon,
+            get_hidden=get_hidden,
+            **kwargs
+        )[0]

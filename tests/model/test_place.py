@@ -87,3 +87,10 @@ class TestPlace(TestCase):
 
     def test_country(self):
         self.assertIsNone(self.place.country)
+
+    @mock.patch("ornitho.model.place.ListableModel.list_all")
+    def test_find_closest_place(self, mock_list_all):
+        mock_list_all.return_value = ["Place"]
+
+        place = Place.find_closest_place(1.1, 2.2)
+        self.assertEqual(place, "Place")
