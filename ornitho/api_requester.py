@@ -222,7 +222,10 @@ class APIRequester(object):
 
         if params:
             for key, value in params.items():
-                if isinstance(value, datetime):
+                if isinstance(value, bool):
+                    value = 1 if value else 0
+                    params[key] = value
+                elif isinstance(value, datetime):
                     value = value.replace(microsecond=0)
                     if value.tzinfo:
                         value = value.astimezone(

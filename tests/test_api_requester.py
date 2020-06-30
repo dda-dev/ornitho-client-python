@@ -465,3 +465,32 @@ class TestAPIRequester(TestCase):
         )
         self.assertEqual("HTML", response)
         self.assertEqual(pk, None)
+
+        # Case 15: Boolean as parameter
+        self.requester.session.request = MagicMock(
+            return_value=Mock(
+                status_code=200,
+                headers={
+                    "pagination_key": "new_key",
+                    "Content-Type": "application/json; charset=utf-8",
+                    "Content-Length": 23,
+                },
+                text='{"data": [{"id": "1"}]}',
+            )
+        )
+        test_bool = True
+        response, pk = self.requester.request_raw(
+            method="get",
+            url="test",
+            pagination_key="key",
+            params={"test": test_bool},
+            short_version=True,
+        )
+        self.assertEqual({"data": [{"id": "1"}]}, response)
+        self.assertEqual(pk, "new_key")
+        self.requester.session.request.assert_called_with(
+            "get",
+            f"ORNITHO_API_BASEtest?user_email=ORNITHO_USER_EMAIL&user_pw=ORNITHO_USER_PW&pagination_key=key&short_version=1&test={1 if test_bool else 0}",
+            data=None,
+            headers=APIRequester.request_headers(),
+        )
