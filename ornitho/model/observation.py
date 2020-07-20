@@ -37,6 +37,19 @@ class Precision(Enum):
     PRECISE = "precise"
     SQUARE = "square"
     PLACE = "place"
+    POLYGON = "polygone"
+
+
+class Source(Enum):
+    WEB = "WEB"
+    MOBILE_DELAYED = "MOBILE_DELAYED"
+    MOBILE_LIVE = "MOBILE_LIVE"
+    MOBILE_FORM_LIVE = "MOBILE_FORM_LIVE"
+    MOBILE_FORM_DELAYED = "MOBILE_FORM_DELAYED"
+    MOBILE_LIVE_IOS = "MOBILE_LIVE_IOS"
+    MOBILE_DELAYED_IOS = "MOBILE_DELAYED_IOS"
+    MOBILE_FORM_LIVE_IOS = "MOBILE_FORM_LIVE_IOS"
+    MOBILE_FORM_DELAYED_IOS = "MOBILE_FORM_DELAYED_IOS"
 
 
 class Observation(ListableModel, SearchableModel, CreateableModel, DeletableModel):
@@ -242,8 +255,8 @@ class Observation(ListableModel, SearchableModel, CreateableModel, DeletableMode
 
     @property  # type: ignore
     @check_raw_data("observers")
-    def source(self) -> str:
-        return self._raw_data["observers"][0]["source"]
+    def source(self) -> Source:
+        return Source(self._raw_data["observers"][0]["source"])
 
     @property  # type: ignore
     @check_raw_data("observers")

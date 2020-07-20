@@ -13,6 +13,7 @@ from ornitho.model.observation import (
     ModificationType,
     Observation,
     Precision,
+    Source,
 )
 from ornitho.model.observer import Observer
 from ornitho.model.place import Place

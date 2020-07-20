@@ -37,6 +37,7 @@ from ornitho.model import (
     Precision,
     Protocol,
     Site,
+    Source,
     Species,
     TaxonomicGroup,
     TerritorialUnit,

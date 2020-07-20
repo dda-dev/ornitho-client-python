@@ -12,6 +12,7 @@ from ornitho import (
     ModificationType,
     Observation,
     Precision,
+    Source,
 )
 
 ornitho.consumer_key = "ORNITHO_CONSUMER_KEY"
@@ -248,7 +249,8 @@ class TestObservation(TestCase):
 
     def test_source(self):
         self.assertEqual(
-            self.observation_json["observers"][0]["source"], self.observation.source,
+            Source(self.observation_json["observers"][0]["source"]),
+            self.observation.source,
         )
 
     @mock.patch("ornitho.model.observation.Media")
