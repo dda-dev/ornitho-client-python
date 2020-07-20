@@ -248,6 +248,18 @@ class Form(BaseModel):
         return None
 
     @property
+    def id_moving_harvest(self) -> Optional[str]:
+        if (
+            "protocol" in self._raw_data
+            and "moving_harvest" in self._raw_data["protocol"]
+        ):
+            if type(self._raw_data["protocol"]["moving_harvest"]) is dict:
+                return self._raw_data["protocol"]["moving_harvest"]["@id"].split(",")[0]
+            else:
+                return self._raw_data["protocol"]["moving_harvest"].split(",")[0]
+        return None
+
+    @property
     def nest_number(self) -> Optional[int]:
         if "protocol" in self._raw_data and "nest_number" in self._raw_data["protocol"]:
             if type(self._raw_data["protocol"]["nest_number"]) is dict:

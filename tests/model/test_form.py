@@ -41,6 +41,7 @@ class TestForm(TestCase):
                 "waterbird_ice": "NO_ICE",
                 "waterbird_snowcover": "NO_SNOW",
                 "waterbird_waterlevel": "NORMAL",
+                "moving_harvest": "NORMAL",
                 "nest_number": "11",
                 "occupied_nest_number": "12",
             },
@@ -383,6 +384,25 @@ class TestForm(TestCase):
         self.assertIsNone(
             Form.create_from_ornitho_json(form_json).id_waterbird_waterlevel
         )
+
+    def test_id_moving_harvest(self):
+        self.assertEqual(
+            self.form_json["protocol"]["moving_harvest"], self.form.id_moving_harvest,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {
+                "moving_harvest": {"@id": "MAINLY", "#text": "Überwiegend (>50 %) "},
+            },
+        }
+        self.assertEqual(
+            form_json["protocol"]["moving_harvest"]["@id"],
+            Form.create_from_ornitho_json(form_json).id_moving_harvest,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(Form.create_from_ornitho_json(form_json).id_moving_harvest)
 
     def test_nest_number(self):
         self.assertEqual(
