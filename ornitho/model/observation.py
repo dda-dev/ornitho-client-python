@@ -38,6 +38,7 @@ class Precision(Enum):
     SQUARE = "square"
     PLACE = "place"
     POLYGON = "polygone"
+    POLYGON_PRECISE = "polygone_precise"
 
 
 class Source(Enum):
