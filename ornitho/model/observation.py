@@ -39,6 +39,7 @@ class Precision(Enum):
     PLACE = "place"
     POLYGON = "polygone"
     TRANSECT = "transect"
+    SUBPLACE = "subplace"
     POLYGON_PRECISE = "polygone_precise"
     TRANSECT_PRECISE = "transect_precise"
 
