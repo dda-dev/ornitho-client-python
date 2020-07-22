@@ -88,8 +88,8 @@ class Form(BaseModel):
         return float(self._raw_data["lon"])
 
     @property
-    def id_form_mobile(self) -> str:
-        return self._raw_data["id_form_mobile"]
+    def id_form_mobile(self) -> Optional[str]:
+        return self._raw_data["id_form_mobile"] if "id_form_mobile" in self._raw_data else None
 
     @property
     def comment(self) -> Optional[str]:
@@ -248,6 +248,224 @@ class Form(BaseModel):
         return None
 
     @property
+    def id_waterbird_counttype(self) -> Optional[str]:
+        if (
+            "protocol" in self._raw_data
+            and "waterbird_counttype" in self._raw_data["protocol"]
+        ):
+            if type(self._raw_data["protocol"]["waterbird_counttype"]) is dict:
+                return self._raw_data["protocol"]["waterbird_counttype"]["@id"].split(
+                    ","
+                )[0]
+            else:
+                return self._raw_data["protocol"]["waterbird_counttype"].split(",")[0]
+        return None
+
+    @property
+    def id_waterbird_visibility(self) -> Optional[str]:
+        if (
+            "protocol" in self._raw_data
+            and "waterbird_visibility" in self._raw_data["protocol"]
+        ):
+            if type(self._raw_data["protocol"]["waterbird_visibility"]) is dict:
+                return self._raw_data["protocol"]["waterbird_visibility"]["@id"].split(
+                    ","
+                )[0]
+            else:
+                return self._raw_data["protocol"]["waterbird_visibility"].split(",")[0]
+        return None
+
+    @property
+    def id_waterbird_waves(self) -> Optional[str]:
+        if (
+            "protocol" in self._raw_data
+            and "waterbird_waves" in self._raw_data["protocol"]
+        ):
+            if type(self._raw_data["protocol"]["waterbird_waves"]) is dict:
+                return self._raw_data["protocol"]["waterbird_waves"]["@id"].split(",")[
+                    0
+                ]
+            else:
+                return self._raw_data["protocol"]["waterbird_waves"].split(",")[0]
+        return None
+
+    @property
+    def id_waterbird_conditions_reason(self) -> Optional[str]:
+        if (
+            "protocol" in self._raw_data
+            and "waterbird_conditions_reason" in self._raw_data["protocol"]
+        ):
+            if type(self._raw_data["protocol"]["waterbird_conditions_reason"]) is dict:
+                return self._raw_data["protocol"]["waterbird_conditions_reason"][
+                    "@id"
+                ].split(",")[0]
+            else:
+                return self._raw_data["protocol"]["waterbird_conditions_reason"].split(
+                    ","
+                )[0]
+        return None
+
+    @property
+    def id_waterbird_count_payed(self) -> Optional[str]:
+        if (
+            "protocol" in self._raw_data
+            and "waterbird_count_payed" in self._raw_data["protocol"]
+        ):
+            if type(self._raw_data["protocol"]["waterbird_count_payed"]) is dict:
+                return self._raw_data["protocol"]["waterbird_count_payed"]["@id"].split(
+                    ","
+                )[0]
+            else:
+                return self._raw_data["protocol"]["waterbird_count_payed"].split(",")[0]
+        return None
+
+    @property
+    def id_waterbird_activity_persons_on_shore(self) -> Optional[str]:
+        if (
+            "protocol" in self._raw_data
+            and "waterbird_activity_persons_on_shore" in self._raw_data["protocol"]
+        ):
+            if (
+                type(self._raw_data["protocol"]["waterbird_activity_persons_on_shore"])
+                is dict
+            ):
+                return self._raw_data["protocol"][
+                    "waterbird_activity_persons_on_shore"
+                ]["@id"].split(",")[0]
+            else:
+                return self._raw_data["protocol"][
+                    "waterbird_activity_persons_on_shore"
+                ].split(",")[0]
+        return None
+
+    @property
+    def id_waterbird_activity_boats_rowing(self) -> Optional[str]:
+        if (
+            "protocol" in self._raw_data
+            and "waterbird_activity_boats_rowing" in self._raw_data["protocol"]
+        ):
+            if (
+                type(self._raw_data["protocol"]["waterbird_activity_boats_rowing"])
+                is dict
+            ):
+                return self._raw_data["protocol"]["waterbird_activity_boats_rowing"][
+                    "@id"
+                ].split(",")[0]
+            else:
+                return self._raw_data["protocol"][
+                    "waterbird_activity_boats_rowing"
+                ].split(",")[0]
+        return None
+
+    @property
+    def id_waterbird_activity_boats_motor(self) -> Optional[str]:
+        if (
+            "protocol" in self._raw_data
+            and "waterbird_activity_boats_motor" in self._raw_data["protocol"]
+        ):
+            if (
+                type(self._raw_data["protocol"]["waterbird_activity_boats_motor"])
+                is dict
+            ):
+                return self._raw_data["protocol"]["waterbird_activity_boats_motor"][
+                    "@id"
+                ].split(",")[0]
+            else:
+                return self._raw_data["protocol"][
+                    "waterbird_activity_boats_motor"
+                ].split(",")[0]
+        return None
+
+    @property
+    def id_waterbird_activity_boats_sailing(self) -> Optional[str]:
+        if (
+            "protocol" in self._raw_data
+            and "waterbird_activity_boats_sailing" in self._raw_data["protocol"]
+        ):
+            if (
+                type(self._raw_data["protocol"]["waterbird_activity_boats_sailing"])
+                is dict
+            ):
+                return self._raw_data["protocol"]["waterbird_activity_boats_sailing"][
+                    "@id"
+                ].split(",")[0]
+            else:
+                return self._raw_data["protocol"][
+                    "waterbird_activity_boats_sailing"
+                ].split(",")[0]
+        return None
+
+    @property
+    def id_waterbird_activity_boats_kayak(self) -> Optional[str]:
+        if (
+            "protocol" in self._raw_data
+            and "waterbird_activity_boats_kayak" in self._raw_data["protocol"]
+        ):
+            if (
+                type(self._raw_data["protocol"]["waterbird_activity_boats_kayak"])
+                is dict
+            ):
+                return self._raw_data["protocol"]["waterbird_activity_boats_kayak"][
+                    "@id"
+                ].split(",")[0]
+            else:
+                return self._raw_data["protocol"][
+                    "waterbird_activity_boats_kayak"
+                ].split(",")[0]
+        return None
+
+    @property
+    def id_waterbird_activity_boats_fisherman(self) -> Optional[str]:
+        if (
+            "protocol" in self._raw_data
+            and "waterbird_activity_boats_fisherman" in self._raw_data["protocol"]
+        ):
+            if (
+                type(self._raw_data["protocol"]["waterbird_activity_boats_fisherman"])
+                is dict
+            ):
+                return self._raw_data["protocol"]["waterbird_activity_boats_fisherman"][
+                    "@id"
+                ].split(",")[0]
+            else:
+                return self._raw_data["protocol"][
+                    "waterbird_activity_boats_fisherman"
+                ].split(",")[0]
+        return None
+
+    @property
+    def id_waterbird_activity_divers(self) -> Optional[str]:
+        if (
+            "protocol" in self._raw_data
+            and "waterbird_activity_divers" in self._raw_data["protocol"]
+        ):
+            if type(self._raw_data["protocol"]["waterbird_activity_divers"]) is dict:
+                return self._raw_data["protocol"]["waterbird_activity_divers"][
+                    "@id"
+                ].split(",")[0]
+            else:
+                return self._raw_data["protocol"]["waterbird_activity_divers"].split(
+                    ","
+                )[0]
+        return None
+
+    @property
+    def id_waterbird_activity_surfers(self) -> Optional[str]:
+        if (
+            "protocol" in self._raw_data
+            and "waterbird_activity_surfers" in self._raw_data["protocol"]
+        ):
+            if type(self._raw_data["protocol"]["waterbird_activity_surfers"]) is dict:
+                return self._raw_data["protocol"]["waterbird_activity_surfers"][
+                    "@id"
+                ].split(",")[0]
+            else:
+                return self._raw_data["protocol"]["waterbird_activity_surfers"].split(
+                    ","
+                )[0]
+        return None
+
+    @property
     def id_moving_harvest(self) -> Optional[str]:
         if (
             "protocol" in self._raw_data
@@ -257,6 +475,82 @@ class Form(BaseModel):
                 return self._raw_data["protocol"]["moving_harvest"]["@id"].split(",")[0]
             else:
                 return self._raw_data["protocol"]["moving_harvest"].split(",")[0]
+        return None
+
+    @property
+    def id_coverage(self) -> Optional[str]:
+        if "protocol" in self._raw_data and "coverage" in self._raw_data["protocol"]:
+            if type(self._raw_data["protocol"]["coverage"]) is dict:
+                return self._raw_data["protocol"]["coverage"]["@id"].split(",")[0]
+            else:
+                return self._raw_data["protocol"]["coverage"].split(",")[0]
+        return None
+
+    @property
+    def id_condition(self) -> Optional[str]:
+        if "protocol" in self._raw_data and "condition" in self._raw_data["protocol"]:
+            if type(self._raw_data["protocol"]["condition"]) is dict:
+                return self._raw_data["protocol"]["condition"]["@id"].split(",")[0]
+            else:
+                return self._raw_data["protocol"]["condition"].split(",")[0]
+        return None
+
+    @property
+    def id_chiro_identify(self) -> Optional[str]:
+        if (
+            "protocol" in self._raw_data
+            and "chiro_identify" in self._raw_data["protocol"]
+        ):
+            if type(self._raw_data["protocol"]["chiro_identify"]) is dict:
+                return self._raw_data["protocol"]["chiro_identify"]["@id"].split(",")[0]
+            else:
+                return self._raw_data["protocol"]["chiro_identify"].split(",")[0]
+        return None
+
+    @property
+    def id_additional_observer(self) -> Optional[str]:
+        if (
+            "protocol" in self._raw_data
+            and "additional_observer" in self._raw_data["protocol"]
+        ):
+            if type(self._raw_data["protocol"]["additional_observer"]) is dict:
+                return self._raw_data["protocol"]["additional_observer"]["@id"].split(
+                    ","
+                )[0]
+            else:
+                return self._raw_data["protocol"]["additional_observer"].split(",")[0]
+        return None
+
+    @property
+    def id_changes(self) -> Optional[str]:
+        if "protocol" in self._raw_data and "changes" in self._raw_data["protocol"]:
+            if type(self._raw_data["protocol"]["changes"]) is dict:
+                return self._raw_data["protocol"]["changes"]["@id"].split(",")[0]
+            else:
+                return self._raw_data["protocol"]["changes"].split(",")[0]
+        return None
+
+    @property
+    def id_drone_used(self) -> Optional[str]:
+        if "protocol" in self._raw_data and "drone_used" in self._raw_data["protocol"]:
+            if type(self._raw_data["protocol"]["drone_used"]) is dict:
+                return self._raw_data["protocol"]["drone_used"]["@id"].split(",")[0]
+            else:
+                return self._raw_data["protocol"]["drone_used"].split(",")[0]
+        return None
+
+    @property
+    def id_tmp_water_bodies(self) -> Optional[str]:
+        if (
+            "protocol" in self._raw_data
+            and "tmp_water_bodies" in self._raw_data["protocol"]
+        ):
+            if type(self._raw_data["protocol"]["tmp_water_bodies"]) is dict:
+                return self._raw_data["protocol"]["tmp_water_bodies"]["@id"].split(",")[
+                    0
+                ]
+            else:
+                return self._raw_data["protocol"]["tmp_water_bodies"].split(",")[0]
         return None
 
     @property

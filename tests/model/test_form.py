@@ -39,9 +39,29 @@ class TestForm(TestCase):
                 "waterbird_optical": "TELESCOPE",
                 "waterbird_countmethod": "GROUND",
                 "waterbird_ice": "NO_ICE",
+                "waterbird_waterlevel": "NO_SNOW",
                 "waterbird_snowcover": "NO_SNOW",
-                "waterbird_waterlevel": "NORMAL",
+                "waterbird_counttype": "NORMAL",
+                "waterbird_visibility": "NORMAL",
+                "waterbird_waves": "NORMAL",
+                "waterbird_conditions_reason": "NORMAL",
+                "waterbird_count_payed": "NORMAL",
+                "waterbird_activity_persons_on_shore": "NORMAL",
+                "waterbird_activity_boats_rowing": "NORMAL",
+                "waterbird_activity_boats_motor": "NORMAL",
+                "waterbird_activity_boats_sailing": "NORMAL",
+                "waterbird_activity_boats_kayak": "NORMAL",
+                "waterbird_activity_boats_fisherman": "NORMAL",
+                "waterbird_activity_divers": "NORMAL",
+                "waterbird_activity_surfers": "NORMAL",
                 "moving_harvest": "NORMAL",
+                "coverage": "NORMAL",
+                "condition": "NORMAL",
+                "chiro_identify": "NORMAL",
+                "additional_observer": "NORMAL",
+                "changes": "NORMAL",
+                "drone_used": "NORMAL",
+                "tmp_water_bodies": "NORMAL",
                 "nest_number": "11",
                 "occupied_nest_number": "12",
             },
@@ -385,6 +405,291 @@ class TestForm(TestCase):
             Form.create_from_ornitho_json(form_json).id_waterbird_waterlevel
         )
 
+    def test_id_waterbird_counttype(self):
+        self.assertEqual(
+            self.form_json["protocol"]["waterbird_counttype"],
+            self.form.id_waterbird_counttype,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {"waterbird_counttype": {"@id": "TEST", "#text": "test"},},
+        }
+        self.assertEqual(
+            form_json["protocol"]["waterbird_counttype"]["@id"],
+            Form.create_from_ornitho_json(form_json).id_waterbird_counttype,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(
+            Form.create_from_ornitho_json(form_json).id_waterbird_counttype
+        )
+
+    def test_id_waterbird_visibility(self):
+        self.assertEqual(
+            self.form_json["protocol"]["waterbird_visibility"],
+            self.form.id_waterbird_visibility,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {"waterbird_visibility": {"@id": "TEST", "#text": "test"},},
+        }
+        self.assertEqual(
+            form_json["protocol"]["waterbird_visibility"]["@id"],
+            Form.create_from_ornitho_json(form_json).id_waterbird_visibility,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(
+            Form.create_from_ornitho_json(form_json).id_waterbird_visibility
+        )
+
+    def test_id_waterbird_waves(self):
+        self.assertEqual(
+            self.form_json["protocol"]["waterbird_waves"], self.form.id_waterbird_waves,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {"waterbird_waves": {"@id": "TEST", "#text": "test"},},
+        }
+        self.assertEqual(
+            form_json["protocol"]["waterbird_waves"]["@id"],
+            Form.create_from_ornitho_json(form_json).id_waterbird_waves,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(Form.create_from_ornitho_json(form_json).id_waterbird_waves)
+
+    def test_id_waterbird_conditions_reason(self):
+        self.assertEqual(
+            self.form_json["protocol"]["waterbird_conditions_reason"],
+            self.form.id_waterbird_conditions_reason,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {
+                "waterbird_conditions_reason": {"@id": "TEST", "#text": "test"},
+            },
+        }
+        self.assertEqual(
+            form_json["protocol"]["waterbird_conditions_reason"]["@id"],
+            Form.create_from_ornitho_json(form_json).id_waterbird_conditions_reason,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(
+            Form.create_from_ornitho_json(form_json).id_waterbird_conditions_reason
+        )
+
+    def test_id_waterbird_count_payed(self):
+        self.assertEqual(
+            self.form_json["protocol"]["waterbird_count_payed"],
+            self.form.id_waterbird_count_payed,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {"waterbird_count_payed": {"@id": "TEST", "#text": "test"},},
+        }
+        self.assertEqual(
+            form_json["protocol"]["waterbird_count_payed"]["@id"],
+            Form.create_from_ornitho_json(form_json).id_waterbird_count_payed,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(
+            Form.create_from_ornitho_json(form_json).id_waterbird_count_payed
+        )
+
+    def test_id_waterbird_activity_persons_on_shore(self):
+        self.assertEqual(
+            self.form_json["protocol"]["waterbird_activity_persons_on_shore"],
+            self.form.id_waterbird_activity_persons_on_shore,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {
+                "waterbird_activity_persons_on_shore": {"@id": "TEST", "#text": "test"},
+            },
+        }
+        self.assertEqual(
+            form_json["protocol"]["waterbird_activity_persons_on_shore"]["@id"],
+            Form.create_from_ornitho_json(
+                form_json
+            ).id_waterbird_activity_persons_on_shore,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(
+            Form.create_from_ornitho_json(
+                form_json
+            ).id_waterbird_activity_persons_on_shore
+        )
+
+    def test_id_waterbird_activity_boats_rowing(self):
+        self.assertEqual(
+            self.form_json["protocol"]["waterbird_activity_boats_rowing"],
+            self.form.id_waterbird_activity_boats_rowing,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {
+                "waterbird_activity_boats_rowing": {"@id": "TEST", "#text": "test"},
+            },
+        }
+        self.assertEqual(
+            form_json["protocol"]["waterbird_activity_boats_rowing"]["@id"],
+            Form.create_from_ornitho_json(form_json).id_waterbird_activity_boats_rowing,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(
+            Form.create_from_ornitho_json(form_json).id_waterbird_activity_boats_rowing
+        )
+
+    def test_id_waterbird_activity_boats_motor(self):
+        self.assertEqual(
+            self.form_json["protocol"]["waterbird_activity_boats_motor"],
+            self.form.id_waterbird_activity_boats_motor,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {
+                "waterbird_activity_boats_motor": {"@id": "TEST", "#text": "test"},
+            },
+        }
+        self.assertEqual(
+            form_json["protocol"]["waterbird_activity_boats_motor"]["@id"],
+            Form.create_from_ornitho_json(form_json).id_waterbird_activity_boats_motor,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(
+            Form.create_from_ornitho_json(form_json).id_waterbird_activity_boats_motor
+        )
+
+    def test_id_waterbird_activity_boats_sailing(self):
+        self.assertEqual(
+            self.form_json["protocol"]["waterbird_activity_boats_sailing"],
+            self.form.id_waterbird_activity_boats_sailing,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {
+                "waterbird_activity_boats_sailing": {"@id": "TEST", "#text": "test"},
+            },
+        }
+        self.assertEqual(
+            form_json["protocol"]["waterbird_activity_boats_sailing"]["@id"],
+            Form.create_from_ornitho_json(
+                form_json
+            ).id_waterbird_activity_boats_sailing,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(
+            Form.create_from_ornitho_json(form_json).id_waterbird_activity_boats_sailing
+        )
+
+    def test_id_waterbird_activity_boats_kayak(self):
+        self.assertEqual(
+            self.form_json["protocol"]["waterbird_activity_boats_kayak"],
+            self.form.id_waterbird_activity_boats_kayak,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {
+                "waterbird_activity_boats_kayak": {"@id": "TEST", "#text": "test"},
+            },
+        }
+        self.assertEqual(
+            form_json["protocol"]["waterbird_activity_boats_kayak"]["@id"],
+            Form.create_from_ornitho_json(form_json).id_waterbird_activity_boats_kayak,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(
+            Form.create_from_ornitho_json(form_json).id_waterbird_activity_boats_kayak
+        )
+
+    def test_id_waterbird_activity_boats_fisherman(self):
+        self.assertEqual(
+            self.form_json["protocol"]["waterbird_activity_boats_fisherman"],
+            self.form.id_waterbird_activity_boats_fisherman,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {
+                "waterbird_activity_boats_fisherman": {"@id": "TEST", "#text": "test"},
+            },
+        }
+        self.assertEqual(
+            form_json["protocol"]["waterbird_activity_boats_fisherman"]["@id"],
+            Form.create_from_ornitho_json(
+                form_json
+            ).id_waterbird_activity_boats_fisherman,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(
+            Form.create_from_ornitho_json(
+                form_json
+            ).id_waterbird_activity_boats_fisherman
+        )
+
+    def test_id_waterbird_activity_divers(self):
+        self.assertEqual(
+            self.form_json["protocol"]["waterbird_activity_divers"],
+            self.form.id_waterbird_activity_divers,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {
+                "waterbird_activity_divers": {"@id": "TEST", "#text": "test"},
+            },
+        }
+        self.assertEqual(
+            form_json["protocol"]["waterbird_activity_divers"]["@id"],
+            Form.create_from_ornitho_json(form_json).id_waterbird_activity_divers,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(
+            Form.create_from_ornitho_json(form_json).id_waterbird_activity_divers
+        )
+
+    def test_id_waterbird_activity_surfers(self):
+        self.assertEqual(
+            self.form_json["protocol"]["waterbird_activity_surfers"],
+            self.form.id_waterbird_activity_surfers,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {
+                "waterbird_activity_surfers": {"@id": "TEST", "#text": "test"},
+            },
+        }
+        self.assertEqual(
+            form_json["protocol"]["waterbird_activity_surfers"]["@id"],
+            Form.create_from_ornitho_json(form_json).id_waterbird_activity_surfers,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(
+            Form.create_from_ornitho_json(form_json).id_waterbird_activity_surfers
+        )
+
     def test_id_moving_harvest(self):
         self.assertEqual(
             self.form_json["protocol"]["moving_harvest"], self.form.id_moving_harvest,
@@ -403,6 +708,129 @@ class TestForm(TestCase):
 
         form_json = {"@id": "1"}
         self.assertIsNone(Form.create_from_ornitho_json(form_json).id_moving_harvest)
+
+    def test_id_coverage(self):
+        self.assertEqual(
+            self.form_json["protocol"]["coverage"], self.form.id_coverage,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {"coverage": {"@id": "TEST", "#text": "test"},},
+        }
+        self.assertEqual(
+            form_json["protocol"]["coverage"]["@id"],
+            Form.create_from_ornitho_json(form_json).id_coverage,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(Form.create_from_ornitho_json(form_json).id_coverage)
+
+    def test_id_condition(self):
+        self.assertEqual(
+            self.form_json["protocol"]["condition"], self.form.id_condition,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {"condition": {"@id": "TEST", "#text": "test"},},
+        }
+        self.assertEqual(
+            form_json["protocol"]["condition"]["@id"],
+            Form.create_from_ornitho_json(form_json).id_condition,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(Form.create_from_ornitho_json(form_json).id_condition)
+
+    def test_id_chiro_identify(self):
+        self.assertEqual(
+            self.form_json["protocol"]["chiro_identify"], self.form.id_chiro_identify,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {"chiro_identify": {"@id": "TEST", "#text": "test"},},
+        }
+        self.assertEqual(
+            form_json["protocol"]["chiro_identify"]["@id"],
+            Form.create_from_ornitho_json(form_json).id_chiro_identify,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(Form.create_from_ornitho_json(form_json).id_chiro_identify)
+
+    def test_id_additional_observer(self):
+        self.assertEqual(
+            self.form_json["protocol"]["additional_observer"],
+            self.form.id_additional_observer,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {"additional_observer": {"@id": "TEST", "#text": "test"},},
+        }
+        self.assertEqual(
+            form_json["protocol"]["additional_observer"]["@id"],
+            Form.create_from_ornitho_json(form_json).id_additional_observer,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(
+            Form.create_from_ornitho_json(form_json).id_additional_observer
+        )
+
+    def test_id_changes(self):
+        self.assertEqual(
+            self.form_json["protocol"]["changes"], self.form.id_changes,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {"changes": {"@id": "TEST", "#text": "test"},},
+        }
+        self.assertEqual(
+            form_json["protocol"]["changes"]["@id"],
+            Form.create_from_ornitho_json(form_json).id_changes,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(Form.create_from_ornitho_json(form_json).id_changes)
+
+    def test_id_drone_used(self):
+        self.assertEqual(
+            self.form_json["protocol"]["drone_used"], self.form.id_drone_used,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {"drone_used": {"@id": "TEST", "#text": "test"},},
+        }
+        self.assertEqual(
+            form_json["protocol"]["drone_used"]["@id"],
+            Form.create_from_ornitho_json(form_json).id_drone_used,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(Form.create_from_ornitho_json(form_json).id_drone_used)
+
+    def test_id_tmp_water_bodies(self):
+        self.assertEqual(
+            self.form_json["protocol"]["tmp_water_bodies"],
+            self.form.id_tmp_water_bodies,
+        )
+
+        form_json = {
+            "@id": "1",
+            "protocol": {"tmp_water_bodies": {"@id": "TEST", "#text": "test"},},
+        }
+        self.assertEqual(
+            form_json["protocol"]["tmp_water_bodies"]["@id"],
+            Form.create_from_ornitho_json(form_json).id_tmp_water_bodies,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(Form.create_from_ornitho_json(form_json).id_tmp_water_bodies)
 
     def test_nest_number(self):
         self.assertEqual(
