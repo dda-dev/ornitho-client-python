@@ -79,6 +79,7 @@ class TestObservation(TestCase):
                         {"count": "12", "sex": "M", "age": "AD"},
                     ],
                     "atlas_code": {"@id": "3_3", "#text": "A2"},
+                    "project": 1,
                 }
             ],
         }
@@ -557,6 +558,21 @@ class TestObservation(TestCase):
         obs = Observation()
         obs.atlas_code = mock_field_option
         self.assertEqual(mock_field_option.id_, obs.atlas_code.id_)
+
+    def test_is_exported(self):
+        self.assertTrue(self.observation.is_exported)
+
+    def test_notime(self):
+        self.assertFalse(self.observation.notime)
+
+    def test_project(self):
+        self.assertEqual(1, self.observation.project)
+
+    def test_project_code(self):
+        self.assertIsNone(self.observation.project_code)
+
+    def test_second_hand(self):
+        self.assertFalse(self.observation.second_hand)
 
     def test_by_observer(self):
         Observation.list = MagicMock(return_value=["obs", "pk"])

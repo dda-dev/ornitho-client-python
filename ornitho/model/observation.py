@@ -546,6 +546,54 @@ class Observation(ListableModel, SearchableModel, CreateableModel, DeletableMode
         self.id_atlas_code = value.id_
         self._atlas_code = value
 
+    @property  # type: ignore
+    @check_raw_data("observers")
+    def is_exported(self) -> bool:
+        return (
+            False
+            if "is_exported" not in self._raw_data["observers"][0]
+            or self._raw_data["observers"][0]["is_exported"] == "0"
+            else True
+        )
+
+    @property  # type: ignore
+    @check_raw_data("observers")
+    def notime(self) -> bool:
+        return (
+            False
+            if "@notime" not in self._raw_data["observers"][0]["timing"]
+            or self._raw_data["observers"][0]["timing"]["@notime"] == "0"
+            else True
+        )
+
+    @property  # type: ignore
+    @check_raw_data("observers")
+    def project(self) -> Optional[int]:
+        return (
+            int(self._raw_data["observers"][0]["project"])
+            if "project" in self._raw_data["observers"][0]
+            else None
+        )
+
+    @property  # type: ignore
+    @check_raw_data("observers")
+    def project_code(self) -> Optional[str]:
+        return (
+            self._raw_data["observers"][0]["project_code"]
+            if "project_code" in self._raw_data["observers"][0]
+            else None
+        )
+
+    @property  # type: ignore
+    @check_raw_data("observers")
+    def second_hand(self) -> bool:
+        return (
+            False
+            if "second_hand" not in self._raw_data["observers"][0]
+            or self._raw_data["observers"][0]["second_hand"] == "0"
+            else True
+        )
+
     @classmethod
     def by_observer(
         cls,
