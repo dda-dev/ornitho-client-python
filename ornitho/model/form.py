@@ -1,10 +1,11 @@
 from datetime import date, time
-from typing import List, Optional
+from typing import Dict, List, Optional, Union
 
 import ornitho.model.observation
 from ornitho.api_exception import APIException
 from ornitho.api_requester import APIRequester
 from ornitho.model.abstract import BaseModel
+from ornitho.model.species import Species
 
 
 class Form(BaseModel):
@@ -89,7 +90,11 @@ class Form(BaseModel):
 
     @property
     def id_form_mobile(self) -> Optional[str]:
-        return self._raw_data["id_form_mobile"] if "id_form_mobile" in self._raw_data else None
+        return (
+            self._raw_data["id_form_mobile"]
+            if "id_form_mobile" in self._raw_data
+            else None
+        )
 
     @property
     def comment(self) -> Optional[str]:
@@ -575,6 +580,16 @@ class Form(BaseModel):
         return None
 
     @property
+    def playbacks(self) -> Optional[Dict[int, bool]]:
+        if "protocol" in self._raw_data and "playback" in self._raw_data["protocol"]:
+            species_ids: Dict[int, bool] = {}
+            for key, value in self._raw_data["protocol"]["playback"].items():
+                species_id = key.replace("Id_species_", "")
+                species_ids[int(species_id)] = value == "1"
+            return species_ids
+        return None
+
+    @property
     def observations(self):
         if "sightings" not in self._raw_data:
             self.refresh()
@@ -586,3 +601,12 @@ class Form(BaseModel):
                 for observation in self._raw_data["sightings"]
             ]
         return self._observations
+
+    def playblack_played(self, species: Union[int, Species]) -> Optional[bool]:
+        if isinstance(species, Species):
+            species = int(species.id_) if species.id_ is not None else 0
+        return (
+            self.playbacks[species]
+            if self.playbacks is not None and species in self.playbacks
+            else None
+        )

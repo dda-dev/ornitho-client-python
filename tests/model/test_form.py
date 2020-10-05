@@ -877,6 +877,20 @@ class TestForm(TestCase):
         form_json = {"@id": "1"}
         self.assertIsNone(Form.create_from_ornitho_json(form_json).occupied_nest_number)
 
+    def test_playbacks(self):
+        self.assertIsNone(self.form.playbacks)
+
+        form_json = {
+            "@id": "1",
+            "protocol": {"playback": {"Id_species_1": "1", "Id_species_2": "0",},},
+        }
+        self.assertEqual(
+            {1: True, 2: False}, Form.create_from_ornitho_json(form_json).playbacks,
+        )
+
+        form_json = {"@id": "1"}
+        self.assertIsNone(Form.create_from_ornitho_json(form_json).playbacks)
+
     @mock.patch("ornitho.model.observation.Observation")
     def test_observations(self, mock_observation):
         self.form.refresh = MagicMock(return_value=self.form_json)
@@ -892,3 +906,20 @@ class TestForm(TestCase):
         mock_observation.create_from_ornitho_json.return_value = "Observation"
         observations = self.form.observations
         self.assertEqual(observations, ["Observation"])
+
+    def test_playblack_played(self):
+        mock_species = mock.MagicMock(spec=ornitho.Species)
+        type(mock_species).id_ = mock.PropertyMock(return_value=1)
+        self.assertEqual(mock_species.id_, 1)
+        self.assertIsNone(self.form.playblack_played(1))
+        self.assertIsNone(self.form.playblack_played(mock_species))
+
+        form_json = {
+            "@id": "1",
+            "protocol": {"playback": {"Id_species_1": "1", "Id_species_2": "0",},},
+        }
+        self.assertTrue(Form.create_from_ornitho_json(form_json).playblack_played(1))
+        self.assertFalse(Form.create_from_ornitho_json(form_json).playblack_played(2))
+        self.assertTrue(
+            Form.create_from_ornitho_json(form_json).playblack_played(mock_species)
+        )
