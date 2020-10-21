@@ -581,6 +581,28 @@ class TestObservation(TestCase):
 
     def test_is_exported(self):
         self.assertTrue(self.observation.is_exported)
+        self.observation.is_exported = False
+        self.assertFalse(self.observation.is_exported)
+        self.observation.is_exported = True
+        self.assertTrue(self.observation.is_exported)
+
+        observation = Observation()
+        self.assertFalse(observation.is_exported)
+        observation.is_exported = True
+        self.assertTrue(observation.is_exported)
+
+    def test_export_date(self):
+        self.observation.is_exported = False
+        self.assertIsNone(self.observation.export_date)
+        now = datetime.now().astimezone().replace(microsecond=0)
+        self.observation.is_exported = True
+        self.observation.export_date = now
+        self.assertEqual(now, self.observation.export_date)
+
+        observation = Observation()
+        observation.export_date = now
+        observation.is_exported = True
+        self.assertEqual(now, observation.export_date)
 
     def test_notime(self):
         self.assertFalse(self.observation.notime)
@@ -814,3 +836,11 @@ class TestObservation(TestCase):
         self.assertEqual("3_4", obs2.atlas_code.id_)
         self.assertEqual("1_4", obs2.resting_habitat.id_)
         self.assertEqual("4_4", obs2.observation_detail.id_)
+
+    @mock.patch("ornitho.model.observation.UpdateableModel.update")
+    def test_mark_as_exported(self, mock_updateable_model):
+        self.observation.mark_as_exported()
+        mock_updateable_model.assert_called_once()
+        self.observation.mark_as_exported(datetime.now())
+        mock_updateable_model.assert_called()
+        self.assertEqual(2, mock_updateable_model.call_count)

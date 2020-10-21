@@ -10,6 +10,7 @@ from ornitho.model.abstract import (
     DeletableModel,
     ListableModel,
     SearchableModel,
+    UpdateableModel,
 )
 from ornitho.model.abstract.base_model import check_raw_data
 from ornitho.model.detail import Detail
@@ -57,7 +58,9 @@ class Source(Enum):
     MOBILE_FORM_DELAYED_IOS = "MOBILE_FORM_DELAYED_IOS"
 
 
-class Observation(ListableModel, SearchableModel, CreateableModel, DeletableModel):
+class Observation(
+    ListableModel, SearchableModel, CreateableModel, DeletableModel, UpdateableModel
+):
     """Representation of on Observation"""
 
     ENDPOINT: str = "observations"
@@ -550,11 +553,42 @@ class Observation(ListableModel, SearchableModel, CreateableModel, DeletableMode
     @check_raw_data("observers")
     def is_exported(self) -> bool:
         return (
-            False
-            if "is_exported" not in self._raw_data["observers"][0]
-            or self._raw_data["observers"][0]["is_exported"] == "0"
-            else True
+            True
+            if "observers" in self._raw_data
+            and "is_exported" in self._raw_data["observers"][0]
+            and self._raw_data["observers"][0]["is_exported"] == "1"
+            else False
         )
+
+    @is_exported.setter
+    def is_exported(self, value: bool):
+        value_as_str = "1" if value else "0"
+        if "observers" in self._raw_data:
+            self._raw_data["observers"][0]["is_exported"] = value_as_str
+        else:
+            self._raw_data["observers"] = [{"is_exported": value_as_str}]
+
+    @property  # type: ignore
+    @check_raw_data("observers")
+    def export_date(self) -> Optional[datetime]:
+        return (
+            datetime.fromtimestamp(
+                int(self._raw_data["observers"][0]["export_date"]["@timestamp"]),
+            ).astimezone()
+            if self.is_exported
+            else None
+        )
+
+    @export_date.setter
+    def export_date(self, value: datetime):
+        if "observers" in self._raw_data:
+            self._raw_data["observers"][0]["export_date"] = {
+                "@timestamp": int(value.timestamp()).__str__()
+            }
+        else:
+            self._raw_data["observers"] = [
+                {"export_date": {"@timestamp": int(value.timestamp()).__str__()}}
+            ]
 
     @property  # type: ignore
     @check_raw_data("observers")
@@ -1058,3 +1092,11 @@ class Observation(ListableModel, SearchableModel, CreateableModel, DeletableMode
             data={"sightings": [observation._raw_data]}
         )
         return observation
+
+    def mark_as_exported(self, export_date: Optional[datetime] = None):
+        self.is_exported = True
+        if export_date:
+            self.export_date = export_date
+        else:
+            self.export_date = datetime.now()
+        self.update()

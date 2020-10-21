@@ -56,6 +56,7 @@ The following "ornitho controllers / calls" are implemented:
   - List observations
   - Get a single observation
   - Create an observation
+  - Update an observations (**WIP**)
   - Delete an observations
   - Search an observation
   - Search update or deletion since a given date
@@ -86,7 +87,6 @@ Not yet Implemented:
 
 - observations
 
-  - Update an observations
   - Search closest observations
   - Search last observations
   - Search rare observations
