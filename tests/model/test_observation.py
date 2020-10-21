@@ -652,8 +652,14 @@ class TestObservation(TestCase):
     def test_colony_extended_nb_natural_nests(self):
         self.assertEqual(1, self.observation.colony_extended_nb_natural_nests)
 
+    def test_colony_extended_nb_natural_nests_is_min(self):
+        self.assertFalse(self.observation.colony_extended_nb_natural_nests_is_min)
+
     def test_colony_extended_nb_artificial_nests(self):
         self.assertEqual(17, self.observation.colony_extended_nb_artificial_nests)
+
+    def test_colony_extended_nb_artificial_nests_is_min(self):
+        self.assertFalse(self.observation.colony_extended_nb_artificial_nests_is_min)
 
     def test_colony_extended_nb_natural_occup_nests(self):
         self.assertEqual(0, self.observation.colony_extended_nb_natural_occup_nests)

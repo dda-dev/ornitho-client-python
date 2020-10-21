@@ -750,6 +750,25 @@ class Observation(
 
     @property  # type: ignore
     @check_raw_data("observers")
+    def colony_extended_nb_natural_nests_is_min(self) -> Optional[bool]:
+        return (
+            int(
+                self._raw_data["observers"][0]["extended_info"]["colony_extended"][
+                    "nb_natural_nests_is_min"
+                ]
+            )
+            == 1
+            if "extended_info" in self._raw_data["observers"][0]
+            and "colony_extended" in self._raw_data["observers"][0]["extended_info"]
+            and "nb_natural_nests_is_min"
+            in self._raw_data["observers"][0]["extended_info"]["colony_extended"]
+            else False
+            if self.colony_extended_nb_natural_nests is not None
+            else None
+        )
+
+    @property  # type: ignore
+    @check_raw_data("observers")
     def colony_extended_nb_artificial_nests(self) -> Optional[int]:
         return (
             int(
@@ -761,6 +780,25 @@ class Observation(
             and "colony_extended" in self._raw_data["observers"][0]["extended_info"]
             and "nb_artificial_nests"
             in self._raw_data["observers"][0]["extended_info"]["colony_extended"]
+            else None
+        )
+
+    @property  # type: ignore
+    @check_raw_data("observers")
+    def colony_extended_nb_artificial_nests_is_min(self) -> Optional[bool]:
+        return (
+            int(
+                self._raw_data["observers"][0]["extended_info"]["colony_extended"][
+                    "nb_artificial_nests_is_min"
+                ]
+            )
+            == 1
+            if "extended_info" in self._raw_data["observers"][0]
+            and "colony_extended" in self._raw_data["observers"][0]["extended_info"]
+            and "nb_artificial_nests_is_min"
+            in self._raw_data["observers"][0]["extended_info"]["colony_extended"]
+            else False
+            if self.colony_extended_nb_artificial_nests is not None
             else None
         )
 
