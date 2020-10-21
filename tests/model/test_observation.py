@@ -574,6 +574,18 @@ class TestObservation(TestCase):
     def test_second_hand(self):
         self.assertFalse(self.observation.second_hand)
 
+    def test_colony_couples(self):
+        self.assertIsNone(self.observation.colony_couples)
+
+    def test_colony_nests(self):
+        self.assertIsNone(self.observation.colony_nests)
+
+    def test_colony_occupied_nests(self):
+        self.assertIsNone(self.observation.colony_occupied_nests)
+
+    def test_colony_nests_is_min(self):
+        self.assertIsNone(self.observation.colony_nests_is_min)
+
     def test_by_observer(self):
         Observation.list = MagicMock(return_value=["obs", "pk"])
         Observation.by_observer(id_observer=1)

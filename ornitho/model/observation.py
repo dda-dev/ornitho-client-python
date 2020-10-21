@@ -594,6 +594,63 @@ class Observation(ListableModel, SearchableModel, CreateableModel, DeletableMode
             else True
         )
 
+    @property  # type: ignore
+    @check_raw_data("observers")
+    def colony_couples(self) -> Optional[int]:
+        return (
+            int(self._raw_data["observers"][0]["extended_info"]["colony"]["couples"])
+            if "extended_info" in self._raw_data["observers"][0]
+            and "colony" in self._raw_data["observers"][0]["extended_info"]
+            and "couples" in self._raw_data["observers"][0]["extended_info"]["colony"]
+            else None
+        )
+
+    @property  # type: ignore
+    @check_raw_data("observers")
+    def colony_nests(self) -> Optional[int]:
+        return (
+            int(self._raw_data["observers"][0]["extended_info"]["colony"]["nests"])
+            if "extended_info" in self._raw_data["observers"][0]
+            and "colony" in self._raw_data["observers"][0]["extended_info"]
+            and "nests" in self._raw_data["observers"][0]["extended_info"]["colony"]
+            else None
+        )
+
+    @property  # type: ignore
+    @check_raw_data("observers")
+    def colony_occupied_nests(self) -> Optional[int]:
+        return (
+            int(
+                self._raw_data["observers"][0]["extended_info"]["colony"][
+                    "occupied_nests"
+                ]
+            )
+            if "extended_info" in self._raw_data["observers"][0]
+            and "colony" in self._raw_data["observers"][0]["extended_info"]
+            and "occupied_nests"
+            in self._raw_data["observers"][0]["extended_info"]["colony"]
+            else None
+        )
+
+    @property  # type: ignore
+    @check_raw_data("observers")
+    def colony_nests_is_min(self) -> Optional[bool]:
+        return (
+            int(
+                self._raw_data["observers"][0]["extended_info"]["colony"][
+                    "nests_is_min"
+                ]
+            )
+            == 1
+            if "extended_info" in self._raw_data["observers"][0]
+            and "colony" in self._raw_data["observers"][0]["extended_info"]
+            and "nests_is_min"
+            in self._raw_data["observers"][0]["extended_info"]["colony"]
+            else False
+            if self.colony_nests is not None
+            else None
+        )
+
     @classmethod
     def by_observer(
         cls,
