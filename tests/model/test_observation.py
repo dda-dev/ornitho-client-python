@@ -80,6 +80,26 @@ class TestObservation(TestCase):
                     ],
                     "atlas_code": {"@id": "3_3", "#text": "A2"},
                     "project": 1,
+                    "extended_info": {
+                        "colony": {
+                            "couples": "3",
+                            "nests": "18",
+                            "nests_is_min": "1",
+                            "occupied_nests": "2",
+                        },
+                        "colony_extended": {
+                            "couples": "2",
+                            "nb_natural_nests": "1",
+                            "nb_artificial_nests": "17",
+                            "nb_natural_occup_nests": "0",
+                            "nb_artificial_occup_nests": "2",
+                            "nb_natural_other_species_nests": "0",
+                            "nb_artificial_other_species_nests": "0",
+                            "nb_natural_destructed_nests": "1",
+                            "nb_artificial_destructed_nests": "0",
+                            "nb_construction_nests": "0",
+                        },
+                    },
                 }
             ],
         }
@@ -564,6 +584,18 @@ class TestObservation(TestCase):
 
     def test_notime(self):
         self.assertFalse(self.observation.notime)
+        self.observation.notime = True
+        self.assertTrue(self.observation.notime)
+
+        observation = Observation()
+        observation.notime = True
+        self.assertTrue(observation.notime)
+
+        observation = Observation.create_from_ornitho_json(
+            {"observers": [{"id_sighting": 42}]}
+        )
+        observation.notime = True
+        self.assertTrue(observation.notime)
 
     def test_project(self):
         self.assertEqual(1, self.observation.project)
@@ -571,20 +603,64 @@ class TestObservation(TestCase):
     def test_project_code(self):
         self.assertIsNone(self.observation.project_code)
 
+    def test_cavs(self):
+        self.assertIsNone(self.observation.cavs)
+
+    def test_id_observer_vowa(self):
+        self.assertIsNone(self.observation.id_observer_vowa)
+
     def test_second_hand(self):
         self.assertFalse(self.observation.second_hand)
 
     def test_colony_couples(self):
-        self.assertIsNone(self.observation.colony_couples)
+        self.assertEqual(3, self.observation.colony_couples)
 
     def test_colony_nests(self):
-        self.assertIsNone(self.observation.colony_nests)
+        self.assertEqual(18, self.observation.colony_nests)
 
     def test_colony_occupied_nests(self):
-        self.assertIsNone(self.observation.colony_occupied_nests)
+        self.assertEqual(2, self.observation.colony_occupied_nests)
 
     def test_colony_nests_is_min(self):
-        self.assertIsNone(self.observation.colony_nests_is_min)
+        self.assertTrue(self.observation.colony_nests_is_min)
+
+    def test_colony_extended_couples(self):
+        self.assertEqual(2, self.observation.colony_extended_couples)
+
+    def test_colony_extended_nb_natural_nests(self):
+        self.assertEqual(1, self.observation.colony_extended_nb_natural_nests)
+
+    def test_colony_extended_nb_artificial_nests(self):
+        self.assertEqual(17, self.observation.colony_extended_nb_artificial_nests)
+
+    def test_colony_extended_nb_natural_occup_nests(self):
+        self.assertEqual(0, self.observation.colony_extended_nb_natural_occup_nests)
+
+    def test_colony_extended_nb_artificial_occup_nests(self):
+        self.assertEqual(2, self.observation.colony_extended_nb_artificial_occup_nests)
+
+    def test_colony_extended_nb_natural_other_species_nests(self):
+        self.assertEqual(
+            0, self.observation.colony_extended_nb_natural_other_species_nests
+        )
+
+    def test_colony_extended_nb_artificial_other_species_nests(self):
+        self.assertEqual(
+            0, self.observation.colony_extended_nb_artificial_other_species_nests
+        )
+
+    def test_colony_extended_nb_natural_destructed_nests(self):
+        self.assertEqual(
+            1, self.observation.colony_extended_nb_natural_destructed_nests
+        )
+
+    def test_colony_extended_nb_artificial_destructed_nests(self):
+        self.assertEqual(
+            0, self.observation.colony_extended_nb_artificial_destructed_nests
+        )
+
+    def test_colony_extended_nb_construction_nests(self):
+        self.assertEqual(0, self.observation.colony_extended_nb_construction_nests)
 
     def test_by_observer(self):
         Observation.list = MagicMock(return_value=["obs", "pk"])

@@ -566,6 +566,16 @@ class Observation(ListableModel, SearchableModel, CreateableModel, DeletableMode
             else True
         )
 
+    @notime.setter
+    def notime(self, value: bool):
+        if "observers" in self._raw_data:
+            if "timing" in self._raw_data["observers"][0]:
+                self._raw_data["observers"][0]["timing"]["@notime"] = value
+            else:
+                self._raw_data["observers"][0]["timing"] = {"@notime": value}
+        else:
+            self._raw_data["observers"] = [{"timing": {"@notime": value}}]
+
     @property  # type: ignore
     @check_raw_data("observers")
     def project(self) -> Optional[int]:
@@ -581,6 +591,27 @@ class Observation(ListableModel, SearchableModel, CreateableModel, DeletableMode
         return (
             self._raw_data["observers"][0]["project_code"]
             if "project_code" in self._raw_data["observers"][0]
+            else None
+        )
+
+    @property  # type: ignore
+    @check_raw_data("observers")
+    def cavs(self) -> Optional[str]:
+        return (
+            self._raw_data["observers"][0]["committees_validation"]["cavs"]
+            if "committees_validation" in self._raw_data["observers"][0]
+            and "cavs" in self._raw_data["observers"][0]["committees_validation"]
+            else None
+        )
+
+    @property  # type: ignore
+    @check_raw_data("observers")
+    def id_observer_vowa(self) -> Optional[int]:
+        return (
+            int(self._raw_data["observers"][0]["vowa_id"])
+            if "vowa_id" in self._raw_data["observers"][0]
+            else int(self._raw_data["observers"][0]["@vowa_id"])
+            if "@vowa_id" in self._raw_data["observers"][0]
             else None
         )
 
@@ -648,6 +679,166 @@ class Observation(ListableModel, SearchableModel, CreateableModel, DeletableMode
             in self._raw_data["observers"][0]["extended_info"]["colony"]
             else False
             if self.colony_nests is not None
+            else None
+        )
+
+    @property  # type: ignore
+    @check_raw_data("observers")
+    def colony_extended_couples(self) -> Optional[int]:
+        return (
+            int(
+                self._raw_data["observers"][0]["extended_info"]["colony_extended"][
+                    "couples"
+                ]
+            )
+            if "extended_info" in self._raw_data["observers"][0]
+            and "colony_extended" in self._raw_data["observers"][0]["extended_info"]
+            and "couples"
+            in self._raw_data["observers"][0]["extended_info"]["colony_extended"]
+            else None
+        )
+
+    @property  # type: ignore
+    @check_raw_data("observers")
+    def colony_extended_nb_natural_nests(self) -> Optional[int]:
+        return (
+            int(
+                self._raw_data["observers"][0]["extended_info"]["colony_extended"][
+                    "nb_natural_nests"
+                ]
+            )
+            if "extended_info" in self._raw_data["observers"][0]
+            and "colony_extended" in self._raw_data["observers"][0]["extended_info"]
+            and "nb_natural_nests"
+            in self._raw_data["observers"][0]["extended_info"]["colony_extended"]
+            else None
+        )
+
+    @property  # type: ignore
+    @check_raw_data("observers")
+    def colony_extended_nb_artificial_nests(self) -> Optional[int]:
+        return (
+            int(
+                self._raw_data["observers"][0]["extended_info"]["colony_extended"][
+                    "nb_artificial_nests"
+                ]
+            )
+            if "extended_info" in self._raw_data["observers"][0]
+            and "colony_extended" in self._raw_data["observers"][0]["extended_info"]
+            and "nb_artificial_nests"
+            in self._raw_data["observers"][0]["extended_info"]["colony_extended"]
+            else None
+        )
+
+    @property  # type: ignore
+    @check_raw_data("observers")
+    def colony_extended_nb_natural_occup_nests(self) -> Optional[int]:
+        return (
+            int(
+                self._raw_data["observers"][0]["extended_info"]["colony_extended"][
+                    "nb_natural_occup_nests"
+                ]
+            )
+            if "extended_info" in self._raw_data["observers"][0]
+            and "colony_extended" in self._raw_data["observers"][0]["extended_info"]
+            and "nb_natural_occup_nests"
+            in self._raw_data["observers"][0]["extended_info"]["colony_extended"]
+            else None
+        )
+
+    @property  # type: ignore
+    @check_raw_data("observers")
+    def colony_extended_nb_artificial_occup_nests(self) -> Optional[int]:
+        return (
+            int(
+                self._raw_data["observers"][0]["extended_info"]["colony_extended"][
+                    "nb_artificial_occup_nests"
+                ]
+            )
+            if "extended_info" in self._raw_data["observers"][0]
+            and "colony_extended" in self._raw_data["observers"][0]["extended_info"]
+            and "nb_artificial_occup_nests"
+            in self._raw_data["observers"][0]["extended_info"]["colony_extended"]
+            else None
+        )
+
+    @property  # type: ignore
+    @check_raw_data("observers")
+    def colony_extended_nb_natural_other_species_nests(self) -> Optional[int]:
+        return (
+            int(
+                self._raw_data["observers"][0]["extended_info"]["colony_extended"][
+                    "nb_natural_other_species_nests"
+                ]
+            )
+            if "extended_info" in self._raw_data["observers"][0]
+            and "colony_extended" in self._raw_data["observers"][0]["extended_info"]
+            and "nb_natural_other_species_nests"
+            in self._raw_data["observers"][0]["extended_info"]["colony_extended"]
+            else None
+        )
+
+    @property  # type: ignore
+    @check_raw_data("observers")
+    def colony_extended_nb_artificial_other_species_nests(self) -> Optional[int]:
+        return (
+            int(
+                self._raw_data["observers"][0]["extended_info"]["colony_extended"][
+                    "nb_artificial_other_species_nests"
+                ]
+            )
+            if "extended_info" in self._raw_data["observers"][0]
+            and "colony_extended" in self._raw_data["observers"][0]["extended_info"]
+            and "nb_artificial_other_species_nests"
+            in self._raw_data["observers"][0]["extended_info"]["colony_extended"]
+            else None
+        )
+
+    @property  # type: ignore
+    @check_raw_data("observers")
+    def colony_extended_nb_natural_destructed_nests(self) -> Optional[int]:
+        return (
+            int(
+                self._raw_data["observers"][0]["extended_info"]["colony_extended"][
+                    "nb_natural_destructed_nests"
+                ]
+            )
+            if "extended_info" in self._raw_data["observers"][0]
+            and "colony_extended" in self._raw_data["observers"][0]["extended_info"]
+            and "nb_natural_destructed_nests"
+            in self._raw_data["observers"][0]["extended_info"]["colony_extended"]
+            else None
+        )
+
+    @property  # type: ignore
+    @check_raw_data("observers")
+    def colony_extended_nb_artificial_destructed_nests(self) -> Optional[int]:
+        return (
+            int(
+                self._raw_data["observers"][0]["extended_info"]["colony_extended"][
+                    "nb_artificial_destructed_nests"
+                ]
+            )
+            if "extended_info" in self._raw_data["observers"][0]
+            and "colony_extended" in self._raw_data["observers"][0]["extended_info"]
+            and "nb_artificial_destructed_nests"
+            in self._raw_data["observers"][0]["extended_info"]["colony_extended"]
+            else None
+        )
+
+    @property  # type: ignore
+    @check_raw_data("observers")
+    def colony_extended_nb_construction_nests(self) -> Optional[int]:
+        return (
+            int(
+                self._raw_data["observers"][0]["extended_info"]["colony_extended"][
+                    "nb_construction_nests"
+                ]
+            )
+            if "extended_info" in self._raw_data["observers"][0]
+            and "colony_extended" in self._raw_data["observers"][0]["extended_info"]
+            and "nb_construction_nests"
+            in self._raw_data["observers"][0]["extended_info"]["colony_extended"]
             else None
         )
 
