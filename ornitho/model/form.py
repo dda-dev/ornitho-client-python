@@ -4,20 +4,27 @@ from typing import Dict, List, Optional, Union
 import ornitho.model.observation
 from ornitho.api_exception import APIException
 from ornitho.api_requester import APIRequester
-from ornitho.model.abstract import BaseModel
+from ornitho.model.abstract import CreateableModel, DeletableModel
+from ornitho.model.observation import Observation
+from ornitho.model.place import Place
+from ornitho.model.protocol import Protocol
 from ornitho.model.species import Species
 
 
-class Form(BaseModel):
-    ENDPOINT: str = "observations/search"
+class Form(CreateableModel, DeletableModel):
+    ENDPOINT = "observations/search"
+    CREATE_ENDPOINT = "observations"
+    DELETE_METHOD = "POST"
+    DELETE_ENDPOINT = "observations/delete_list"
 
-    def __init__(self, id_: int) -> None:
+    def __init__(self, id_: int = None) -> None:
         """ Form constructor
         :param id_: ID, which is used to get the form from Biolovison
         :type id_: int
         """
         super(Form, self).__init__(id_)
-        self._observations: Optional[List[ornitho.model.observation.Observation]] = None
+        self._observations: Optional[List[Observation]] = None
+        self._id_place: Optional[Union[str, int]] = None
 
     def instance_url(self) -> str:
         """ Returns url for this instance
@@ -53,10 +60,13 @@ class Form(BaseModel):
         return self._raw_data["id_form_universal"]
 
     @property
-    def day(self) -> date:
+    def day(self) -> Optional[date]:
         if "day" in self._raw_data:
             return date.fromtimestamp(int(self._raw_data["day"]["@timestamp"]),)
-        return self.observations[0].timing.date()
+        elif self.observations is not None:
+            return self.observations[0].timing.date()
+        else:
+            return None
 
     @property
     def time_start(self) -> time:
@@ -65,6 +75,10 @@ class Form(BaseModel):
             hour=int(splitted[0]), minute=int(splitted[1]), second=int(splitted[2]),
         )
 
+    @time_start.setter
+    def time_start(self, value: time):
+        self._raw_data["time_start"] = value.strftime("%H:%M:%S")
+
     @property
     def time_stop(self) -> time:
         splitted = self._raw_data["time_stop"].split(":")
@@ -72,9 +86,17 @@ class Form(BaseModel):
             hour=int(splitted[0]), minute=int(splitted[1]), second=int(splitted[2]),
         )
 
+    @time_stop.setter
+    def time_stop(self, value: time):
+        self._raw_data["time_stop"] = value.strftime("%H:%M:%S")
+
     @property
     def full_form(self) -> bool:
         return False if self._raw_data.get("full_form") == "0" else True
+
+    @full_form.setter
+    def full_form(self, value: bool):
+        self._raw_data["full_form"] = "1" if value else "0"
 
     @property
     def version(self) -> int:
@@ -108,6 +130,13 @@ class Form(BaseModel):
             else None
         )
 
+    @protocol_name.setter
+    def protocol_name(self, value: str):
+        if "protocol" in self._raw_data:
+            self._raw_data["protocol"]["protocol_name"] = value
+        else:
+            self._raw_data["protocol"] = {"protocol_name": value}
+
     @property
     def site_code(self) -> Optional[str]:
         return (
@@ -115,6 +144,13 @@ class Form(BaseModel):
             if "protocol" in self._raw_data
             else None
         )
+
+    @site_code.setter
+    def site_code(self, value: str):
+        if "protocol" in self._raw_data:
+            self._raw_data["protocol"]["site_code"] = value
+        else:
+            self._raw_data["protocol"] = {"site_code": value}
 
     @property
     def local_site_code(self) -> Optional[str]:
@@ -140,6 +176,13 @@ class Form(BaseModel):
             else None
         )
 
+    @visit_number.setter
+    def visit_number(self, value: int):
+        if "protocol" in self._raw_data:
+            self._raw_data["protocol"]["visit_number"] = value
+        else:
+            self._raw_data["protocol"] = {"visit_number": value}
+
     @property
     def sequence_number(self) -> Optional[int]:
         return (
@@ -147,6 +190,13 @@ class Form(BaseModel):
             if "protocol" in self._raw_data
             else None
         )
+
+    @sequence_number.setter
+    def sequence_number(self, value: int):
+        if "protocol" in self._raw_data:
+            self._raw_data["protocol"]["sequence_number"] = value
+        else:
+            self._raw_data["protocol"] = {"sequence_number": value}
 
     @property
     def list_type(self) -> Optional[str]:
@@ -590,7 +640,7 @@ class Form(BaseModel):
         return None
 
     @property
-    def observations(self):
+    def observations(self) -> Optional[List[Observation]]:
         if "sightings" not in self._raw_data:
             self.refresh()
         if self._observations is None and "sightings" in self._raw_data:
@@ -600,7 +650,18 @@ class Form(BaseModel):
                 )
                 for observation in self._raw_data["sightings"]
             ]
+
         return self._observations
+
+    @observations.setter
+    def observations(self, value: List[Observation]):
+        for observation in value:
+            if self._id_place is not None:
+                observation.id_place = self._id_place
+            else:
+                self._id_place = observation.id_place
+        self._raw_data["sightings"] = [observation._raw_data for observation in value]
+        self._observations = value
 
     def playblack_played(self, species: Union[int, Species]) -> Optional[bool]:
         if isinstance(species, Species):
@@ -610,3 +671,48 @@ class Form(BaseModel):
             if self.playbacks is not None and species in self.playbacks
             else None
         )
+
+    @classmethod
+    def create(  # type: ignore
+        cls,
+        time_start: time,
+        time_stop: time,
+        observations: List[Observation],
+        protocol: Optional[Union[Protocol, str]] = None,
+        place: Optional[Union[Place, str, int]] = None,
+        visit_number: Optional[int] = None,
+        sequence_number: Optional[int] = None,
+        full_form: bool = True,
+        create_in_ornitho: bool = True,
+    ) -> "Form":
+        form = cls()
+        form.time_start = time_start
+        form.time_stop = time_stop
+        form.full_form = full_form
+        if place is not None:
+            if isinstance(place, Place):
+                form._id_place = place.id_
+            else:
+                form._id_place = place
+
+        form.observations = observations
+
+        if protocol is not None:
+            if isinstance(protocol, Protocol):
+                form.protocol_name = protocol.name
+            else:
+                form.protocol_name = protocol
+
+        # form.site_code = site_code
+        if visit_number is not None:
+            form.visit_number = visit_number
+        if sequence_number is not None:
+            form.sequence_number = sequence_number
+
+        if create_in_ornitho:
+            first_observation_id = cls.create_in_ornitho(
+                data={"forms": [form._raw_data]}
+            )
+            form = cls.get(Observation.get(first_observation_id).id_form)
+
+        return form

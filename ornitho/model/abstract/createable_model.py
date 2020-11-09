@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Type, TypeVar
+from typing import Any, Dict, Optional, Type, TypeVar
 
 from ornitho.model.abstract import BaseModel
 
@@ -10,6 +10,8 @@ T = TypeVar("T", bound="CreateableModel")
 class CreateableModel(BaseModel, ABC):
     """Abstract class for createable models via POST /ENDPOINT"""
 
+    CREATE_ENDPOINT: Optional[str] = None
+
     @classmethod
     def create_in_ornitho(cls: Type[T], data: Dict[str, Any]) -> int:
         """ Create an instance on ornitho
@@ -18,7 +20,7 @@ class CreateableModel(BaseModel, ABC):
         :return:  Ornitho ID of the created object
         :rtype: T
         """
-        url = cls.ENDPOINT
+        url = cls.CREATE_ENDPOINT if cls.CREATE_ENDPOINT is not None else cls.ENDPOINT
         body = {"data": data}
         response = cls.request(method="post", url=url, body=body)
         return response[0]["id"][0]

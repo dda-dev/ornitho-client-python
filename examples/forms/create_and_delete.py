@@ -19,7 +19,7 @@ details = [
 resting_habitat = ornitho.FieldOption.get(id_="1_5")  # Grassland
 observation_detail = ornitho.FieldOption.get(id_="4_2")  # food seeking
 
-new_observation = ornitho.Observation.create(
+first_observation = ornitho.Observation.create(
     observer=observer,
     species=species,
     timing=datetime.now(),
@@ -33,12 +33,36 @@ new_observation = ornitho.Observation.create(
     hidden=True,
     atlas_code=atlas_code,
     details=details,
+    create_in_ornitho=False,
+)
+second_observation = ornitho.Observation.create(
+    observer=observer,
+    species=493,
+    timing=datetime.now(),
+    coord_lat=51.99666467623097,
+    coord_lon=7.6341611553058595,
+    precision=ornitho.Precision.PRECISE,
+    estimation_code=ornitho.EstimationCode.EXACT_VALUE,
+    count=4,
+    comment="TEST",
+    hidden_comment="HIDDEN TEST",
+    hidden=True,
+    create_in_ornitho=False,
 )
 
-print(
-    f"{new_observation.count} {new_observation.species.name}; Place: {new_observation.place.name}; "
-    f"Time: {new_observation.timing}; Observer: {new_observation.observer.name}; Altitude: {new_observation.altitude}"
-)
-new_observation.mark_as_exported()
+cbbm_place = ornitho.Place.list_all(
+    get_hidden=1, name="DDA-Teststrecke", place_type="transect"
+)[1]
 
-new_observation.delete()
+form = ornitho.Form.create(
+    time_start=datetime.now().time(),
+    time_stop=datetime.now().time(),
+    observations=[first_observation, second_observation],
+    protocol="CBBM",
+    place=cbbm_place.id_,
+    visit_number=250,
+)
+
+print(f"New form id: {form.id_}")
+
+form.delete()

@@ -494,3 +494,27 @@ class TestAPIRequester(TestCase):
             data=None,
             headers=APIRequester.request_headers(),
         )
+
+        # Case 16: First Line is not part of the JSON response
+        self.requester.session.request = MagicMock(
+            return_value=Mock(
+                status_code=200,
+                headers={
+                    "pagination_key": "new_key",
+                    "Content-Type": "application/json; charset=utf-8",
+                    "Content-Length": 43,
+                },
+                text='A very stupid line!\n{"data": [{"id": "1"}]}',
+            )
+        )
+        response, pk = self.requester.request_raw(
+            method="get", url="test", pagination_key="key", short_version=True,
+        )
+        self.assertEqual({"data": [{"id": "1"}]}, response)
+        self.assertEqual(pk, "new_key")
+        self.requester.session.request.assert_called_with(
+            "get",
+            f"ORNITHO_API_BASEtest?user_email=ORNITHO_USER_EMAIL&user_pw=ORNITHO_USER_PW&pagination_key=key&short_version=1",
+            data=None,
+            headers=APIRequester.request_headers(),
+        )

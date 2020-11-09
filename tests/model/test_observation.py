@@ -439,6 +439,20 @@ class TestObservation(TestCase):
             int(self.observation_json["place"]["@id"]), self.observation.id_place
         )
 
+        obs_json = {"place": {"id": 1}, "observers": [{}]}
+        self.assertEqual(1, Observation.create_from_ornitho_json(obs_json).id_place)
+
+        with mock.patch("ornitho.model.observation.Place") as mock_place:
+            obs_json = {
+                "observers": [{"coord_lat": "49.443215", "coord_lon": "7.574859",}]
+            }
+            mock_place.id_.return_value = 1
+            mock_place._raw_data.return_value = {"id": 1}
+            mock_place.find_closest_place.return_value = mock_place
+            self.assertEqual(
+                1, Observation.create_from_ornitho_json(obs_json).id_place,
+            )
+
     def test_id_resting_habitat(self):
         self.assertEqual(
             self.observation_json["observers"][0]["resting_habitat"],
@@ -535,6 +549,13 @@ class TestObservation(TestCase):
     def test_place(self):
         place = self.observation.place
         self.assertEqual(place._raw_data, self.observation_json["place"])
+
+        with mock.patch("ornitho.model.observation.Place") as mock_place:
+            mock_place.get.return_value = "Place"
+            mock_place.id_.return_value = "1"
+            obs = Observation()
+            obs.place = mock_place
+            self.assertEqual(mock_place.id_, obs.place.id_)
 
     def test_form(self):
         form = self.observation.form
@@ -843,10 +864,15 @@ class TestObservation(TestCase):
         self.assertEqual("1_4", obs2.resting_habitat.id_)
         self.assertEqual("4_4", obs2.observation_detail.id_)
 
+    @mock.patch("ornitho.model.observation.BaseModel.refresh")
     @mock.patch("ornitho.model.observation.UpdateableModel.update")
-    def test_mark_as_exported(self, mock_updateable_model):
+    def test_mark_as_exported(self, mock_updateable_model, mock_base_model):
         self.observation.mark_as_exported()
         mock_updateable_model.assert_called_once()
         self.observation.mark_as_exported(datetime.now())
         mock_updateable_model.assert_called()
         self.assertEqual(2, mock_updateable_model.call_count)
+
+        obs = Observation()
+        obs.mark_as_exported()
+        mock_base_model.assert_called_once()

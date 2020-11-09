@@ -1,6 +1,7 @@
 import json
 from copy import deepcopy
 from datetime import date, datetime
+from json.decoder import JSONDecodeError
 from typing import Any, Dict, List, Optional, Tuple, Union
 from urllib.parse import urlencode
 
@@ -278,7 +279,16 @@ class APIRequester(object):
                 raw_response.headers["Content-Type"]
                 == "application/json; charset=utf-8"
             ):
-                return json.loads(raw_response.text), pagination_key
+                try:
+                    decoded_json_response = json.loads(raw_response.text)
+                except JSONDecodeError:
+                    # Remove the first JSON Line, which breaks the JSON format
+                    # e.g. "API message : Ihre Beobachtungsdaten wurden erfolgreich übermittelt, vielen Dank!"
+                    # A real WTF moment...
+                    decoded_json_response = json.loads(
+                        "\n".join(raw_response.text.split("\n")[1:])
+                    )
+                return decoded_json_response, pagination_key
             elif raw_response.headers["Content-Type"] == "application/pdf":
                 return raw_response.content, pagination_key
             elif raw_response.headers["Content-Type"] == "text/html; charset=UTF-8":

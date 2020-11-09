@@ -1,9 +1,9 @@
-from datetime import date
+from datetime import date, datetime
 from unittest import TestCase, mock
 from unittest.mock import MagicMock
 
 import ornitho
-from ornitho import Form
+from ornitho import Form, Place, Protocol
 from ornitho.api_exception import APIException
 
 ornitho.consumer_key = "ORNITHO_CONSUMER_KEY"
@@ -175,20 +175,38 @@ class TestForm(TestCase):
             self.form.day,
         )
 
+        with mock.patch("ornitho.model.Form.refresh") as mock_refresh:
+            self.assertIsNone(Form().day)
+            mock_refresh.assert_called_once()
+
     def test_time_start(self):
         self.assertEqual(
             self.form_json["time_start"], self.form.time_start.strftime("%H:%M:%S"),
+        )
+        new_time = datetime.now().time()
+        self.form.time_start = new_time
+        self.assertEqual(
+            new_time.replace(microsecond=0), self.form.time_start,
         )
 
     def test_time_stop(self):
         self.assertEqual(
             self.form_json["time_stop"], self.form.time_stop.strftime("%H:%M:%S"),
         )
+        new_time = datetime.now().time()
+        self.form.time_stop = new_time
+        self.assertEqual(
+            new_time.replace(microsecond=0), self.form.time_stop,
+        )
 
     def test_full_form(self):
         self.assertEqual(
             False if self.form_json["full_form"] == "0" else True, self.form.full_form
         )
+        self.form.full_form = True
+        self.assertTrue(self.form.full_form)
+        self.form.full_form = False
+        self.assertFalse(self.form.full_form)
 
     def test_version(self):
         self.assertEqual(
@@ -220,10 +238,24 @@ class TestForm(TestCase):
             self.form_json["protocol"]["protocol_name"], self.form.protocol_name,
         )
 
+        self.form.protocol_name = "NEW_PROTOCOL"
+        self.assertEqual("NEW_PROTOCOL", self.form.protocol_name)
+
+        new_form = Form()
+        new_form.protocol_name = "NEW_PROTOCOL_2"
+        self.assertEqual("NEW_PROTOCOL_2", new_form.protocol_name)
+
     def test_site_code(self):
         self.assertEqual(
             self.form_json["protocol"]["site_code"], self.form.site_code,
         )
+
+        self.form.site_code = "SITE_CODE"
+        self.assertEqual("SITE_CODE", self.form.site_code)
+
+        new_form = Form()
+        new_form.site_code = "SITE_CODE_2"
+        self.assertEqual("SITE_CODE_2", new_form.site_code)
 
     def test_local_site_code(self):
         self.assertEqual(
@@ -241,11 +273,25 @@ class TestForm(TestCase):
             int(self.form_json["protocol"]["visit_number"]), self.form.visit_number,
         )
 
+        self.form.visit_number = 99
+        self.assertEqual(99, self.form.visit_number)
+
+        new_form = Form()
+        new_form.visit_number = 999
+        self.assertEqual(999, new_form.visit_number)
+
     def test_sequence_number(self):
         self.assertEqual(
             int(self.form_json["protocol"]["sequence_number"]),
             self.form.sequence_number,
         )
+
+        self.form.sequence_number = 99
+        self.assertEqual(99, self.form.sequence_number)
+
+        new_form = Form()
+        new_form.sequence_number = 999
+        self.assertEqual(999, new_form.sequence_number)
 
     def test_list_type(self):
         self.assertEqual(
@@ -907,6 +953,10 @@ class TestForm(TestCase):
         observations = self.form.observations
         self.assertEqual(observations, ["Observation"])
 
+        self.form.observations = [mock_observation()]
+        self.form.id_place = None
+        self.form.observations = [mock_observation()]
+
     def test_playblack_played(self):
         mock_species = mock.MagicMock(spec=ornitho.Species)
         type(mock_species).id_ = mock.PropertyMock(return_value=1)
@@ -923,3 +973,33 @@ class TestForm(TestCase):
         self.assertTrue(
             Form.create_from_ornitho_json(form_json).playblack_played(mock_species)
         )
+
+    @mock.patch("ornitho.model.form.CreateableModel.get")
+    @mock.patch("ornitho.model.form.CreateableModel.create_in_ornitho")
+    def test_create(self, mock_create_in_ornitho, mock_get):
+        mock_create_in_ornitho.return_value = 1
+        id_form_mock = MagicMock()
+        id_form_mock.id_form.return_value = 1
+        mock_get.return_value = id_form_mock
+
+        Form.create(
+            time_start=datetime.now().time(),
+            time_stop=datetime.now().time(),
+            observations=[],
+            protocol="PROTOCOL",
+            place=1,
+            visit_number=250,
+            sequence_number=100,
+        )
+        mock_create_in_ornitho.assert_called()
+
+        Form.create(
+            time_start=datetime.now().time(),
+            time_stop=datetime.now().time(),
+            observations=[],
+            protocol=mock.Mock(spec=Protocol),
+            place=mock.Mock(spec=Place),
+            visit_number=250,
+            sequence_number=100,
+        )
+        mock_create_in_ornitho.assert_called()

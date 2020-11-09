@@ -91,7 +91,9 @@ class Observation(
             raise APIException(
                 f"More than one observer in sightings json found!\n{data['observers']}"
             )
-        identifier: int = int(data["observers"][0]["id_sighting"])
+        identifier: Optional[int] = int(
+            data["observers"][0]["id_sighting"]
+        ) if "observers" in data and "id_sighting" in data["observers"][0] else None
         obj = cls(identifier)
         obj._raw_data = data
         return obj
@@ -331,9 +333,9 @@ class Observation(
     @hidden.setter
     def hidden(self, value: bool):
         if "observers" in self._raw_data:
-            self._raw_data["observers"][0]["hidden"] = value
+            self._raw_data["observers"][0]["hidden"] = "1" if value else "0"
         else:
-            self._raw_data["observers"] = [{"hidden": value}]
+            self._raw_data["observers"] = [{"hidden": "1" if value else "0"}]
 
     @property  # type: ignore
     @check_raw_data("observers")
@@ -427,7 +429,22 @@ class Observation(
     @property  # type: ignore
     @check_raw_data("place")
     def id_place(self) -> int:
-        return int(self._raw_data["place"]["@id"])
+        if "place" not in self._raw_data:
+            id_place = Place.find_closest_place(
+                self.coord_lat, self.coord_lon, get_hidden=True
+            ).id_
+            if id_place is not None:
+                self.id_place = int(id_place)
+                return int(id_place)
+        if "@id" in self._raw_data["place"]:
+            return int(self._raw_data["place"]["@id"])
+        else:
+            return int(self._raw_data["place"]["id"])
+
+    @id_place.setter
+    def id_place(self, value: int):
+        self._place = None
+        self._raw_data["place"] = {"@id": value.__str__()}
 
     @property  # type: ignore
     @check_raw_data("observers")
@@ -504,6 +521,11 @@ class Observation(
         if self._place is None:
             self._place = Place.create_from_ornitho_json(self._raw_data["place"])
         return self._place
+
+    @place.setter
+    def place(self, value: Place):
+        self._raw_data["place"] = value._raw_data
+        self._place = value
 
     @property
     def form(self):
@@ -1057,6 +1079,7 @@ class Observation(
         details: List[Detail] = None,
         resting_habitat: Union[str, FieldOption] = None,
         observation_detail: Union[str, FieldOption] = None,
+        create_in_ornitho: bool = True,
     ) -> "Observation":
         observation = cls()
 
@@ -1126,12 +1149,15 @@ class Observation(
                 "observation_detail"
             ] = observation_detail_id_adjusted
 
-        observation._id = cls.create_in_ornitho(
-            data={"sightings": [observation._raw_data]}
-        )
+        if create_in_ornitho:
+            observation._id = cls.create_in_ornitho(
+                data={"sightings": [observation._raw_data]}
+            )
         return observation
 
     def mark_as_exported(self, export_date: Optional[datetime] = None):
+        if self.id_ is None:
+            self.refresh()
         self.is_exported = True
         if export_date:
             self.export_date = export_date
