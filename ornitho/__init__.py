@@ -3,7 +3,7 @@
     Ornitho
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     An ornitho API client
-    :copyright: (c) 2019 by Patrick Lindel
+    :copyright: (c) 2019 by DDA
     :license: MIT, see LICENSE for more details.
 """
 import logging
@@ -43,7 +43,7 @@ from ornitho.model import (
     TerritorialUnit,
 )
 
-__version__ = "0.0.1"
+__version__ = "0.1.0"
 __license__ = "MIT"
 
 
