@@ -179,9 +179,9 @@ class Form(CreateableModel, DeletableModel):
     @visit_number.setter
     def visit_number(self, value: int):
         if "protocol" in self._raw_data:
-            self._raw_data["protocol"]["visit_number"] = value
+            self._raw_data["protocol"]["visit_number"] = value.__str__()
         else:
-            self._raw_data["protocol"] = {"visit_number": value}
+            self._raw_data["protocol"] = {"visit_number": value.__str__()}
 
     @property
     def sequence_number(self) -> Optional[int]:
@@ -194,9 +194,9 @@ class Form(CreateableModel, DeletableModel):
     @sequence_number.setter
     def sequence_number(self, value: int):
         if "protocol" in self._raw_data:
-            self._raw_data["protocol"]["sequence_number"] = value
+            self._raw_data["protocol"]["sequence_number"] = value.__str__()
         else:
-            self._raw_data["protocol"] = {"sequence_number": value}
+            self._raw_data["protocol"] = {"sequence_number": value.__str__()}
 
     @property
     def list_type(self) -> Optional[str]:

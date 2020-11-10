@@ -626,11 +626,11 @@ class Observation(
     def notime(self, value: bool):
         if "observers" in self._raw_data:
             if "timing" in self._raw_data["observers"][0]:
-                self._raw_data["observers"][0]["timing"]["@notime"] = value
+                self._raw_data["observers"][0]["timing"]["@notime"] =  "1" if value else "0"
             else:
-                self._raw_data["observers"][0]["timing"] = {"@notime": value}
+                self._raw_data["observers"][0]["timing"] = {"@notime":  "1" if value else "0"}
         else:
-            self._raw_data["observers"] = [{"timing": {"@notime": value}}]
+            self._raw_data["observers"] = [{"timing": {"@notime":  "1" if value else "0"}}]
 
     @property  # type: ignore
     @check_raw_data("observers")
@@ -1070,6 +1070,7 @@ class Observation(
         coord_lon: float,
         precision: Precision,
         estimation_code: EstimationCode,
+        notime: bool = False,
         count: int = None,
         altitude: int = None,
         comment: str = None,
@@ -1094,6 +1095,7 @@ class Observation(
             observation.id_species = species
 
         observation.timing = timing
+        observation.notime = notime
         observation.coord_lat = coord_lat
         observation.coord_lon = coord_lon
         observation.precision = precision

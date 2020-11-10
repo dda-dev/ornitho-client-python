@@ -23,6 +23,7 @@ new_observation = ornitho.Observation.create(
     observer=observer,
     species=species,
     timing=datetime.now(),
+    notime=True,
     coord_lat=51.99666467623097,
     coord_lon=7.6341611553058595,
     precision=ornitho.Precision.PRECISE,
