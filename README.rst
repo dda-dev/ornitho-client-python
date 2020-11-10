@@ -60,6 +60,8 @@ The following "ornitho controllers / calls" are implemented:
   - Delete an observations
   - Search an observation
   - Search update or deletion since a given date
+  - Delete a record
+  - Delete a list
 
 - fields
 
@@ -95,8 +97,6 @@ Not yet Implemented:
   - Search observations from a list of coordinates
   - Search resources linked to an observation
   - Create a new resources for an observation
-  - Delete a record
-  - Delete a list
 
 - import files
 
@@ -149,8 +149,7 @@ Installing
 
 .. The project will be offered as a `Pypi
    package <https://pypi.python.org/pypi/ornitho>`__, and using pip /
-   pipenv is the preferred way to install it. For this use the following
-   command:
+   is an easy way to install it. For this use the following command:
 
    ``$ pip install ornitho``
 
