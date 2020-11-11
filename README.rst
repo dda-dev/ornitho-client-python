@@ -145,13 +145,9 @@ Not yet Implemented:
 
 Installing
 ----------
-**Currently not published on pypi!**
+The project is published on `PyPI <https://pypi.python.org/pypi/ornitho>`__, and can be install using pip or any other package manager:
 
-.. The project will be offered as a `Pypi
-   package <https://pypi.python.org/pypi/ornitho>`__, and using pip /
-   is an easy way to install it. For this use the following command:
-
-   ``$ pip install ornitho``
+``$ pip install ornitho``
 
 Manual installation can be done with following command:
 
