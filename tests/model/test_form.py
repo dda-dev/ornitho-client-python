@@ -974,24 +974,27 @@ class TestForm(TestCase):
             Form.create_from_ornitho_json(form_json).playblack_played(mock_species)
         )
 
+    @mock.patch("ornitho.model.form.Observation")
     @mock.patch("ornitho.model.form.CreateableModel.get")
     @mock.patch("ornitho.model.form.CreateableModel.create_in_ornitho")
-    def test_create(self, mock_create_in_ornitho, mock_get):
+    def test_create(self, mock_create_in_ornitho, mock_get, mock_observation):
         mock_create_in_ornitho.return_value = 1
         id_form_mock = MagicMock()
         id_form_mock.id_form.return_value = 1
         mock_get.return_value = id_form_mock
+        mock_observation.raw_data_trim_field_ids.return_value = "TRIMMED!"
 
         Form.create(
             time_start=datetime.now().time(),
             time_stop=datetime.now().time(),
-            observations=[],
+            observations=[mock_observation],
             protocol="PROTOCOL",
             place=1,
             visit_number=250,
             sequence_number=100,
         )
         mock_create_in_ornitho.assert_called()
+        mock_observation.raw_data_trim_field_ids.assert_called()
 
         Form.create(
             time_start=datetime.now().time(),
@@ -1003,3 +1006,4 @@ class TestForm(TestCase):
             sequence_number=100,
         )
         mock_create_in_ornitho.assert_called()
+        mock_observation.raw_data_trim_field_ids.assert_called()

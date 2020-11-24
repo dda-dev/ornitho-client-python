@@ -1,3 +1,4 @@
+from copy import deepcopy
 from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, Union
@@ -1151,35 +1152,18 @@ class Observation(
         if resting_habitat:
             if isinstance(resting_habitat, FieldOption):
                 observation.resting_habitat = resting_habitat
-                # Adjust raw_data before sending to ornitho (api inconsistency)
-                resting_habitat_id_adjusted = resting_habitat.id_.__str__().split("_")[
-                    1
-                ]
             else:
                 observation.id_resting_habitat = resting_habitat
-                resting_habitat_id_adjusted = resting_habitat.split("_")[1]
-            # Adjust raw_data before sending to ornitho (api inconsistency)
-            observation._raw_data["observers"][0][
-                "resting_habitat"
-            ] = resting_habitat_id_adjusted
 
         if observation_detail:
             if isinstance(observation_detail, FieldOption):
                 observation.observation_detail = observation_detail
-                observation_detail_id_adjusted = observation_detail.id_.__str__().split(
-                    "_"
-                )[1]
             else:
                 observation.id_observation_detail = observation_detail
-                observation_detail_id_adjusted = observation_detail.split("_")[1]
-            # Adjust raw_data before sending to ornitho (api inconsistency)
-            observation._raw_data["observers"][0][
-                "observation_detail"
-            ] = observation_detail_id_adjusted
 
         if create_in_ornitho:
             observation._id = cls.create_in_ornitho(
-                data={"sightings": [observation._raw_data]}
+                data={"sightings": [observation.raw_data_trim_field_ids()]}
             )
         return observation
 
@@ -1192,3 +1176,18 @@ class Observation(
         else:
             self.export_date = datetime.now()
         self.update()
+
+    def raw_data_trim_field_ids(self) -> Dict[str, Any]:
+        raw_data = deepcopy(self._raw_data)
+
+        if self.id_resting_habitat:
+            raw_data["observers"][0]["resting_habitat"] = self.id_resting_habitat.split(
+                "_"
+            )[1]
+
+        if self.id_observation_detail:
+            raw_data["observers"][0][
+                "observation_detail"
+            ] = self.id_observation_detail.split("_")[1]
+
+        return raw_data

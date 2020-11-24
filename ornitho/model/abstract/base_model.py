@@ -114,6 +114,14 @@ class BaseModel(ABC):
         """
         return f"{self.ENDPOINT}/{self.id_}"
 
+    def raw_data_trim_field_ids(self) -> Dict[str, Any]:
+        """Returns raw data with removed field id from field options ('2_3' -> '3').
+        Only need to be reimplemented by models that use fields and are createable/updateable.
+        :return: Raw data dict, with trimmed field options
+        :rtype: Dict[str, Any]
+        """
+        return self._raw_data
+
 
 def check_refresh(func):
     def wrapper(self: T):

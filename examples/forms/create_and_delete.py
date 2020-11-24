@@ -34,6 +34,8 @@ first_observation = ornitho.Observation.create(
     hidden=True,
     atlas_code=atlas_code,
     details=details,
+    resting_habitat=resting_habitat,  # currently ignored by the API, when observation is send as part of a form
+    observation_detail=observation_detail,  # currently ignored by the API, when observation is send as part of a form
     create_in_ornitho=False,
 )
 second_observation = ornitho.Observation.create(

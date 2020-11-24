@@ -14,6 +14,6 @@ class UpdateableModel(BaseModel, ABC):
         """ Update an instance on ornitho, respecting the specific model characteristics
         """
         url = f"{self.ENDPOINT}/{self.id_}"
-        body = {"data": {"sightings": [self._raw_data]}}
+        body = {"data": {"sightings": [self.raw_data_trim_field_ids()]}}
         response = self.request(method="put", url=url, body=body)
         return response

@@ -34,6 +34,8 @@ new_observation = ornitho.Observation.create(
     hidden=True,
     atlas_code=atlas_code,
     details=details,
+    resting_habitat=resting_habitat,
+    observation_detail=observation_detail,
 )
 
 print(

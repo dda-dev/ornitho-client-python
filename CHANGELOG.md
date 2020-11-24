@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed setter `visit_number` of the observation model
 - Fixed setter `sequence_number` of the observation model
 - Fixed setter `notime` of the observation model
+- Fixed `resting_habitat` when updating observation
+- Fixed `observation_detail` when updating observation
 
 
 ## [0.1.0] - 2020-11-10

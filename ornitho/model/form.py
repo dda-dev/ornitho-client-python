@@ -1,5 +1,6 @@
+from copy import deepcopy
 from datetime import date, time
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 import ornitho.model.observation
 from ornitho.api_exception import APIException
@@ -711,8 +712,18 @@ class Form(CreateableModel, DeletableModel):
 
         if create_in_ornitho:
             first_observation_id = cls.create_in_ornitho(
-                data={"forms": [form._raw_data]}
+                data={"forms": [form.raw_data_trim_field_ids()]}
             )
             form = cls.get(Observation.get(first_observation_id).id_form)
 
         return form
+
+    def raw_data_trim_field_ids(self) -> Dict[str, Any]:
+        raw_data = deepcopy(self._raw_data)
+        if self.observations:
+            trimmed_observations = [
+                observation.raw_data_trim_field_ids()
+                for observation in self.observations
+            ]
+            raw_data["sightings"] = trimmed_observations
+        return raw_data
