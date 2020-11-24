@@ -20,7 +20,7 @@ class ListableModel(BaseModel, ABC):
         short_version: bool = False,
         **kwargs: Union[str, int, float, bool, date]
     ) -> Tuple[List[T], Optional[str]]:
-        """ Retrieves a (paged) list of instances from Biolovison
+        """Retrieves a (paged) list of instances from Biolovison
         If the list is chunked, a pagination key ist returned
         :param request_all: Indicates, if all instances should be retrieved (may result in many API calls)
         :param pagination_key: Pagination key, which can be used to retrieve the next page

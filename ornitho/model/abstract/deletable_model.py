@@ -14,7 +14,6 @@ class DeletableModel(BaseModel, ABC):
     DELETE_ENDPOINT: Optional[str] = None
 
     def delete(self: T):
-        """ Delete an instance on ornitho
-        """
+        """Delete an instance on ornitho"""
         url = f"{self.DELETE_ENDPOINT if self.DELETE_ENDPOINT is not None else self.ENDPOINT}/{self.id_}"
         self.request(method=self.DELETE_METHOD, url=url)

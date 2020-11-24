@@ -19,7 +19,7 @@ class Form(CreateableModel, DeletableModel):
     DELETE_ENDPOINT = "observations/delete_list"
 
     def __init__(self, id_: int = None) -> None:
-        """ Form constructor
+        """Form constructor
         :param id_: ID, which is used to get the form from Biolovison
         :type id_: int
         """
@@ -28,14 +28,14 @@ class Form(CreateableModel, DeletableModel):
         self._id_place: Optional[Union[str, int]] = None
 
     def instance_url(self) -> str:
-        """ Returns url for this instance
+        """Returns url for this instance
         :return: Instance's url
         :rtype: str
         """
         return f"{self.ENDPOINT}"
 
     def refresh(self, short_version: bool = False) -> "Form":
-        """ Refresh local model
+        """Refresh local model
         Call the api and refresh fields from response
         :return: Refreshed Object
         :rtype: Form
@@ -63,7 +63,9 @@ class Form(CreateableModel, DeletableModel):
     @property
     def day(self) -> Optional[date]:
         if "day" in self._raw_data:
-            return date.fromtimestamp(int(self._raw_data["day"]["@timestamp"]),)
+            return date.fromtimestamp(
+                int(self._raw_data["day"]["@timestamp"]),
+            )
         elif self.observations is not None:
             return self.observations[0].timing.date()
         else:
@@ -73,7 +75,9 @@ class Form(CreateableModel, DeletableModel):
     def time_start(self) -> time:
         splitted = self._raw_data["time_start"].split(":")
         return time(
-            hour=int(splitted[0]), minute=int(splitted[1]), second=int(splitted[2]),
+            hour=int(splitted[0]),
+            minute=int(splitted[1]),
+            second=int(splitted[2]),
         )
 
     @time_start.setter
@@ -84,7 +88,9 @@ class Form(CreateableModel, DeletableModel):
     def time_stop(self) -> time:
         splitted = self._raw_data["time_stop"].split(":")
         return time(
-            hour=int(splitted[0]), minute=int(splitted[1]), second=int(splitted[2]),
+            hour=int(splitted[0]),
+            minute=int(splitted[1]),
+            second=int(splitted[2]),
         )
 
     @time_stop.setter

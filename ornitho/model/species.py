@@ -11,7 +11,7 @@ class Species(ListableModel):
     ENDPOINT: str = "species"
 
     def __init__(self, id_: int) -> None:
-        """ Species constructor
+        """Species constructor
         :param id_: ID, which is used to get the observation from Biolovison
         :type id_: int
         """

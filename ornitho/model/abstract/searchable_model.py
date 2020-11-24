@@ -20,7 +20,7 @@ class SearchableModel(BaseModel, ABC):
         short_version: bool = False,
         **kwargs: Union[str, int, float, bool, date, datetime]
     ) -> Tuple[List[T], Optional[str]]:
-        """ Search for instances at Biolovision via POST search
+        """Search for instances at Biolovision via POST search
         If the list is chunked, a pagination key ist returned
         :param request_all: Indicates, if all instances should be retrieved (may result in many API calls)
         :param pagination_key: Pagination key, which can be used to retrieve the next page

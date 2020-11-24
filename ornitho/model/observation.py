@@ -69,7 +69,7 @@ class Observation(
     def __init__(
         self, id_: int = None, modification_type: ModificationType = None
     ) -> None:
-        """ Observation constructor
+        """Observation constructor
         :param id_: ID, which is used to get the observation from Biolovison – None if a new observation will be created
         :param modification_type: Set if the observation was retrieved via the 'diff' method
         :type id_: int
@@ -93,9 +93,11 @@ class Observation(
             raise APIException(
                 f"More than one observer in sightings json found!\n{data['observers']}"
             )
-        identifier: Optional[int] = int(
-            data["observers"][0]["id_sighting"]
-        ) if "observers" in data and "id_sighting" in data["observers"][0] else None
+        identifier: Optional[int] = (
+            int(data["observers"][0]["id_sighting"])
+            if "observers" in data and "id_sighting" in data["observers"][0]
+            else None
+        )
         obj = cls(identifier)
         obj._raw_data = data
         return obj
@@ -971,7 +973,7 @@ class Observation(
         short_version: bool = False,
         **kwargs: Union[str, int, float, bool],
     ) -> Tuple[List["Observation"], Optional[str]]:
-        """ Retrieves a (paged) list of observations from one observer
+        """Retrieves a (paged) list of observations from one observer
         :param id_observer: Current data, probably received from the API
         :param pagination_key: Pagination key, which can be used to retrieve the next page
         :param short_version: Indicates, if a short version with foreign keys should be returned by the API.

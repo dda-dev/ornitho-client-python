@@ -95,7 +95,8 @@ class TestObserver(TestCase):
         self.assertEqual(observer.name, "TEST_NAME")
         self.assertEqual(observer.surname, "TEST_SURNAME")
         Observer.request.assert_called_with(
-            method="GET", url="observers/current",
+            method="GET",
+            url="observers/current",
         )
 
     def test_external_id(self):

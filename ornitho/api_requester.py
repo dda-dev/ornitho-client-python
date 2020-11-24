@@ -23,7 +23,7 @@ class APIRequester(object):
         user_pw: Optional[str] = None,
         api_base: Optional[str] = None,
     ) -> None:
-        """ API requester constructor
+        """API requester constructor
         :param consumer_key: Optional Consumer Key, overrides field from ornitho module (ornitho.consumer_key)
         :param consumer_secret: Optional Consumer Secret, overrides field from ornitho module (ornitho.consumer_secret)
         :param user_email: Optional User Mail, overrides field from ornitho module (ornitho.user_email)

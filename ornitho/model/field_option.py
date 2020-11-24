@@ -11,7 +11,7 @@ class FieldOption(ListableModel):
 
     @classmethod
     def get(cls, id_: Union[int, str], short_version: bool = False) -> "FieldOption":
-        """ Retrieve Object from Biolovision with given ID
+        """Retrieve Object from Biolovision with given ID
         :param id_: Unique identifier
         :param short_version: Indicates, if a short version with foreign keys should be returned by the API.
         :type id_: str

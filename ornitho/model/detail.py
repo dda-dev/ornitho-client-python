@@ -1,6 +1,6 @@
 class Detail:
     def __init__(self, count: int, sex: str, age: str) -> None:
-        """ Detail constructor
+        """Detail constructor
         :param count: Count
         :param sex: Sex
         :param age: Age

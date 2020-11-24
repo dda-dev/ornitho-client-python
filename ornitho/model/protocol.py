@@ -11,7 +11,7 @@ class Protocol(ListableModel):
     ENDPOINT: str = "protocol"
 
     def __init__(self, id_: int) -> None:
-        """ Protocol constructor
+        """Protocol constructor
         :param id_: ID, which is used to get the protocol from Biolovison
         :type id_: int
         """
@@ -164,7 +164,7 @@ class Protocol(ListableModel):
 
     @property
     def sites(self) -> List[Site]:
-        """ Get sites linked to the protocol
+        """Get sites linked to the protocol
         :return: List of sites
         :rtype: List[Site]
         """
@@ -187,7 +187,7 @@ class Protocol(ListableModel):
         short_version: bool = False,
         **kwargs: Union[str, int, float, bool, date, datetime],
     ) -> Tuple[List[Observation], Optional[str]]:
-        """ Get observations linked to the protocol
+        """Get observations linked to the protocol
         The same search parameters can be used as for the observations (except 'only_protocol' which is automatically set)
         If the list is chunked, a pagination key ist returned
         :param request_all: Indicates, if all instances should be retrieved (may result in many API calls)
@@ -216,7 +216,7 @@ class Protocol(ListableModel):
         short_version: bool = False,
         **kwargs: Union[str, int, float, bool, date, datetime],
     ) -> List[Observation]:
-        """ Get observations linked to the protocol
+        """Get observations linked to the protocol
         The same search parameters can be used as for the observations (except 'only_protocol' which is automatically set)
         :param short_version: Indicates, if a short version with foreign keys should be returned by the API.
         :param kwargs: Additional filter values

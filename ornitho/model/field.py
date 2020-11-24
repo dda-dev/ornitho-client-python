@@ -10,7 +10,7 @@ class Field(ListableModel):
     ENDPOINT: str = "fields"
 
     def __init__(self, id_: int) -> None:
-        """ Form constructor
+        """Form constructor
         :param id_: ID, which is used to get the form from Biolovison
         :type id_: int
         """
@@ -19,7 +19,7 @@ class Field(ListableModel):
 
     @classmethod
     def get(cls, id_: Union[int, str], short_version: bool = False) -> "Field":
-        """ Retrieve Object from Biolovision with given ID
+        """Retrieve Object from Biolovision with given ID
         :param id_: Unique identifier
         :param short_version: Indicates, if a short version with foreign keys should be returned by the API.
         :type id_: Union[int, str]

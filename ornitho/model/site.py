@@ -16,7 +16,7 @@ class Site(BaseModel):
     ENDPOINT_PDF: str = ""
 
     def __init__(self, id_: int) -> None:
-        """ Site constructor
+        """Site constructor
         :param id_: ID, which is used to get the site from Biolovison
         :type id_: int
         """
@@ -53,7 +53,7 @@ class Site(BaseModel):
         alpha: bool = False,
         boundary: bool = False,
     ) -> bytes:
-        """ Request the site pdf map
+        """Request the site pdf map
         :param map_layer: Used map layer
         :param greyscale: Switch for a greyscaled map layer
         :param greyline: Switch for a grey dashed route

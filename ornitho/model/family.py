@@ -9,7 +9,7 @@ class Family(ListableModel):
     ENDPOINT: str = "families"
 
     def __init__(self, id_: int) -> None:
-        """ Family constructor
+        """Family constructor
         :param id_: ID, which is used to get the observation from Biolovison
         :type id_: int
         """

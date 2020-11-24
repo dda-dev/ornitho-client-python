@@ -14,7 +14,7 @@ class BaseModel(ABC):
     ENDPOINT: str
 
     def __init__(self, id_: Union[int, str] = None):
-        """ Base model constructor
+        """Base model constructor
         :param id_: Unique identifier
         :type id_: Union[int, str]
         """
@@ -34,8 +34,12 @@ class BaseModel(ABC):
         return self._id
 
     @classmethod
-    def get(cls: Type[T], id_: Union[int, str], short_version: bool = False,) -> T:
-        """ Retrieve Object from Biolovision with given ID
+    def get(
+        cls: Type[T],
+        id_: Union[int, str],
+        short_version: bool = False,
+    ) -> T:
+        """Retrieve Object from Biolovision with given ID
         :param id_: Unique identifier
         :param short_version: Indicates, if a short version with foreign keys should be returned by the API.
         :type id_: Union[int, str]
@@ -55,7 +59,7 @@ class BaseModel(ABC):
         body: Dict[str, Any] = None,
         short_version: bool = False,
     ) -> List[Any]:
-        """ Send request to Biolovision and returns response
+        """Send request to Biolovision and returns response
         :param method: HTTP Method (e.g. 'GET', 'POST', ...)
         :param url: Url to request
         :param params: Additional URL parameters.
@@ -92,7 +96,7 @@ class BaseModel(ABC):
         return obj
 
     def refresh(self: T, short_version: bool = False) -> T:
-        """ Refresh local model
+        """Refresh local model
         Call the api and refresh fields from response
         :return: Refreshed Object
         :rtype: T
@@ -108,7 +112,7 @@ class BaseModel(ABC):
         return self
 
     def instance_url(self) -> str:
-        """ Returns url for this instance
+        """Returns url for this instance
         :return: Instance's url
         :rtype: str
         """

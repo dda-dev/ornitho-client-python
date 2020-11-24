@@ -14,7 +14,7 @@ class CreateableModel(BaseModel, ABC):
 
     @classmethod
     def create_in_ornitho(cls: Type[T], data: Dict[str, Any]) -> int:
-        """ Create an instance on ornitho
+        """Create an instance on ornitho
         :param data: Data
         :type data: T
         :return:  Ornitho ID of the created object
@@ -28,7 +28,7 @@ class CreateableModel(BaseModel, ABC):
     @classmethod
     @abstractmethod
     def create(cls: Type[T], **kwargs) -> T:
-        """ Create an instance on ornitho, respecting the specific model characteristics
+        """Create an instance on ornitho, respecting the specific model characteristics
 
         This method should implement an easy to use way for creating new instances on ornitho,
         respecting the specific model characteristics. I should use the general create_in_ornitho method.
