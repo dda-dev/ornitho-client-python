@@ -81,6 +81,7 @@ class Observation(
         self._place: Optional[Place] = None
         self._form: Optional[ornitho.model.form.Form] = None
         self._resting_habitat: Optional[FieldOption] = None
+        self._accuracy_of_location: Optional[FieldOption] = None
         self._observation_detail: Optional[FieldOption] = None
         self._atlas_code: Optional[FieldOption] = None
         self._medias: Optional[List[Media]] = None
@@ -465,6 +466,18 @@ class Observation(
 
     @property  # type: ignore
     @check_raw_data("observers")
+    def id_accuracy_of_location(self) -> Optional[str]:
+        if "accuracy_of_location" in self._raw_data["observers"][0]:
+            if type(self._raw_data["observers"][0]["accuracy_of_location"]) is dict:
+                return self._raw_data["observers"][0]["accuracy_of_location"]["@id"]
+            else:
+                # return self._raw_data["observers"][0]["accuracy_of_location"]
+                # pass, since accuracy_of_location isn't available in short version
+                pass
+        return None
+
+    @property  # type: ignore
+    @check_raw_data("observers")
     def id_observation_detail(self) -> Optional[str]:
         if "observation_detail" in self._raw_data["observers"][0]:
             if type(self._raw_data["observers"][0]["observation_detail"]) is dict:
@@ -548,6 +561,13 @@ class Observation(
         self._resting_habitat = value
 
     @property
+    def accuracy_of_location(self) -> Optional[FieldOption]:
+        """ Resting habitat of the observation """
+        if self._accuracy_of_location is None and self.id_accuracy_of_location:
+            self._accuracy_of_location = FieldOption.get(self.id_accuracy_of_location)
+        return self._accuracy_of_location
+
+    @property
     def observation_detail(self) -> Optional[FieldOption]:
         """ Observation detail of the observation """
         if self._observation_detail is None and self.id_observation_detail:
@@ -626,11 +646,17 @@ class Observation(
     def notime(self, value: bool):
         if "observers" in self._raw_data:
             if "timing" in self._raw_data["observers"][0]:
-                self._raw_data["observers"][0]["timing"]["@notime"] =  "1" if value else "0"
+                self._raw_data["observers"][0]["timing"]["@notime"] = (
+                    "1" if value else "0"
+                )
             else:
-                self._raw_data["observers"][0]["timing"] = {"@notime":  "1" if value else "0"}
+                self._raw_data["observers"][0]["timing"] = {
+                    "@notime": "1" if value else "0"
+                }
         else:
-            self._raw_data["observers"] = [{"timing": {"@notime":  "1" if value else "0"}}]
+            self._raw_data["observers"] = [
+                {"timing": {"@notime": "1" if value else "0"}}
+            ]
 
     @property  # type: ignore
     @check_raw_data("observers")

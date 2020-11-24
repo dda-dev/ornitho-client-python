@@ -72,6 +72,7 @@ class TestObservation(TestCase):
                     "insert_date": "1573995175",
                     "is_exported": "1",
                     "export_date": "1576641307",
+                    "accuracy_of_location": {"@id": "2_1", "#text": "< 10 m"},
                     "resting_habitat": "1_5",
                     "observation_detail": "4_2",
                     "details": [
@@ -453,6 +454,17 @@ class TestObservation(TestCase):
                 1, Observation.create_from_ornitho_json(obs_json).id_place,
             )
 
+    def test_id_accuracy_of_location(self):
+        self.assertEqual(
+            self.observation_json["observers"][0]["accuracy_of_location"]["@id"],
+            self.observation.id_accuracy_of_location,
+        )
+
+        obs_json = {"observers": [{"id_sighting": "44874562",}]}
+        self.assertIsNone(
+            Observation.create_from_ornitho_json(obs_json).id_accuracy_of_location
+        )
+
     def test_id_resting_habitat(self):
         self.assertEqual(
             self.observation_json["observers"][0]["resting_habitat"],
@@ -560,6 +572,17 @@ class TestObservation(TestCase):
     def test_form(self):
         form = self.observation.form
         self.assertEqual(form._raw_data, self.observation_json["form"])
+
+    @mock.patch("ornitho.model.observation.FieldOption")
+    def test_accuracy_of_location(self, mock_field_option):
+        mock_field_option.get.return_value = "accuracy_of_location retrieved"
+        mock_field_option.id_.return_value = "2_1"
+
+        accuracy_of_location = self.observation.accuracy_of_location
+        mock_field_option.get.assert_called_with(
+            self.observation.id_accuracy_of_location
+        )
+        self.assertEqual(accuracy_of_location, "accuracy_of_location retrieved")
 
     @mock.patch("ornitho.model.observation.FieldOption")
     def test_resting_habitat(self, mock_field_option):

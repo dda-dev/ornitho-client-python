@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added `notime` as parameter to observation creation
+- Added `accuracy_of_location` to observation model
 
 ### Changed
 
