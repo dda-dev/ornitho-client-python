@@ -13,3 +13,7 @@ current_observer = ornitho.Observer.current()
 print(
     f"Logged in user: {current_observer.surname} {current_observer.name} – ID={current_observer.id_}, registered on {current_observer.registration_date}"
 )
+
+print("Rights:")
+for right in current_observer.rights:
+    print(right)

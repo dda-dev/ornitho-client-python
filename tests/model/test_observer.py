@@ -1,5 +1,5 @@
 from datetime import datetime
-from unittest import TestCase
+from unittest import TestCase, mock
 from unittest.mock import MagicMock
 
 import ornitho
@@ -303,3 +303,11 @@ class TestObserver(TestCase):
             False if self.observer_json["mobile_use_trace"] == "0" else True,
             self.observer.mobile_use_trace,
         )
+
+    def test_rights(self):
+        with mock.patch("ornitho.model.observer.Right") as mock_right:
+            mock_right.retrieve_for_observer.return_value = "RIGHTS"
+            self.assertEqual(
+                "RIGHTS",
+                self.observer.rights,
+            )

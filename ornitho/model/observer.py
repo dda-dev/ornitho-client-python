@@ -1,12 +1,21 @@
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 
 from ornitho.model.abstract import ListableModel
 from ornitho.model.abstract.base_model import check_refresh
+from ornitho.model.right import Right
 
 
 class Observer(ListableModel):
     ENDPOINT: str = "observers"
+
+    def __init__(self, id_) -> None:
+        """Observer constructor
+        :param id_: ID, which is used to get the observer from Biolovison – None if a new observation will be created
+        :type id_: int
+        """
+        super().__init__(id_)
+        self._rights: List[Right] = []
 
     @classmethod
     def current(cls) -> "Observer":
@@ -231,3 +240,10 @@ class Observer(ListableModel):
     @check_refresh
     def mobile_use_trace(self) -> bool:
         return False if self._raw_data.get("mobile_use_trace") == "0" else True
+
+    @property  # type: ignore
+    def rights(self) -> List[Right]:
+        if self.id_:
+            if not self._rights:
+                self._rights = Right.retrieve_for_observer(self.id_)
+        return self._rights

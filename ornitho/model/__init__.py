@@ -18,6 +18,7 @@ from ornitho.model.observation import (
 from ornitho.model.observer import Observer
 from ornitho.model.place import Place
 from ornitho.model.protocol import Protocol
+from ornitho.model.right import Right
 from ornitho.model.site import MapLayer, Site
 from ornitho.model.species import Species
 from ornitho.model.taxo_group import TaxonomicGroup

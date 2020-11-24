@@ -9,21 +9,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added `notime` as parameter to observation creation
-- Added `accuracy_of_location` to observation model
+- `notime` as parameter to observation creation
+- `accuracy_of_location` to observation model
+- `right` model (aka permission)
+- `rights` to observer model
 
 ### Changed
 
-- Example forms/create_and_delete: add `notime`, change `precision`
-- Example observations/create_and_delete: add `notime`
+- Example forms/create_and_delete: add `notime`; change `precision`
+- Example observations/create_and_delete: add `notime`, `resting_habitat` and `observation_detail`
 
 ### Fixed
 
-- Fixed setter `visit_number` of the observation model
-- Fixed setter `sequence_number` of the observation model
-- Fixed setter `notime` of the observation model
-- Fixed `resting_habitat` when updating observation
-- Fixed `observation_detail` when updating observation
+- Setter `visit_number` of the observation model
+- Setter `sequence_number` of the observation model
+- Setter `notime` of the observation model
+- Raw data of `resting_habitat` when generating body for updating observations
+- Raw data of `observation_detail` when generating body for when updating observations
 
 
 ## [0.1.0] - 2020-11-10
