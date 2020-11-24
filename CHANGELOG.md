@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2020-11-24
+
 ### Added
 
 - `notime` as parameter to observation creation
@@ -47,4 +49,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Some basic examples
 
 [unreleased]: https://github.com/dda-dev/ornitho-client-python/compare/v0.1.0...master
+[0.2.0]: https://github.com/dda-dev/ornitho-client-python/releases/tag/v0.2.0
 [0.1.0]: https://github.com/dda-dev/ornitho-client-python/releases/tag/v0.1.0
