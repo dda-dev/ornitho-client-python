@@ -17,7 +17,10 @@ class APIHttpException(APIException):
 
     def __str__(self) -> str:
         """Readable string representation"""
-        return f"{self.path} with query {self.query} and body {self.request_body} responses with {self.http_status}: {self.reason}"
+        return (
+            f"{self.path} with query {self.query} and body {self.request_body} responses with {self.http_status}: "
+            f"{self.reason}: {self.body}"
+        )
 
     def __repr__(self) -> str:
         """Unambiguous string representation"""
