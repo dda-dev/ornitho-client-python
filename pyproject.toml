@@ -20,6 +20,7 @@ classifiers=[
     "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
 ]
 
 [tool.poetry.dependencies]
@@ -42,7 +43,7 @@ mypy = "*"
 [tool.tox]
 legacy_tox_ini = """
 [tox]
-envlist = mypy, py36, py37, py38
+envlist = mypy, py36, py37, py38, py39
 isolated_build = True
 skip_missing_interpreters = True
 

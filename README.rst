@@ -194,6 +194,7 @@ The project has been tested with the following python versions:
 - Python 3.6
 - Python 3.7
 - Python 3.8
+- Python 3.9
 
 Collaborate
 -----------
