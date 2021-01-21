@@ -343,13 +343,13 @@ class Observation(
 
     @property  # type: ignore
     @check_raw_data("observers")
-    def id_atlas_code(self) -> Optional[int]:
+    def id_atlas_code(self) -> Optional[str]:
         id_atlas_code = (
             None
             if "atlas_code" not in self._raw_data["observers"][0]
-            else int(self._raw_data["observers"][0]["atlas_code"]["@id"].split("_")[1])
+            else self._raw_data["observers"][0]["atlas_code"]["@id"]
             if type(self._raw_data["observers"][0]["atlas_code"]) is dict
-            else int(self._raw_data["observers"][0]["atlas_code"])
+            else f"3_{self._raw_data['observers'][0]['atlas_code']}"
         )
         return id_atlas_code
 

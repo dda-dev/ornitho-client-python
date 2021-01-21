@@ -380,18 +380,16 @@ class TestObservation(TestCase):
 
     def test_id_atlas_code(self):
         self.assertEqual(
-            int(
-                self.observation_json["observers"][0]["atlas_code"]["@id"].split("_")[1]
-            ),
+            self.observation_json["observers"][0]["atlas_code"]["@id"],
             self.observation.id_atlas_code,
         )
 
         obs = Observation()
         obs.id_atlas_code = "3_1"
-        self.assertEqual(1, obs.id_atlas_code)
+        self.assertEqual("3_1", obs.id_atlas_code)
 
         obs.id_atlas_code = "3_2"
-        self.assertEqual(2, obs.id_atlas_code)
+        self.assertEqual("3_2", obs.id_atlas_code)
 
     def test_atlas_code_text(self):
         self.assertEqual(
