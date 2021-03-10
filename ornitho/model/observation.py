@@ -1047,16 +1047,16 @@ class Observation(
         if modification_type:
             params["modification_type"] = modification_type.value
         if id_taxo_group:
-            params["id_taxo_group"] = id_taxo_group
+            params["id_taxo_group"] = id_taxo_group.__str__()
         if only_protocol:
             from ornitho.model.protocol import Protocol
 
             if isinstance(only_protocol, Protocol):
                 params["only_protocol"] = only_protocol.name
             else:
-                params["only_protocol"] = only_protocol
+                params["only_protocol"] = only_protocol.__str__()
         if only_form:
-            params["only_form"] = 1
+            params["only_form"] = "1"
 
         date = date.replace(microsecond=0)
         if date.tzinfo:

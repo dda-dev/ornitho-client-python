@@ -810,9 +810,9 @@ class TestObservation(TestCase):
             params={
                 "date": date.replace(microsecond=0).isoformat(),
                 "modification_type": ModificationType.ALL.value,
-                "id_taxo_group": 1,
+                "id_taxo_group": "1",
                 "only_protocol": "CBBM",
-                "only_form": 1,
+                "only_form": "1",
             },
         )
 
