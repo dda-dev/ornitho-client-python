@@ -39,6 +39,7 @@ class Precision(Enum):
     PRECISE = "precise"
     SQUARE = "square"
     PLACE = "place"
+    MUNICIPALITY = "municipality"
     POLYGON = "polygone"
     TRANSECT = "transect"
     SUBPLACE = "subplace"
