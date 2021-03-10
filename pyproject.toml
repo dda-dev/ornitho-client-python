@@ -54,6 +54,6 @@ commands = pytest
 [testenv:mypy]
 basepython = python3.8
 deps = mypy
-commands = mypy . --ignore-missing-imports
+commands = mypy . --ignore-missing-imports  --exclude examples
 skip_install = True
 """
