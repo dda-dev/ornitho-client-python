@@ -27,6 +27,7 @@ classifiers=[
 python = "^3.6"
 requests-oauthlib = "*"
 pytz = "*"
+requests-cache = {git = "https://github.com/reclosedev/requests-cache.git", optional = true}
 
 [tool.poetry.dev-dependencies]
 pytest = "*"
@@ -39,6 +40,9 @@ vulture = "*"
 pytest-cov = "*"
 tox = "*"
 mypy = "*"
+
+[tool.poetry.extras]
+caching = ["requests-cache"]
 
 [tool.tox]
 legacy_tox_ini = """

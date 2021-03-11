@@ -11,6 +11,18 @@ from requests_oauthlib import OAuth1Session
 import ornitho
 from ornitho import api_exception
 
+try:
+    import requests_cache
+
+    class CachedOAuthSession(
+        requests_cache.CacheMixin, OAuth1Session
+    ):  # pragma: no cover
+        """Session with features from both CachedSession and OAuth1Session"""
+
+
+except ImportError:
+    requests_cache = None
+
 
 class APIRequester(object):
     """Class for making API requests"""
@@ -50,9 +62,24 @@ class APIRequester(object):
             raise RuntimeError("user_pw missing!")
         if not self.api_base:
             raise RuntimeError("api_base missing!")
-        self.session: OAuth1Session = OAuth1Session(
-            self.consumer_key, client_secret=self.consumer_secret
-        )
+
+        if ornitho.cache_enabled and requests_cache:  # pragma: no cover
+            self.session: OAuth1Session = CachedOAuthSession(
+                client_key=self.consumer_key,
+                client_secret=self.consumer_secret,
+                cache_name=ornitho.cache_name,
+                backend=ornitho.cache_backend,
+                expire_after=ornitho.cache_expire_after,
+                filter_fn=ornitho.cache_filter_fn,
+            )
+        else:
+            if ornitho.cache_enabled:  # pragma: no cover
+                ornitho.logger.warning(
+                    "Cache was enabled but caching dependency is not install. Please install 'requests_cache'"
+                )
+            self.session = OAuth1Session(
+                client_key=self.consumer_key, client_secret=self.consumer_secret
+            )
 
     def __enter__(self):
         """Used by a with-statement"""

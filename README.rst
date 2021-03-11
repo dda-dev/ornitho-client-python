@@ -57,7 +57,7 @@ The following "ornitho controllers / calls" are implemented:
   - List observations
   - Get a single observation
   - Create an observation
-  - Update an observations (**WIP**)
+  - Update an observations
   - Delete an observations
   - Search an observation
   - Search update or deletion since a given date
@@ -142,7 +142,8 @@ Not yet Implemented:
 
 Installing
 ----------
-The project is published on `PyPI <https://pypi.python.org/pypi/ornitho>`__, and can be install using pip or any other package manager:
+The project is published on `PyPI <https://pypi.python.org/pypi/ornitho>`__, and can be install using pip or any other
+package manager:
 
 ``$ pip install ornitho``
 
@@ -150,9 +151,14 @@ Manual installation can be done with following command:
 
 ``$ pip install .``
 
+Optional caching dependency can be installed with
+
+``$ pip install ornitho[caching]``
+
 Usage
 -----
-Before the client can be used  **consumer_key**, **consumer_secret**, **user_email**, **user_pw** and **api_base** must be set:
+Before the client can be used  **consumer_key**, **consumer_secret**, **user_email**, **user_pw** and **api_base** must
+be set:
 
 .. code-block:: python
 
@@ -166,8 +172,24 @@ Before the client can be used  **consumer_key**, **consumer_secret**, **user_ema
 
 The client can then be used.
 
+Caching
+~~~~~~~~
+If the additional caching dependency is installed, non chunked responses can be cached.
+For activating the cache one has to set the `cache_enabled` flag.
+Following settings are available:
+
+.. code-block:: python
+
+    ornitho.cache_enabled = True          # Enable/Disable caching
+    ornitho.cache_name = "ornitho_cache"  # Name of the cache
+    ornitho.cache_backend = "redis"       # Set caching backend, possible values: sqlite, memory, mongodb, redis
+    ornitho.cache_expire_after = 600      # Set expiration time for cached responses
+
+For more information see the `requests-cache documentation
+<https://requests-cache.readthedocs.io/en/latest/index.html>`__
+
 Examples
-~~~~~~~~~~~~~
+~~~~~~~~
 Following code shows how to get all observation from ornitho.de between 01.10.2019 and 31.10.2019:
 
 .. code-block:: python
@@ -184,7 +206,8 @@ Following code shows how to get all observation from ornitho.de between 01.10.20
     resp = ornitho.Observation.search_all(period_choice="range", date_from="01.10.2019", date_to="31.10.2019")
     print(f"Found {len(resp)} observations between 01.10.2019 and 31.10.2019")
     
-More examples can be found the `examples <https://github.com/dda-dev/ornitho-client-python/tree/master/examples>`__ folder.
+More examples can be found the `examples <https://github.com/dda-dev/ornitho-client-python/tree/master/examples>`__
+folder.
 
 Prerequisites
 ~~~~~~~~~~~~~

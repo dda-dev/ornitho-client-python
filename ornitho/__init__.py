@@ -58,6 +58,11 @@ api_base: Optional[str] = None
 
 app_info = None
 
+cache_enabled = False
+cache_name = "ornitho_cache"
+cache_backend = "sqlite"
+cache_expire_after = 600
+cache_filter_fn = lambda r: "pagination_key" not in r.headers.keys()
 
 log_level = os.environ.get("ORNITHO_LOG_LEVEL") or logging.WARNING
 logging.basicConfig(
