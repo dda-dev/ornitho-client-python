@@ -95,8 +95,7 @@ class TestObserver(TestCase):
         self.assertEqual(observer.name, "TEST_NAME")
         self.assertEqual(observer.surname, "TEST_SURNAME")
         Observer.request.assert_called_with(
-            method="GET",
-            url="observers/current",
+            method="GET", url="observers/current",
         )
 
     def test_external_id(self):
@@ -308,6 +307,5 @@ class TestObserver(TestCase):
         with mock.patch("ornitho.model.observer.Right") as mock_right:
             mock_right.retrieve_for_observer.return_value = "RIGHTS"
             self.assertEqual(
-                "RIGHTS",
-                self.observer.rights,
+                "RIGHTS", self.observer.rights,
             )

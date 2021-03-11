@@ -148,14 +148,12 @@ class TestForm(TestCase):
 
         mock_requester.return_value.__enter__ = enter_requester
         self.assertRaises(
-            APIException,
-            lambda: self.form.refresh(),
+            APIException, lambda: self.form.refresh(),
         )
 
     def test_id_form_universal(self):
         self.assertEqual(
-            self.form_json["id_form_universal"],
-            self.form.id_form_universal,
+            self.form_json["id_form_universal"], self.form.id_form_universal,
         )
 
     def test_day(self):
@@ -183,26 +181,22 @@ class TestForm(TestCase):
 
     def test_time_start(self):
         self.assertEqual(
-            self.form_json["time_start"],
-            self.form.time_start.strftime("%H:%M:%S"),
+            self.form_json["time_start"], self.form.time_start.strftime("%H:%M:%S"),
         )
         new_time = datetime.now().time()
         self.form.time_start = new_time
         self.assertEqual(
-            new_time.replace(microsecond=0),
-            self.form.time_start,
+            new_time.replace(microsecond=0), self.form.time_start,
         )
 
     def test_time_stop(self):
         self.assertEqual(
-            self.form_json["time_stop"],
-            self.form.time_stop.strftime("%H:%M:%S"),
+            self.form_json["time_stop"], self.form.time_stop.strftime("%H:%M:%S"),
         )
         new_time = datetime.now().time()
         self.form.time_stop = new_time
         self.assertEqual(
-            new_time.replace(microsecond=0),
-            self.form.time_stop,
+            new_time.replace(microsecond=0), self.form.time_stop,
         )
 
     def test_full_form(self):
@@ -216,38 +210,32 @@ class TestForm(TestCase):
 
     def test_version(self):
         self.assertEqual(
-            int(self.form_json["version"]),
-            self.form.version,
+            int(self.form_json["version"]), self.form.version,
         )
 
     def test_lat(self):
         self.assertEqual(
-            float(self.form_json["lat"]),
-            self.form.lat,
+            float(self.form_json["lat"]), self.form.lat,
         )
 
     def test_lon(self):
         self.assertEqual(
-            float(self.form_json["lon"]),
-            self.form.lon,
+            float(self.form_json["lon"]), self.form.lon,
         )
 
     def test_id_form_mobile(self):
         self.assertEqual(
-            self.form_json["id_form_mobile"],
-            self.form.id_form_mobile,
+            self.form_json["id_form_mobile"], self.form.id_form_mobile,
         )
 
     def test_comment(self):
         self.assertEqual(
-            self.form_json["comment"],
-            self.form.comment,
+            self.form_json["comment"], self.form.comment,
         )
 
     def test_protocol_name(self):
         self.assertEqual(
-            self.form_json["protocol"]["protocol_name"],
-            self.form.protocol_name,
+            self.form_json["protocol"]["protocol_name"], self.form.protocol_name,
         )
 
         self.form.protocol_name = "NEW_PROTOCOL"
@@ -259,8 +247,7 @@ class TestForm(TestCase):
 
     def test_site_code(self):
         self.assertEqual(
-            self.form_json["protocol"]["site_code"],
-            self.form.site_code,
+            self.form_json["protocol"]["site_code"], self.form.site_code,
         )
 
         self.form.site_code = "SITE_CODE"
@@ -272,8 +259,7 @@ class TestForm(TestCase):
 
     def test_local_site_code(self):
         self.assertEqual(
-            self.form_json["protocol"]["local_site_code"],
-            self.form.local_site_code,
+            self.form_json["protocol"]["local_site_code"], self.form.local_site_code,
         )
 
     def test_advanced(self):
@@ -284,8 +270,7 @@ class TestForm(TestCase):
 
     def test_visit_number(self):
         self.assertEqual(
-            int(self.form_json["protocol"]["visit_number"]),
-            self.form.visit_number,
+            int(self.form_json["protocol"]["visit_number"]), self.form.visit_number,
         )
 
         self.form.visit_number = 99
@@ -310,8 +295,7 @@ class TestForm(TestCase):
 
     def test_list_type(self):
         self.assertEqual(
-            self.form_json["protocol"]["list_type"],
-            self.form.list_type,
+            self.form_json["protocol"]["list_type"], self.form.list_type,
         )
 
     def test_id_waterbird_conditions(self):
@@ -408,15 +392,12 @@ class TestForm(TestCase):
 
     def test_id_waterbird_ice(self):
         self.assertEqual(
-            self.form_json["protocol"]["waterbird_ice"],
-            self.form.id_waterbird_ice,
+            self.form_json["protocol"]["waterbird_ice"], self.form.id_waterbird_ice,
         )
 
         form_json = {
             "@id": "1",
-            "protocol": {
-                "waterbird_ice": {"@id": "NO_ICE", "#text": "kein Eis"},
-            },
+            "protocol": {"waterbird_ice": {"@id": "NO_ICE", "#text": "kein Eis"},},
         }
         self.assertEqual(
             form_json["protocol"]["waterbird_ice"]["@id"],
@@ -478,9 +459,7 @@ class TestForm(TestCase):
 
         form_json = {
             "@id": "1",
-            "protocol": {
-                "waterbird_counttype": {"@id": "TEST", "#text": "test"},
-            },
+            "protocol": {"waterbird_counttype": {"@id": "TEST", "#text": "test"},},
         }
         self.assertEqual(
             form_json["protocol"]["waterbird_counttype"]["@id"],
@@ -500,9 +479,7 @@ class TestForm(TestCase):
 
         form_json = {
             "@id": "1",
-            "protocol": {
-                "waterbird_visibility": {"@id": "TEST", "#text": "test"},
-            },
+            "protocol": {"waterbird_visibility": {"@id": "TEST", "#text": "test"},},
         }
         self.assertEqual(
             form_json["protocol"]["waterbird_visibility"]["@id"],
@@ -516,15 +493,12 @@ class TestForm(TestCase):
 
     def test_id_waterbird_waves(self):
         self.assertEqual(
-            self.form_json["protocol"]["waterbird_waves"],
-            self.form.id_waterbird_waves,
+            self.form_json["protocol"]["waterbird_waves"], self.form.id_waterbird_waves,
         )
 
         form_json = {
             "@id": "1",
-            "protocol": {
-                "waterbird_waves": {"@id": "TEST", "#text": "test"},
-            },
+            "protocol": {"waterbird_waves": {"@id": "TEST", "#text": "test"},},
         }
         self.assertEqual(
             form_json["protocol"]["waterbird_waves"]["@id"],
@@ -564,9 +538,7 @@ class TestForm(TestCase):
 
         form_json = {
             "@id": "1",
-            "protocol": {
-                "waterbird_count_payed": {"@id": "TEST", "#text": "test"},
-            },
+            "protocol": {"waterbird_count_payed": {"@id": "TEST", "#text": "test"},},
         }
         self.assertEqual(
             form_json["protocol"]["waterbird_count_payed"]["@id"],
@@ -766,8 +738,7 @@ class TestForm(TestCase):
 
     def test_id_moving_harvest(self):
         self.assertEqual(
-            self.form_json["protocol"]["moving_harvest"],
-            self.form.id_moving_harvest,
+            self.form_json["protocol"]["moving_harvest"], self.form.id_moving_harvest,
         )
 
         form_json = {
@@ -786,15 +757,12 @@ class TestForm(TestCase):
 
     def test_id_coverage(self):
         self.assertEqual(
-            self.form_json["protocol"]["coverage"],
-            self.form.id_coverage,
+            self.form_json["protocol"]["coverage"], self.form.id_coverage,
         )
 
         form_json = {
             "@id": "1",
-            "protocol": {
-                "coverage": {"@id": "TEST", "#text": "test"},
-            },
+            "protocol": {"coverage": {"@id": "TEST", "#text": "test"},},
         }
         self.assertEqual(
             form_json["protocol"]["coverage"]["@id"],
@@ -806,15 +774,12 @@ class TestForm(TestCase):
 
     def test_id_condition(self):
         self.assertEqual(
-            self.form_json["protocol"]["condition"],
-            self.form.id_condition,
+            self.form_json["protocol"]["condition"], self.form.id_condition,
         )
 
         form_json = {
             "@id": "1",
-            "protocol": {
-                "condition": {"@id": "TEST", "#text": "test"},
-            },
+            "protocol": {"condition": {"@id": "TEST", "#text": "test"},},
         }
         self.assertEqual(
             form_json["protocol"]["condition"]["@id"],
@@ -826,15 +791,12 @@ class TestForm(TestCase):
 
     def test_id_chiro_identify(self):
         self.assertEqual(
-            self.form_json["protocol"]["chiro_identify"],
-            self.form.id_chiro_identify,
+            self.form_json["protocol"]["chiro_identify"], self.form.id_chiro_identify,
         )
 
         form_json = {
             "@id": "1",
-            "protocol": {
-                "chiro_identify": {"@id": "TEST", "#text": "test"},
-            },
+            "protocol": {"chiro_identify": {"@id": "TEST", "#text": "test"},},
         }
         self.assertEqual(
             form_json["protocol"]["chiro_identify"]["@id"],
@@ -852,9 +814,7 @@ class TestForm(TestCase):
 
         form_json = {
             "@id": "1",
-            "protocol": {
-                "additional_observer": {"@id": "TEST", "#text": "test"},
-            },
+            "protocol": {"additional_observer": {"@id": "TEST", "#text": "test"},},
         }
         self.assertEqual(
             form_json["protocol"]["additional_observer"]["@id"],
@@ -868,15 +828,12 @@ class TestForm(TestCase):
 
     def test_id_changes(self):
         self.assertEqual(
-            self.form_json["protocol"]["changes"],
-            self.form.id_changes,
+            self.form_json["protocol"]["changes"], self.form.id_changes,
         )
 
         form_json = {
             "@id": "1",
-            "protocol": {
-                "changes": {"@id": "TEST", "#text": "test"},
-            },
+            "protocol": {"changes": {"@id": "TEST", "#text": "test"},},
         }
         self.assertEqual(
             form_json["protocol"]["changes"]["@id"],
@@ -888,15 +845,12 @@ class TestForm(TestCase):
 
     def test_id_drone_used(self):
         self.assertEqual(
-            self.form_json["protocol"]["drone_used"],
-            self.form.id_drone_used,
+            self.form_json["protocol"]["drone_used"], self.form.id_drone_used,
         )
 
         form_json = {
             "@id": "1",
-            "protocol": {
-                "drone_used": {"@id": "TEST", "#text": "test"},
-            },
+            "protocol": {"drone_used": {"@id": "TEST", "#text": "test"},},
         }
         self.assertEqual(
             form_json["protocol"]["drone_used"]["@id"],
@@ -914,9 +868,7 @@ class TestForm(TestCase):
 
         form_json = {
             "@id": "1",
-            "protocol": {
-                "tmp_water_bodies": {"@id": "TEST", "#text": "test"},
-            },
+            "protocol": {"tmp_water_bodies": {"@id": "TEST", "#text": "test"},},
         }
         self.assertEqual(
             form_json["protocol"]["tmp_water_bodies"]["@id"],
@@ -928,8 +880,7 @@ class TestForm(TestCase):
 
     def test_nest_number(self):
         self.assertEqual(
-            int(self.form_json["protocol"]["nest_number"]),
-            self.form.nest_number,
+            int(self.form_json["protocol"]["nest_number"]), self.form.nest_number,
         )
 
         form_json = {
@@ -977,16 +928,10 @@ class TestForm(TestCase):
 
         form_json = {
             "@id": "1",
-            "protocol": {
-                "playback": {
-                    "Id_species_1": "1",
-                    "Id_species_2": "0",
-                },
-            },
+            "protocol": {"playback": {"Id_species_1": "1", "Id_species_2": "0",},},
         }
         self.assertEqual(
-            {1: True, 2: False},
-            Form.create_from_ornitho_json(form_json).playbacks,
+            {1: True, 2: False}, Form.create_from_ornitho_json(form_json).playbacks,
         )
 
         form_json = {"@id": "1"}
@@ -1021,12 +966,7 @@ class TestForm(TestCase):
 
         form_json = {
             "@id": "1",
-            "protocol": {
-                "playback": {
-                    "Id_species_1": "1",
-                    "Id_species_2": "0",
-                },
-            },
+            "protocol": {"playback": {"Id_species_1": "1", "Id_species_2": "0",},},
         }
         self.assertTrue(Form.create_from_ornitho_json(form_json).playblack_played(1))
         self.assertFalse(Form.create_from_ornitho_json(form_json).playblack_played(2))

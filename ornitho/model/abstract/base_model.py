@@ -34,11 +34,7 @@ class BaseModel(ABC):
         return self._id
 
     @classmethod
-    def get(
-        cls: Type[T],
-        id_: Union[int, str],
-        short_version: bool = False,
-    ) -> T:
+    def get(cls: Type[T], id_: Union[int, str], short_version: bool = False,) -> T:
         """Retrieve Object from Biolovision with given ID
         :param id_: Unique identifier
         :param short_version: Indicates, if a short version with foreign keys should be returned by the API.

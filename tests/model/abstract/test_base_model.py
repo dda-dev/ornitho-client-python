@@ -73,8 +73,7 @@ class TestBaseModel(TestCase):
     )
     def test_refresh_exception(self):
         self.assertRaises(
-            APIException,
-            lambda: self.my_model.refresh(),
+            APIException, lambda: self.my_model.refresh(),
         )
 
     def test_instance_url(self):

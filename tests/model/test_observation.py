@@ -261,9 +261,7 @@ class TestObservation(TestCase):
         )
 
     def test_admin_hidden(self):
-        self.assertTrue(
-            self.observation.admin_hidden,
-        )
+        self.assertTrue(self.observation.admin_hidden,)
 
     def test_admin_hidden_type(self):
         self.assertEqual(
@@ -287,14 +285,7 @@ class TestObservation(TestCase):
             "observers": [
                 {
                     "id_sighting": "44874562",
-                    "medias": [
-                        {
-                            "@id": "111111",
-                        },
-                        {
-                            "@id": "2222222",
-                        },
-                    ],
+                    "medias": [{"@id": "111111",}, {"@id": "2222222",},],
                 }
             ]
         }
@@ -341,8 +332,7 @@ class TestObservation(TestCase):
 
     def test_comment(self):
         self.assertEqual(
-            self.observation_json["observers"][0]["comment"],
-            self.observation.comment,
+            self.observation_json["observers"][0]["comment"], self.observation.comment,
         )
 
         obs = Observation()
@@ -453,19 +443,13 @@ class TestObservation(TestCase):
 
         with mock.patch("ornitho.model.observation.Place") as mock_place:
             obs_json = {
-                "observers": [
-                    {
-                        "coord_lat": "49.443215",
-                        "coord_lon": "7.574859",
-                    }
-                ]
+                "observers": [{"coord_lat": "49.443215", "coord_lon": "7.574859",}]
             }
             mock_place.id_.return_value = 1
             mock_place._raw_data.return_value = {"id": 1}
             mock_place.find_closest_place.return_value = mock_place
             self.assertEqual(
-                1,
-                Observation.create_from_ornitho_json(obs_json).id_place,
+                1, Observation.create_from_ornitho_json(obs_json).id_place,
             )
 
     def test_id_accuracy_of_location(self):
@@ -474,13 +458,7 @@ class TestObservation(TestCase):
             self.observation.id_accuracy_of_location,
         )
 
-        obs_json = {
-            "observers": [
-                {
-                    "id_sighting": "44874562",
-                }
-            ]
-        }
+        obs_json = {"observers": [{"id_sighting": "44874562",}]}
         self.assertIsNone(
             Observation.create_from_ornitho_json(obs_json).id_accuracy_of_location
         )
@@ -504,13 +482,7 @@ class TestObservation(TestCase):
             Observation.create_from_ornitho_json(obs_json).id_resting_habitat,
         )
 
-        obs_json = {
-            "observers": [
-                {
-                    "id_sighting": "44874562",
-                }
-            ]
-        }
+        obs_json = {"observers": [{"id_sighting": "44874562",}]}
         self.assertIsNone(
             Observation.create_from_ornitho_json(obs_json).id_resting_habitat
         )
@@ -541,13 +513,7 @@ class TestObservation(TestCase):
             Observation.create_from_ornitho_json(obs_json).id_observation_detail,
         )
 
-        obs_json = {
-            "observers": [
-                {
-                    "id_sighting": "44874562",
-                }
-            ]
-        }
+        obs_json = {"observers": [{"id_sighting": "44874562",}]}
         self.assertIsNone(
             Observation.create_from_ornitho_json(obs_json).id_observation_detail
         )

@@ -63,9 +63,7 @@ class Form(CreateableModel, DeletableModel):
     @property
     def day(self) -> Optional[date]:
         if "day" in self._raw_data:
-            return date.fromtimestamp(
-                int(self._raw_data["day"]["@timestamp"]),
-            )
+            return date.fromtimestamp(int(self._raw_data["day"]["@timestamp"]),)
         elif self.observations is not None:
             return self.observations[0].timing.date()
         else:
@@ -75,9 +73,7 @@ class Form(CreateableModel, DeletableModel):
     def time_start(self) -> time:
         splitted = self._raw_data["time_start"].split(":")
         return time(
-            hour=int(splitted[0]),
-            minute=int(splitted[1]),
-            second=int(splitted[2]),
+            hour=int(splitted[0]), minute=int(splitted[1]), second=int(splitted[2]),
         )
 
     @time_start.setter
@@ -88,9 +84,7 @@ class Form(CreateableModel, DeletableModel):
     def time_stop(self) -> time:
         splitted = self._raw_data["time_stop"].split(":")
         return time(
-            hour=int(splitted[0]),
-            minute=int(splitted[1]),
-            second=int(splitted[2]),
+            hour=int(splitted[0]), minute=int(splitted[1]), second=int(splitted[2]),
         )
 
     @time_stop.setter

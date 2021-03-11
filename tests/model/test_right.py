@@ -14,18 +14,25 @@ class TestDetail(TestCase):
     # noinspection PyUnusedLocal
     @staticmethod
     def fake_request(**kwargs):
-        return {
-            "data": {
-                "rights": [
-                    {"id": "2", "name": "ADMIN", "comment": "Administratorenrechte"},
-                    {
-                        "id": "8",
-                        "name": "ADMIN_OBS",
-                        "comment": "Recht, Beobachtungen zu bearbeiten",
-                    },
-                ]
-            }
-        }, None
+        return (
+            {
+                "data": {
+                    "rights": [
+                        {
+                            "id": "2",
+                            "name": "ADMIN",
+                            "comment": "Administratorenrechte",
+                        },
+                        {
+                            "id": "8",
+                            "name": "ADMIN_OBS",
+                            "comment": "Recht, Beobachtungen zu bearbeiten",
+                        },
+                    ]
+                }
+            },
+            None,
+        )
 
     @mock.patch.object(ornitho.model.right.APIRequester, "request_raw", fake_request)
     def test_retrieve_for_observer(self):

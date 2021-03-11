@@ -264,8 +264,7 @@ class TestAPIRequester(TestCase):
             )
         )
         self.assertRaises(
-            APIException,
-            lambda: self.requester.request_raw(method="post", url="test"),
+            APIException, lambda: self.requester.request_raw(method="post", url="test"),
         )
 
         # Case 7: Date as parameter
@@ -509,10 +508,7 @@ class TestAPIRequester(TestCase):
             )
         )
         response, pk = self.requester.request_raw(
-            method="get",
-            url="test",
-            pagination_key="key",
-            short_version=True,
+            method="get", url="test", pagination_key="key", short_version=True,
         )
         self.assertEqual({"data": [{"id": "1"}]}, response)
         self.assertEqual(pk, "new_key")
