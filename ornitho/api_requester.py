@@ -20,7 +20,7 @@ try:
         """Session with features from both CachedSession and OAuth1Session"""
 
 
-except ImportError:
+except ImportError:  # pragma: no cover
     requests_cache = None
 
 
