@@ -26,7 +26,10 @@ class Right:
     def retrieve_for_observer(cls, id_observer: Union[int, str]) -> List["Right"]:
         with APIRequester() as requester:
             url = f"{cls.ENDPOINT}/{id_observer}"
-            response, pk = requester.request_raw(method="get", url=url,)
+            response, pk = requester.request_raw(
+                method="get",
+                url=url,
+            )
         return [
             cls(id_=int(right["id"]), name=right["name"], comment=right["comment"])
             for right in response["data"]["rights"]

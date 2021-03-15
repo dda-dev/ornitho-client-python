@@ -49,15 +49,18 @@ class TestFieldOption(TestCase):
 
         # Test Exception
         self.assertRaises(
-            APIException, lambda: FieldOption.get("123_123"),
+            APIException,
+            lambda: FieldOption.get("123_123"),
         )
         self.assertRaises(
-            APIException, lambda: FieldOption.get("abc"),
+            APIException,
+            lambda: FieldOption.get("abc"),
         )
 
     def test_refresh(self):
         self.assertRaises(
-            NotImplementedError, lambda: self.field_option.refresh(),
+            NotImplementedError,
+            lambda: self.field_option.refresh(),
         )
 
     def test_name(self):

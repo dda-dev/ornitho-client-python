@@ -50,12 +50,14 @@ class TestField(TestCase):
 
         # Test Exception
         self.assertRaises(
-            APIException, lambda: Field.get(4),
+            APIException,
+            lambda: Field.get(4),
         )
 
     def test_refresh(self):
         self.assertRaises(
-            NotImplementedError, lambda: self.field.refresh(),
+            NotImplementedError,
+            lambda: self.field.refresh(),
         )
 
     def test_group(self):
