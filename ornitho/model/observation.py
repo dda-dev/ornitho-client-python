@@ -1,3 +1,4 @@
+import uuid
 from copy import deepcopy
 from datetime import datetime
 from enum import Enum
@@ -120,6 +121,18 @@ class Observation(
     @check_raw_data("observers")
     def traid(self) -> int:
         return int(self._raw_data["observers"][0]["traid"])
+
+    @property  # type: ignore
+    @check_raw_data("observers")
+    def guid(self) -> uuid.UUID:
+        return uuid.UUID(self._raw_data["observers"][0]["guid"])
+
+    @guid.setter
+    def guid(self, value: uuid.UUID):
+        if "observers" in self._raw_data:
+            self._raw_data["observers"][0]["guid"] = value.__str__()
+        else:
+            self._raw_data["observers"] = [{"guid": value.__str__()}]
 
     @property  # type: ignore
     @check_raw_data("observers")
@@ -1100,6 +1113,7 @@ class Observation(
         coord_lon: float,
         precision: Precision,
         estimation_code: EstimationCode,
+        guid: uuid.UUID = uuid.uuid4(),
         notime: bool = False,
         count: int = None,
         altitude: int = None,
@@ -1124,6 +1138,7 @@ class Observation(
         else:
             observation.id_species = species
 
+        observation.guid = guid
         observation.timing = timing
         observation.notime = notime
         observation.coord_lat = coord_lat

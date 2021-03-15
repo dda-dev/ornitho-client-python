@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime, timedelta
 from unittest import TestCase, mock
 from unittest.mock import MagicMock
@@ -135,6 +136,21 @@ class TestObservation(TestCase):
         self.assertEqual(
             int(self.observation_json["observers"][0]["traid"]), self.observation.traid
         )
+
+    def test_guid(self):
+        self.assertEqual(
+            uuid.UUID(self.observation_json["observers"][0]["guid"]),
+            self.observation.guid,
+        )
+
+        obs = Observation()
+        guid = uuid.uuid4()
+        obs.guid = guid
+        self.assertEqual(guid, obs.guid)
+
+        guid2 = uuid.uuid4()
+        obs.guid = guid2
+        self.assertEqual(guid2, obs.guid)
 
     def test_timing(self):
         self.assertEqual(
