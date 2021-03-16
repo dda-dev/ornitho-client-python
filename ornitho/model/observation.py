@@ -1113,7 +1113,7 @@ class Observation(
         coord_lon: float,
         precision: Precision,
         estimation_code: EstimationCode,
-        guid: uuid.UUID = uuid.uuid4(),
+        guid: uuid.UUID = None,
         notime: bool = False,
         count: int = None,
         altitude: int = None,
@@ -1138,7 +1138,11 @@ class Observation(
         else:
             observation.id_species = species
 
-        observation.guid = guid
+        if guid:
+            observation.guid = guid
+        else:
+            observation.guid = uuid.uuid4()
+
         observation.timing = timing
         observation.notime = notime
         observation.coord_lat = coord_lat

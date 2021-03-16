@@ -911,6 +911,7 @@ class TestObservation(TestCase):
         obs2 = Observation.create(
             observer=mock_observer,
             species=mock_species,
+            guid=uuid.uuid4(),
             timing=datetime.now(),
             coord_lat=1.23,
             coord_lon=4.56,
