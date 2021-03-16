@@ -8,7 +8,9 @@
 """
 import logging
 import os
-from typing import Optional
+from typing import Callable, Optional
+
+import requests
 
 from ornitho.api_exception import (
     APIConnectionException,
@@ -58,11 +60,16 @@ api_base: Optional[str] = None
 
 app_info = None
 
-cache_enabled = False
-cache_name = "ornitho_cache"
-cache_backend = "sqlite"
-cache_expire_after = 600
-cache_filter_fn = lambda r: "pagination_key" not in r.headers.keys()
+cache_enabled: bool = False
+cache_name: str = "ornitho_cache"
+cache_backend: str = "sqlite"
+cache_expire_after: int = 600
+cache_filter_fn: Callable[[requests.Response], bool] = (
+    lambda r: "pagination_key" not in r.headers.keys()
+)
+cache_redis_host: str = "localhost"
+cache_redis_port: int = 6379
+cache_redis_db: int = 0
 
 log_level = os.environ.get("ORNITHO_LOG_LEVEL") or logging.WARNING
 logging.basicConfig(

@@ -64,14 +64,32 @@ class APIRequester(object):
             raise RuntimeError("api_base missing!")
 
         if ornitho.cache_enabled and requests_cache:  # pragma: no cover
-            self.session: OAuth1Session = CachedOAuthSession(
-                client_key=self.consumer_key,
-                client_secret=self.consumer_secret,
-                cache_name=ornitho.cache_name,
-                backend=ornitho.cache_backend,
-                expire_after=ornitho.cache_expire_after,
-                filter_fn=ornitho.cache_filter_fn,
-            )
+            if ornitho.cache_backend == "redis":
+                import redis
+
+                r = redis.StrictRedis(
+                    host=ornitho.cache_redis_host,
+                    port=ornitho.cache_redis_port,
+                    db=ornitho.cache_redis_db,
+                )
+                self.session: OAuth1Session = CachedOAuthSession(
+                    client_key=self.consumer_key,
+                    client_secret=self.consumer_secret,
+                    cache_name=ornitho.cache_name,
+                    backend=ornitho.cache_backend,
+                    expire_after=ornitho.cache_expire_after,
+                    filter_fn=ornitho.cache_filter_fn,
+                    connection=r,
+                )
+            else:
+                self.session = CachedOAuthSession(
+                    client_key=self.consumer_key,
+                    client_secret=self.consumer_secret,
+                    cache_name=ornitho.cache_name,
+                    backend=ornitho.cache_backend,
+                    expire_after=ornitho.cache_expire_after,
+                    filter_fn=ornitho.cache_filter_fn,
+                )
         else:
             if ornitho.cache_enabled:  # pragma: no cover
                 ornitho.logger.warning(
