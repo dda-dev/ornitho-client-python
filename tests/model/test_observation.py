@@ -216,6 +216,13 @@ class TestObservation(TestCase):
             int(self.observation_json["observers"][0]["id_form"]),
             self.observation.id_form,
         )
+        obs = Observation()
+        id_form = 1
+        obs.id_form = id_form
+        self.assertEqual(id_form, obs.id_form)
+        id_form2 = 2
+        obs.id_form = id_form2
+        self.assertEqual(id_form2, obs.id_form)
 
     def test_precision(self):
         self.assertEqual(
@@ -913,6 +920,7 @@ class TestObservation(TestCase):
             species=mock_species,
             guid=uuid.uuid4(),
             timing=datetime.now(),
+            place=1,
             coord_lat=1.23,
             coord_lon=4.56,
             altitude=1,
@@ -935,6 +943,42 @@ class TestObservation(TestCase):
         self.assertEqual("3_4", obs2.atlas_code.id_)
         self.assertEqual("1_4", obs2.resting_habitat.id_)
         self.assertEqual("4_4", obs2.observation_detail.id_)
+        self.assertEqual(1, obs2.id_place)
+
+        mock_place = mock.Mock(spec=ornitho.Place)
+        mock_place.id_ = 2
+        mock_place._raw_data = {"id": 2}
+        obs3 = Observation.create(
+            observer=mock_observer,
+            species=mock_species,
+            guid=uuid.uuid4(),
+            timing=datetime.now(),
+            id_form=1,
+            place=mock_place,
+            coord_lat=1.23,
+            coord_lon=4.56,
+            altitude=1,
+            precision=Precision.PRECISE,
+            estimation_code=EstimationCode.EXACT_VALUE,
+            count=2,
+            comment="TEST",
+            hidden_comment="HIDDEN TEST",
+            hidden=True,
+            atlas_code=mock_atlas_code,
+            resting_habitat=mock_resting_habitat,
+            observation_detail=mock_observation_detail,
+        )
+        mock_createable_model.assert_called()
+        self.assertEqual(2, obs3.id_)
+        self.assertEqual(2, obs3.observer.id_)
+        self.assertEqual(2, obs3.species.id_)
+        self.assertEqual(Precision.PRECISE, obs3.precision)
+        self.assertEqual(EstimationCode.EXACT_VALUE, obs3.estimation_code)
+        self.assertEqual("3_4", obs3.atlas_code.id_)
+        self.assertEqual("1_4", obs3.resting_habitat.id_)
+        self.assertEqual("4_4", obs3.observation_detail.id_)
+        self.assertEqual(1, obs3.id_form)
+        self.assertEqual(2, obs3.place.id_)
 
     @mock.patch("ornitho.model.observation.BaseModel.refresh")
     @mock.patch("ornitho.model.observation.UpdateableModel.update")

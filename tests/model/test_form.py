@@ -1059,11 +1059,24 @@ class TestForm(TestCase):
         Form.create(
             time_start=datetime.now().time(),
             time_stop=datetime.now().time(),
-            observations=[],
+            observations=[mock_observation],
             protocol=mock.Mock(spec=Protocol),
             place=mock.Mock(spec=Place),
             visit_number=250,
             sequence_number=100,
+        )
+        mock_create_in_ornitho.assert_called()
+        mock_observation.raw_data_trim_field_ids.assert_called()
+
+        Form.create(
+            time_start=datetime.now().time(),
+            time_stop=datetime.now().time(),
+            observations=[mock_observation],
+            protocol=mock.Mock(spec=Protocol),
+            place=mock.Mock(spec=Place),
+            visit_number=250,
+            sequence_number=100,
+            create_in_ornitho=False,
         )
         mock_create_in_ornitho.assert_called()
         mock_observation.raw_data_trim_field_ids.assert_called()

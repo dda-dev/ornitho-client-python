@@ -686,7 +686,7 @@ class Form(CreateableModel, DeletableModel):
         time_stop: time,
         observations: List[Observation],
         protocol: Optional[Union[Protocol, str]] = None,
-        place: Optional[Union[Place, str, int]] = None,
+        place: Optional[Union[Place, int]] = None,
         visit_number: Optional[int] = None,
         sequence_number: Optional[int] = None,
         full_form: bool = True,
@@ -702,8 +702,6 @@ class Form(CreateableModel, DeletableModel):
             else:
                 form._id_place = place
 
-        form.observations = observations
-
         if protocol is not None:
             if isinstance(protocol, Protocol):
                 form.protocol_name = protocol.name
@@ -717,11 +715,47 @@ class Form(CreateableModel, DeletableModel):
             form.sequence_number = sequence_number
 
         if create_in_ornitho:
+            # Form must be created first,
+            # otherwise ornitho will ignore the given GUID/UUID for observations (╯°□°）╯︵ ┻━┻)
+
+            # Create Form with an "Keine Art" observation, to create form in ornitho
+            form.observations = [
+                Observation.create(
+                    observer=observations[0].id_observer,
+                    species=10000,
+                    place=place,
+                    timing=observations[0].timing,
+                    coord_lat=observations[0].coord_lat,
+                    coord_lon=observations[0].coord_lon,
+                    precision=observations[0].precision,
+                    estimation_code=ornitho.EstimationCode.EXACT_VALUE,
+                    count=0,
+                    create_in_ornitho=False,
+                )
+            ]
             first_observation_id = cls.create_in_ornitho(
                 data={"forms": [form.raw_data_trim_field_ids()]}
             )
-            form = cls.get(Observation.get(first_observation_id).id_form)
+            form_id = Observation.get(first_observation_id).id_form
 
+            # Add form id to every observation
+            for observation in observations:
+                observation.id_form = form_id
+
+            # Create observations with form id in ornitho
+            Observation.create_in_ornitho(
+                data={
+                    "sightings": [
+                        observation.raw_data_trim_field_ids()
+                        for observation in observations
+                    ]
+                }
+            )
+
+            # Retrieve form again, to get acces to observation ids
+            form = cls.get(form_id)
+        else:
+            form.observations = observations
         return form
 
     def raw_data_trim_field_ids(self) -> Dict[str, Any]:

@@ -200,6 +200,13 @@ class Observation(
             else None
         )
 
+    @id_form.setter
+    def id_form(self, value: int):
+        if "observers" in self._raw_data:
+            self._raw_data["observers"][0]["id_form"] = value
+        else:
+            self._raw_data["observers"] = [{"id_form": value}]
+
     @property  # type: ignore
     @check_raw_data("observers")
     def precision(self) -> Precision:
@@ -1114,6 +1121,8 @@ class Observation(
         precision: Precision,
         estimation_code: EstimationCode,
         guid: uuid.UUID = None,
+        id_form: int = None,
+        place: Optional[Union[int, Place]] = None,
         notime: bool = False,
         count: int = None,
         altitude: int = None,
@@ -1142,6 +1151,15 @@ class Observation(
             observation.guid = guid
         else:
             observation.guid = uuid.uuid4()
+
+        if id_form:
+            observation.id_form = id_form
+
+        if place:
+            if isinstance(place, Place):
+                observation.place = place
+            else:
+                observation.id_place = place
 
         observation.timing = timing
         observation.notime = notime
