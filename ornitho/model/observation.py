@@ -1129,6 +1129,7 @@ class Observation(
         comment: str = None,
         hidden_comment: str = None,
         hidden: bool = False,
+        export_date: datetime = None,
         atlas_code: Union[str, FieldOption] = None,
         details: List[Detail] = None,
         resting_habitat: Union[str, FieldOption] = None,
@@ -1179,6 +1180,12 @@ class Observation(
 
         if hidden:
             observation.hidden = hidden
+
+        if export_date:
+            observation.is_exported = True
+            observation.export_date = (
+                export_date  # Doesn't work as expected, will always be 1970-01-01 ...
+            )
 
         if atlas_code:
             if isinstance(atlas_code, FieldOption):

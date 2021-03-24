@@ -52,6 +52,7 @@ second_observation = ornitho.Observation.create(
     hidden_comment="HIDDEN TEST",
     hidden=True,
     create_in_ornitho=False,
+    export_date=datetime.now(),
 )
 
 cbbm_place = ornitho.Place.list_all(

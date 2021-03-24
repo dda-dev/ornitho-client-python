@@ -915,6 +915,7 @@ class TestObservation(TestCase):
         mock_observation_detail = mock.Mock(spec=ornitho.FieldOption)
         mock_observation_detail.id_ = "4_4"
 
+        now = datetime.now()
         obs2 = Observation.create(
             observer=mock_observer,
             species=mock_species,
@@ -930,6 +931,7 @@ class TestObservation(TestCase):
             comment="TEST",
             hidden_comment="HIDDEN TEST",
             hidden=True,
+            export_date=now,
             atlas_code=mock_atlas_code,
             resting_habitat=mock_resting_habitat,
             observation_detail=mock_observation_detail,

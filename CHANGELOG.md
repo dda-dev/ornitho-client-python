@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `requests-cache` added as optional dependency
 - `excel_str_german` property added to `Detail`
 - `guid` added as property to `Observation` and as argument with default generator (uuid4) to `create` method
+- `export_date` added as optional argument to `Observation.create` method
 
 ### Changed
 
