@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `observation.id_atlas_code` returns the ornitho id prefixed with `3_`
 
+### Fixed
+
+- `observation.mark_as_exported`: subtract 2 seconds from default date
+
 ## [0.2.0] - 2020-11-24
 
 ### Added

@@ -1,6 +1,6 @@
 import uuid
 from copy import deepcopy
-from datetime import datetime
+from datetime import datetime, timedelta
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, Union
 
@@ -1214,7 +1214,9 @@ class Observation(
         if export_date:
             self.export_date = export_date
         else:
-            self.export_date = datetime.now()
+            self.export_date = datetime.now() - timedelta(
+                seconds=2
+            )  # Subtract 2 seconds, because the ornitho time is a little ahead
         self.update()
 
     def raw_data_trim_field_ids(self) -> Dict[str, Any]:
