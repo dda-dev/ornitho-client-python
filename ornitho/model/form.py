@@ -216,7 +216,9 @@ class Form(CreateableModel, DeletableModel):
     @property
     def wkt(self) -> Optional[str]:
         return (
-            self._raw_data["protocol"]["wkt"] if "protocol" in self._raw_data else None
+            self._raw_data["protocol"]["wkt"]
+            if "protocol" in self._raw_data and "wkt" in self._raw_data["protocol"]
+            else None
         )
 
     @property
