@@ -214,6 +214,12 @@ class Form(CreateableModel, DeletableModel):
         )
 
     @property
+    def wkt(self) -> Optional[str]:
+        return (
+            self._raw_data["protocol"]["wkt"] if "protocol" in self._raw_data else None
+        )
+
+    @property
     def id_waterbird_conditions(self) -> Optional[str]:
         if (
             "protocol" in self._raw_data
