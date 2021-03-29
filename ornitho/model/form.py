@@ -215,9 +215,19 @@ class Form(CreateableModel, DeletableModel):
 
     @property
     def wkt(self) -> Optional[str]:
+        """
+        Well-known text representation of the recorded track
+        :return: LINESTRING geometry, if a valid LINESTRING WKT is received, None otherwise
+        """
         return (
             self._raw_data["protocol"]["wkt"]
-            if "protocol" in self._raw_data and "wkt" in self._raw_data["protocol"]
+            if "protocol" in self._raw_data
+            and "wkt" in self._raw_data["protocol"]
+            and "LINESTRING" in self._raw_data["protocol"]["wkt"]  # check if Linestring
+            and ","
+            in self._raw_data["protocol"][
+                "wkt"
+            ]  # check if Linestring contains 2 points
             else None
         )
 
