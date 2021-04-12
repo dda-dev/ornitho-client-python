@@ -634,27 +634,6 @@ class Form(CreateableModel, DeletableModel):
         return None
 
     @property
-    def nest_number(self) -> Optional[int]:
-        if "protocol" in self._raw_data and "nest_number" in self._raw_data["protocol"]:
-            if type(self._raw_data["protocol"]["nest_number"]) is dict:
-                return int(self._raw_data["protocol"]["nest_number"]["@id"])
-            else:
-                return int(self._raw_data["protocol"]["nest_number"])
-        return None
-
-    @property
-    def occupied_nest_number(self) -> Optional[int]:
-        if (
-            "protocol" in self._raw_data
-            and "occupied_nest_number" in self._raw_data["protocol"]
-        ):
-            if type(self._raw_data["protocol"]["occupied_nest_number"]) is dict:
-                return int(self._raw_data["protocol"]["occupied_nest_number"]["@id"])
-            else:
-                return int(self._raw_data["protocol"]["occupied_nest_number"])
-        return None
-
-    @property
     def playbacks(self) -> Optional[Dict[int, bool]]:
         if "protocol" in self._raw_data and "playback" in self._raw_data["protocol"]:
             species_ids: Dict[int, bool] = {}

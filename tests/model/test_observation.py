@@ -104,7 +104,17 @@ class TestObservation(TestCase):
                             "nb_construction_nests": "0",
                         },
                     },
-                    "protocol": {"relations": [{"with": "56436655", "type": "same"}]},
+                    "protocol": {
+                        "nest_number": {
+                            "@id": "3",
+                            "#text": "DISPLAY_PAGE_TEXT_NEST_NUMBER_3",
+                        },
+                        "occupied_nest_number": {
+                            "@id": "3",
+                            "#text": "DISPLAY_PAGE_TEXT_OCCUPIED_NEST_NUMBER_3",
+                        },
+                        "relations": [{"with": "56436655", "type": "same"}],
+                    },
                 }
             ],
         }
@@ -791,6 +801,62 @@ class TestObservation(TestCase):
 
     def test_colony_extended_nb_construction_nests(self):
         self.assertEqual(0, self.observation.colony_extended_nb_construction_nests)
+
+    def test_nest_number(self):
+        self.assertEqual(
+            int(
+                self.observation_json["observers"][0]["protocol"]["nest_number"]["@id"]
+            ),
+            self.observation.nest_number,
+        )
+
+        observation_json = {
+            "observers": [
+                {
+                    "protocol": {
+                        "nest_number": "321",
+                    },
+                }
+            ]
+        }
+        self.assertEqual(
+            int(observation_json["observers"][0]["protocol"]["nest_number"]),
+            Observation.create_from_ornitho_json(observation_json).nest_number,
+        )
+
+        observation_json = {"observers": [{}]}
+        self.assertIsNone(
+            Observation.create_from_ornitho_json(observation_json).nest_number
+        )
+
+    def test_occupied_nest_number(self):
+        self.assertEqual(
+            int(
+                self.observation_json["observers"][0]["protocol"][
+                    "occupied_nest_number"
+                ]["@id"]
+            ),
+            self.observation.occupied_nest_number,
+        )
+
+        observation_json = {
+            "observers": [
+                {
+                    "protocol": {
+                        "occupied_nest_number": "123",
+                    },
+                }
+            ]
+        }
+        self.assertEqual(
+            int(observation_json["observers"][0]["protocol"]["occupied_nest_number"]),
+            Observation.create_from_ornitho_json(observation_json).occupied_nest_number,
+        )
+
+        observation_json = {"observers": [{}]}
+        self.assertIsNone(
+            Observation.create_from_ornitho_json(observation_json).occupied_nest_number
+        )
 
     def test_relations(self):
         relations = [Relation(56436655, RelationType("same"))]

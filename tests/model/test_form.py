@@ -63,8 +63,6 @@ class TestForm(TestCase):
                 "changes": "NORMAL",
                 "drone_used": "NORMAL",
                 "tmp_water_bodies": "NORMAL",
-                "nest_number": "11",
-                "occupied_nest_number": "12",
             },
             "sightings": [
                 {
@@ -932,52 +930,6 @@ class TestForm(TestCase):
 
         form_json = {"@id": "1"}
         self.assertIsNone(Form.create_from_ornitho_json(form_json).id_tmp_water_bodies)
-
-    def test_nest_number(self):
-        self.assertEqual(
-            int(self.form_json["protocol"]["nest_number"]),
-            self.form.nest_number,
-        )
-
-        form_json = {
-            "@id": "1",
-            "protocol": {
-                "nest_number": {
-                    "@id": "11",
-                    "#text": "DISPLAY_PAGE_TEXT_NEST_NUMBER_11",
-                },
-            },
-        }
-        self.assertEqual(
-            int(form_json["protocol"]["nest_number"]["@id"]),
-            Form.create_from_ornitho_json(form_json).nest_number,
-        )
-
-        form_json = {"@id": "1"}
-        self.assertIsNone(Form.create_from_ornitho_json(form_json).nest_number)
-
-    def test_occupied_nest_number(self):
-        self.assertEqual(
-            int(self.form_json["protocol"]["occupied_nest_number"]),
-            self.form.occupied_nest_number,
-        )
-
-        form_json = {
-            "@id": "1",
-            "protocol": {
-                "occupied_nest_number": {
-                    "@id": "12",
-                    "#text": "DISPLAY_PAGE_TEXT_OCCUPIED_NEST_NUMBER_12",
-                },
-            },
-        }
-        self.assertEqual(
-            int(form_json["protocol"]["occupied_nest_number"]["@id"]),
-            Form.create_from_ornitho_json(form_json).occupied_nest_number,
-        )
-
-        form_json = {"@id": "1"}
-        self.assertIsNone(Form.create_from_ornitho_json(form_json).occupied_nest_number)
 
     def test_playbacks(self):
         self.assertIsNone(self.form.playbacks)

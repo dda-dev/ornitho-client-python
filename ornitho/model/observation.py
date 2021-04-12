@@ -989,6 +989,43 @@ class Observation(
 
     @property  # type: ignore
     @check_raw_data("observers")
+    def nest_number(self) -> Optional[int]:
+        if (
+            "protocol" in self._raw_data["observers"][0]
+            and "nest_number" in self._raw_data["observers"][0]["protocol"]
+        ):
+            if type(self._raw_data["observers"][0]["protocol"]["nest_number"]) is dict:
+                return int(
+                    self._raw_data["observers"][0]["protocol"]["nest_number"]["@id"]
+                )
+            else:
+                return int(self._raw_data["observers"][0]["protocol"]["nest_number"])
+        return None
+
+    @property  # type: ignore
+    @check_raw_data("observers")
+    def occupied_nest_number(self) -> Optional[int]:
+        if (
+            "protocol" in self._raw_data["observers"][0]
+            and "occupied_nest_number" in self._raw_data["observers"][0]["protocol"]
+        ):
+            if (
+                type(self._raw_data["observers"][0]["protocol"]["occupied_nest_number"])
+                is dict
+            ):
+                return int(
+                    self._raw_data["observers"][0]["protocol"]["occupied_nest_number"][
+                        "@id"
+                    ]
+                )
+            else:
+                return int(
+                    self._raw_data["observers"][0]["protocol"]["occupied_nest_number"]
+                )
+        return None
+
+    @property  # type: ignore
+    @check_raw_data("observers")
     def relations(self) -> List[Relation]:
         return (
             [
