@@ -13,6 +13,8 @@ from ornitho import (
     ModificationType,
     Observation,
     Precision,
+    Relation,
+    RelationType,
     Source,
 )
 
@@ -102,6 +104,7 @@ class TestObservation(TestCase):
                             "nb_construction_nests": "0",
                         },
                     },
+                    "protocol": {"relations": [{"with": "56436655", "type": "same"}]},
                 }
             ],
         }
@@ -788,6 +791,13 @@ class TestObservation(TestCase):
 
     def test_colony_extended_nb_construction_nests(self):
         self.assertEqual(0, self.observation.colony_extended_nb_construction_nests)
+
+    def test_relations(self):
+        relations = [Relation(56436655, RelationType("same"))]
+        self.assertEqual(
+            relations,
+            self.observation.relations,
+        )
 
     def test_by_observer(self):
         Observation.list = MagicMock(return_value=["obs", "pk"])

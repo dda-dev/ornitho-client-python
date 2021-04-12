@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `guid` added as property to `Observation` and as argument with default generator (uuid4) to `create` method
 - `export_date` added as optional argument to `Observation.create` method
 - `wkt` added to `Form` model
+- `RelationType` model added
+- `relations` added to `Observation` model
 
 ### Changed
 

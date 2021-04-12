@@ -38,6 +38,8 @@ from ornitho.model import (
     Place,
     Precision,
     Protocol,
+    Relation,
+    RelationType,
     Right,
     Site,
     Source,

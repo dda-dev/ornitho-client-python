@@ -20,6 +20,7 @@ from ornitho.model.field_option import FieldOption
 from ornitho.model.media import Media
 from ornitho.model.observer import Observer
 from ornitho.model.place import Place
+from ornitho.model.relation import Relation, RelationType
 from ornitho.model.species import Species
 
 
@@ -986,6 +987,38 @@ class Observation(
             else None
         )
 
+    @property  # type: ignore
+    @check_raw_data("observers")
+    def relations(self) -> List[Relation]:
+        return (
+            [
+                Relation(
+                    with_id=int(relation["with"]), type=RelationType(relation["type"])
+                )
+                for relation in self._raw_data["observers"][0]["protocol"]["relations"]
+            ]
+            if "protocol" in self._raw_data["observers"][0]
+            and "relations" in self._raw_data["observers"][0]["protocol"]
+            else []
+        )
+
+    # @relations.setter
+    # def relations(self, value: List[Relation]):
+    #     relations_ornitho_format = [
+    #         {
+    #             "with": str(relation.with_id),
+    #             "type": relation.type.value,
+    #         }
+    #         for relation in value
+    #     ]
+    #     if "observers" in self._raw_data:
+    #         if "protocol" in self._raw_data["observers"][0]:
+    #             self._raw_data["observers"][0]["protocol"]["relations"] = relations_ornitho_format
+    #         else:
+    #             self._raw_data["observers"][0] = {"protocol": {"relations": relations_ornitho_format}}
+    #     else:
+    #         self._raw_data["observers"] = [{"protocol": {"relations": relations_ornitho_format}}]
+
     @classmethod
     def by_observer(
         cls,
@@ -1134,6 +1167,7 @@ class Observation(
         details: List[Detail] = None,
         resting_habitat: Union[str, FieldOption] = None,
         observation_detail: Union[str, FieldOption] = None,
+        # relations: List[Relation] = None,
         create_in_ornitho: bool = True,
     ) -> "Observation":
         observation = cls()
@@ -1207,6 +1241,9 @@ class Observation(
                 observation.observation_detail = observation_detail
             else:
                 observation.id_observation_detail = observation_detail
+
+        # if relations:
+        #     observation.relations = relations
 
         if create_in_ornitho:
             observation._id = cls.create_in_ornitho(
