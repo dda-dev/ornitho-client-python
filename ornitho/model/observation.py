@@ -1058,9 +1058,9 @@ class Observation(
 
     @property  # type: ignore
     @check_raw_data("observers")
-    def direction(self) -> List[Relation]:
+    def direction(self) -> Optional[int]:
         return (
-            self._raw_data["observers"][0]["protocol"]["direction"]
+            int(self._raw_data["observers"][0]["protocol"]["direction"])
             if "protocol" in self._raw_data["observers"][0]
             and "direction" in self._raw_data["observers"][0]["protocol"]
             else None

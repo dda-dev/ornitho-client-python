@@ -868,7 +868,7 @@ class TestObservation(TestCase):
 
     def test_direction(self):
         self.assertEqual(
-            self.observation_json["observers"][0]["protocol"]["direction"],
+            int(self.observation_json["observers"][0]["protocol"]["direction"]),
             self.observation.direction,
         )
 
