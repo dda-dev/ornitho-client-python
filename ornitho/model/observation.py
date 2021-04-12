@@ -1056,6 +1056,16 @@ class Observation(
     #     else:
     #         self._raw_data["observers"] = [{"protocol": {"relations": relations_ornitho_format}}]
 
+    @property  # type: ignore
+    @check_raw_data("observers")
+    def direction(self) -> List[Relation]:
+        return (
+            self._raw_data["observers"][0]["protocol"]["direction"]
+            if "protocol" in self._raw_data["observers"][0]
+            and "direction" in self._raw_data["observers"][0]["protocol"]
+            else None
+        )
+
     @classmethod
     def by_observer(
         cls,

@@ -114,6 +114,7 @@ class TestObservation(TestCase):
                             "#text": "DISPLAY_PAGE_TEXT_OCCUPIED_NEST_NUMBER_3",
                         },
                         "relations": [{"with": "56436655", "type": "same"}],
+                        "direction": "360",
                     },
                 }
             ],
@@ -863,6 +864,12 @@ class TestObservation(TestCase):
         self.assertEqual(
             relations,
             self.observation.relations,
+        )
+
+    def test_direction(self):
+        self.assertEqual(
+            self.observation_json["observers"][0]["protocol"]["direction"],
+            self.observation.direction,
         )
 
     def test_by_observer(self):
