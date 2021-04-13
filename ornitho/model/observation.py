@@ -1033,6 +1033,7 @@ class Observation(
                     with_id=int(relation["with"]), type=RelationType(relation["type"])
                 )
                 for relation in self._raw_data["observers"][0]["protocol"]["relations"]
+                if relation["with"] and relation["type"]
             ]
             if "protocol" in self._raw_data["observers"][0]
             and "relations" in self._raw_data["observers"][0]["protocol"]
