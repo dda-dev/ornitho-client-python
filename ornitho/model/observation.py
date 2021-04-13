@@ -1059,9 +1059,9 @@ class Observation(
 
     @property  # type: ignore
     @check_raw_data("observers")
-    def direction(self) -> Optional[int]:
+    def direction(self) -> Optional[float]:
         return (
-            int(self._raw_data["observers"][0]["protocol"]["direction"])
+            float(self._raw_data["observers"][0]["protocol"]["direction"])
             if "protocol" in self._raw_data["observers"][0]
             and "direction" in self._raw_data["observers"][0]["protocol"]
             else None
