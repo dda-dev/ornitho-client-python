@@ -115,8 +115,11 @@ class Observation(
 
     @id_observer.setter
     def id_observer(self, value: int):
-        self._observer = None
-        self._raw_data["observers"] = [{"@id": value.__str__()}]
+        if "observers" in self._raw_data:
+            self._raw_data["observers"][0]["@id"] = value.__str__()
+        else:
+            self._observer = None
+            self._raw_data["observers"] = [{"@id": value.__str__()}]
 
     @property  # type: ignore
     @check_raw_data("observers")
@@ -1040,22 +1043,28 @@ class Observation(
             else []
         )
 
-    # @relations.setter
-    # def relations(self, value: List[Relation]):
-    #     relations_ornitho_format = [
-    #         {
-    #             "with": str(relation.with_id),
-    #             "type": relation.type.value,
-    #         }
-    #         for relation in value
-    #     ]
-    #     if "observers" in self._raw_data:
-    #         if "protocol" in self._raw_data["observers"][0]:
-    #             self._raw_data["observers"][0]["protocol"]["relations"] = relations_ornitho_format
-    #         else:
-    #             self._raw_data["observers"][0] = {"protocol": {"relations": relations_ornitho_format}}
-    #     else:
-    #         self._raw_data["observers"] = [{"protocol": {"relations": relations_ornitho_format}}]
+    @relations.setter
+    def relations(self, value: List[Relation]):
+        relations_ornitho_format = [
+            {
+                "with": str(relation.with_id),
+                "type": relation.type.value,
+            }
+            for relation in value
+        ]
+        if "observers" in self._raw_data:
+            if "protocol" in self._raw_data["observers"][0]:
+                self._raw_data["observers"][0]["protocol"][
+                    "relations"
+                ] = relations_ornitho_format
+            else:
+                self._raw_data["observers"][0]["protocol"] = {
+                    "relations": relations_ornitho_format
+                }
+        else:
+            self._raw_data["observers"] = [
+                {"protocol": {"relations": relations_ornitho_format}}
+            ]
 
     @property  # type: ignore
     @check_raw_data("observers")
@@ -1066,6 +1075,16 @@ class Observation(
             and "direction" in self._raw_data["observers"][0]["protocol"]
             else None
         )
+
+    @direction.setter
+    def direction(self, value: float):
+        if "observers" in self._raw_data:
+            if "protocol" in self._raw_data["observers"][0]:
+                self._raw_data["observers"][0]["protocol"]["direction"] = value
+            else:
+                self._raw_data["observers"][0]["protocol"] = {"direction": value}
+        else:
+            self._raw_data["observers"] = [{"protocol": {"direction": value}}]
 
     @classmethod
     def by_observer(
@@ -1215,7 +1234,8 @@ class Observation(
         details: List[Detail] = None,
         resting_habitat: Union[str, FieldOption] = None,
         observation_detail: Union[str, FieldOption] = None,
-        # relations: List[Relation] = None,
+        relations: List[Relation] = None,
+        direction: float = None,
         create_in_ornitho: bool = True,
     ) -> "Observation":
         observation = cls()
@@ -1290,8 +1310,11 @@ class Observation(
             else:
                 observation.id_observation_detail = observation_detail
 
-        # if relations:
-        #     observation.relations = relations
+        if relations:
+            observation.relations = relations
+
+        if direction is not None:
+            observation.direction = direction
 
         if create_in_ornitho:
             observation._id = cls.create_in_ornitho(
