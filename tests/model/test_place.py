@@ -88,9 +88,31 @@ class TestPlace(TestCase):
     def test_country(self):
         self.assertIsNone(self.place.country)
 
+    def test_centroid(self):
+        self.assertIsNone(self.place.centroid)
+
+    def test_order(self):
+        self.assertIsNone(self.place.order)
+
+    def test_wkt(self):
+        self.assertIsNone(self.place.wkt)
+
     @mock.patch("ornitho.model.place.ListableModel.list_all")
     def test_find_closest_place(self, mock_list_all):
         mock_list_all.return_value = ["Place"]
 
         place = Place.find_closest_place(1.1, 2.2)
         self.assertEqual(place, "Place")
+
+    def test_create_from_site(self):
+        place = Place.create_from_site(
+            {
+                "id": "1",
+                "id_universal": "1_1",
+                "name": "ETST (1)",
+                "altitude": "1",
+                "order": "1",
+                "wkt": "POINT(1.1 2.2)",
+            }
+        )
+        self.assertEqual(1, place.id_)

@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Any, Dict, Optional
 
 from ornitho.model.abstract import ListableModel
 from ornitho.model.abstract.base_model import check_refresh
@@ -11,6 +11,9 @@ class Place(ListableModel):
     def __init__(self, id_: int) -> None:
         super(Place, self).__init__(id_)
         self._local_admin_unit: Optional[LocalAdminUnit] = None
+        self._centroid: Optional[str] = None
+        self._order: Optional[int] = None
+        self._wkt: Optional[str] = None
 
     @property  # type: ignore
     @check_refresh
@@ -94,6 +97,18 @@ class Place(ListableModel):
     def country(self) -> Optional[str]:
         return self._raw_data["country"] if "country" in self._raw_data else None
 
+    @property
+    def centroid(self) -> Optional[str]:
+        return self._centroid
+
+    @property
+    def order(self) -> Optional[int]:
+        return self._order
+
+    @property
+    def wkt(self) -> Optional[str]:
+        return self._wkt
+
     @classmethod
     def find_closest_place(
         cls, coord_lat: float, coord_lon: float, get_hidden: bool = False, **kwargs
@@ -105,3 +120,12 @@ class Place(ListableModel):
             get_hidden=get_hidden,
             **kwargs
         )[0]
+
+    @classmethod
+    def create_from_site(cls, data: Dict[str, Any]):
+        identifier: int = int(data["id"])
+        obj = cls(identifier)
+        obj._centroid = data["centroid"] if "centroid" in data else None
+        obj._order = data["order"] if "order" in data else None
+        obj._wkt = data["wkt"] if "wkt" in data else None
+        return obj

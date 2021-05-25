@@ -1,8 +1,10 @@
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 
 from ornitho.api_requester import APIRequester
 from ornitho.model.abstract import BaseModel
+from ornitho.model.observer import Observer
+from ornitho.model.place import Place
 
 
 class MapLayer(Enum):
@@ -13,7 +15,7 @@ class MapLayer(Enum):
 
 
 class Site(BaseModel):
-    ENDPOINT_PDF: str = ""
+    ENDPOINT: str = "/protocol/sites"
 
     def __init__(self, id_: int) -> None:
         """Site constructor
@@ -22,16 +24,6 @@ class Site(BaseModel):
         """
         super(Site, self).__init__(id_)
         self._pdf: Optional[bytes] = None
-
-    @staticmethod
-    def request(
-        method: str,
-        url: str,
-        params: Dict[str, Any] = None,
-        body: Dict[str, Any] = None,
-        short_version: bool = False,
-    ) -> List[Any]:
-        raise NotImplementedError
 
     @property
     def id_universal(self) -> str:
@@ -42,8 +34,66 @@ class Site(BaseModel):
         return self._raw_data["custom_name"]
 
     @property
+    def local_name(self) -> Optional[str]:
+        return self._raw_data["local_name"] if "local_name" in self._raw_data else None
+
+    @property
+    def id_reference_locality(self) -> int:
+        return int(self._raw_data["id_reference_locality"])
+
+    @property
     def reference_locality(self) -> str:
         return self._raw_data["reference_locality"]
+
+    @property
+    def id_protocol(self) -> int:
+        return int(self._raw_data["id_protocol"])
+
+    @property
+    def transect_places(self) -> Optional[List[Place]]:
+        places = None
+        if "transects" in self._raw_data:
+            places = [
+                Place.create_from_site(raw_transect)
+                for raw_transect in self._raw_data["transects"]
+            ]
+        return places
+
+    @property
+    def point_places(self) -> Optional[List[Place]]:
+        places = None
+        if "points" in self._raw_data:
+            places = [
+                Place.create_from_site(raw_transect)
+                for raw_transect in self._raw_data["points"]
+            ]
+        return places
+
+    @property
+    def polygon_places(self) -> Optional[List[Place]]:
+        places = None
+        if "polygons" in self._raw_data:
+            places = [
+                Place.create_from_site(raw_transect)
+                for raw_transect in self._raw_data["polygons"]
+            ]
+        return places
+
+    @property
+    def boundary_wkt(self) -> Optional[str]:
+        return (
+            self._raw_data["boundary_wkt"] if "boundary_wkt" in self._raw_data else None
+        )
+
+    @property
+    def observers(self) -> List[Observer]:
+        observers = []
+        if "observers" in self._raw_data:
+            observers = [
+                Observer(id_=int(observer_id))
+                for observer_id in self._raw_data["observers"]
+            ]
+        return observers
 
     def pdf(
         self,
@@ -68,7 +118,7 @@ class Site(BaseModel):
         :rtype: bytes
         """
         with APIRequester() as requester:
-            url = f"protocol/site_pdf"
+            url = f"{self.instance_url()}.pdf"
             params = {"id": self.id_}
             if map_layer:
                 params["map_layer"] = map_layer.value

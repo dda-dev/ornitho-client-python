@@ -18,10 +18,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `RelationType` model added
 - `relations` added to `Observation` model
 - `direction` added to `Observation` model
+- `centroid` added to `Place` model
+- `order` added to `Place` model
+- `wkt` added to `Place` model
+- `local_name` added to `Site` model
+- `id_reference_locality` added to `Site` model
+- `id_protocol` added to `Site` model
+- `transect_places` added to `Site` model
+- `point_places` added to `Site` model
+- `polygon_places` added to `Site` model
+- `boundary_wkt` added to `Site` model
+- `observers` added to `Site` model
 
 ### Changed
 
 - `observation.id_atlas_code` returns the ornitho id prefixed with `3_`
+- `sites` can now be retrieved directly via api endpoint 
 
 ### Fixed
 
