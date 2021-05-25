@@ -139,12 +139,17 @@ class TestObservation(TestCase):
         )
 
         obs = Observation()
-        obs._raw_data = {"observers": [{"id": 2}]}
-        self.assertEqual(2, obs.id_observer)
+        obs._raw_data = {"observers": [{"id": 1}]}
+        self.assertEqual(1, obs.id_observer)
 
-        obs = Observation()
+        obs._raw_data = {"observers": [{"@id": 2}]}
+        self.assertEqual(2, obs.id_observer)
         obs.id_observer = 3
         self.assertEqual(3, obs.id_observer)
+
+        obs = Observation()
+        obs.id_observer = 4
+        self.assertEqual(4, obs.id_observer)
 
     def test_traid(self):
         self.assertEqual(
@@ -866,11 +871,42 @@ class TestObservation(TestCase):
             self.observation.relations,
         )
 
+        relations = [Relation(123, RelationType("diff"))]
+
+        obs = Observation()
+        obs._raw_data = {"observers": [{"@id": "1"}]}
+        obs.relations = relations
+        self.assertEqual(relations, obs.relations)
+
+        obs = Observation()
+        obs.relations = relations
+        self.assertEqual(relations, obs.relations)
+
+        relations = [Relation(56436653, RelationType("probable"))]
+        obs.relations = relations
+        self.assertEqual(relations, obs.relations)
+
     def test_direction(self):
         self.assertEqual(
             int(self.observation_json["observers"][0]["protocol"]["direction"]),
             self.observation.direction,
         )
+
+        obs = Observation()
+        obs.direction = 123
+        self.assertEqual(123, obs.direction)
+
+        obs = Observation()
+        obs._raw_data = {"observers": [{"@id": "1"}]}
+        obs.direction = 234
+        self.assertEqual(234, obs.direction)
+
+        obs = Observation()
+        obs.direction = 2
+        self.assertEqual(2, obs.direction)
+
+        obs.direction = 3
+        self.assertEqual(3, obs.direction)
 
     def test_by_observer(self):
         Observation.list = MagicMock(return_value=["obs", "pk"])
@@ -972,6 +1008,8 @@ class TestObservation(TestCase):
             details=[mock_detail],
             resting_habitat="1_1",
             observation_detail="4_1",
+            direction=123,
+            relations=[Relation(123, RelationType("diff"))],
         )
         mock_createable_model.assert_called()
         self.assertEqual(1, obs.id_)
