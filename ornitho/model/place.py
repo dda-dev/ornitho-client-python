@@ -1,17 +1,19 @@
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from ornitho.model.abstract import ListableModel
-from ornitho.model.abstract.base_model import check_refresh
+from ornitho.model.abstract.base_model import BaseModel, check_refresh
 from ornitho.model.local_admin_unit import LocalAdminUnit
+from ornitho.model.modification_type import ModificationType
 from ornitho.model.observer import Observer
 
 
 class Place(ListableModel):
     ENDPOINT: str = "places"
 
-    def __init__(self, id_: int) -> None:
+    def __init__(self, id_: int, modification_type: ModificationType = None) -> None:
         super(Place, self).__init__(id_)
+        self.modification_type = modification_type
         self._local_admin_unit: Optional[LocalAdminUnit] = None
         self._centroid: Optional[str] = None
         self._order: Optional[int] = None
@@ -151,7 +153,7 @@ class Place(ListableModel):
             coord_lat=coord_lat,
             coord_lon=coord_lon,
             get_hidden=get_hidden,
-            **kwargs
+            **kwargs,
         )[0]
 
     @classmethod
@@ -162,3 +164,61 @@ class Place(ListableModel):
         obj._order = data["order"] if "order" in data else None
         obj._wkt = data["wkt"] if "wkt" in data else None
         return obj
+
+    @classmethod
+    def diff(
+        cls,
+        date: datetime,
+        modification_type: ModificationType = None,
+        only_protocol: Union[str, BaseModel] = None,
+        retrieve_places: bool = False,
+    ) -> List["Place"]:
+        """Retrieves a list of places which changed in between now and a given date
+        :param date: Date in the past, to which changed places should be searched
+        :param modification_type: Type of modification.
+        :param only_protocol: Return only observation which are part of the given Protocol (Protocol Instance or Name)
+        :param retrieve_places: Indicates if the place objects should be retrieved. Default: False
+        :type date: datetime
+        :type modification_type: ModificationType
+        :type only_protocol: Union[str, "Protocol"]
+        :type retrieve_places: bool
+        :return: List of observations
+        :rtype: List[Observation]
+        """
+        url = f"{cls.ENDPOINT}/diff"
+        params = dict()
+        if modification_type:
+            params["modification_type"] = modification_type.value
+        if only_protocol:
+            from ornitho.model.protocol import Protocol
+
+            if isinstance(only_protocol, Protocol):
+                params["only_protocol"] = only_protocol.name
+            else:
+                params["only_protocol"] = only_protocol.__str__()
+
+        date = date.replace(microsecond=0)
+        if date.tzinfo:
+            date = date.astimezone(datetime.now().astimezone().tzinfo).replace(
+                tzinfo=None
+            )
+        params[
+            "date"
+        ] = (
+            date.isoformat()
+        )  # Format here, because isoformat is mostly ignored, except here
+
+        changed_places = cls.request(method="get", url=url, params=params)
+        places = []
+        for place in changed_places:
+            if place["modification_type"] == "updated":
+                modification_type = ModificationType.ONLY_MODIFIED
+            else:
+                modification_type = ModificationType.ONLY_DELETED
+            if retrieve_places and modification_type == ModificationType.ONLY_MODIFIED:
+                places.append(cls.get(int(place["id_place"])))
+            else:
+                places.append(
+                    cls(id_=int(place["id_place"]), modification_type=modification_type)
+                )
+        return places

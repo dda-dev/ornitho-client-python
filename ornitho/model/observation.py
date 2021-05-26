@@ -18,16 +18,11 @@ from ornitho.model.abstract.base_model import check_raw_data
 from ornitho.model.detail import Detail
 from ornitho.model.field_option import FieldOption
 from ornitho.model.media import Media
+from ornitho.model.modification_type import ModificationType
 from ornitho.model.observer import Observer
 from ornitho.model.place import Place
 from ornitho.model.relation import Relation, RelationType
 from ornitho.model.species import Species
-
-
-class ModificationType(Enum):
-    ONLY_MODIFIED = "only_modified"
-    ONLY_DELETED = "only_deleted"
-    ALL = "all"
 
 
 class EstimationCode(Enum):

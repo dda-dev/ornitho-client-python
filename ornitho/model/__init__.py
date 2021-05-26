@@ -8,13 +8,8 @@ from ornitho.model.field_option import FieldOption
 from ornitho.model.form import Form
 from ornitho.model.local_admin_unit import LocalAdminUnit
 from ornitho.model.media import Media
-from ornitho.model.observation import (
-    EstimationCode,
-    ModificationType,
-    Observation,
-    Precision,
-    Source,
-)
+from ornitho.model.modification_type import ModificationType
+from ornitho.model.observation import EstimationCode, Observation, Precision, Source
 from ornitho.model.observer import Observer
 from ornitho.model.place import Place
 from ornitho.model.protocol import Protocol

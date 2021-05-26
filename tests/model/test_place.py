@@ -1,7 +1,11 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from unittest import TestCase, mock
+from unittest.mock import MagicMock
+
+import pytz
 
 import ornitho
+from ornitho import ModificationType
 from ornitho.model.place import Place
 
 ornitho.consumer_key = "ORNITHO_CONSUMER_KEY"
@@ -159,3 +163,60 @@ class TestPlace(TestCase):
             }
         )
         self.assertEqual(1, place.id_)
+
+    def test_diff(self):
+        Place.request = MagicMock(
+            return_value=[
+                {
+                    "id_place": "1",
+                    "id_universal": "1",
+                    "modification_type": "updated",
+                },
+                {
+                    "id_place": "2",
+                    "id_universal": "2",
+                    "modification_type": "deleted",
+                },
+            ]
+        )
+
+        # Case 1: without retrieving
+        date = datetime.now() - timedelta(hours=1)
+        observations = Place.diff(
+            date,
+            modification_type=ModificationType.ALL,
+            only_protocol="CBBM",
+        )
+        self.assertEqual(len(observations), 2)
+        Place.request.assert_called_with(
+            method="get",
+            url="places/diff",
+            params={
+                "date": date.replace(microsecond=0).isoformat(),
+                "modification_type": ModificationType.ALL.value,
+                "only_protocol": "CBBM",
+            },
+        )
+
+        # Case 2: with retrieving
+
+        mock_protocol = MagicMock(spec=ornitho.Protocol)
+        type(mock_protocol).name = mock.PropertyMock(return_value="CBBM-Mock")
+        Place.get = MagicMock(return_value=self.place)
+        date = datetime.now().astimezone(pytz.timezone("Asia/Tokyo")) - timedelta(
+            hours=1
+        )
+        places = Place.diff(date, only_protocol=mock_protocol, retrieve_places=True)
+        self.assertEqual(len(places), 2)
+        self.assertEqual(places[0], self.place)
+        Place.request.assert_called_with(
+            method="get",
+            url="places/diff",
+            params={
+                "date": date.replace(microsecond=0)
+                .astimezone(datetime.now().astimezone().tzinfo)
+                .replace(tzinfo=None)
+                .isoformat(),
+                "only_protocol": "CBBM-Mock",
+            },
+        )
