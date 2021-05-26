@@ -1,8 +1,10 @@
+from datetime import datetime
 from typing import Any, Dict, Optional
 
 from ornitho.model.abstract import ListableModel
 from ornitho.model.abstract.base_model import check_refresh
 from ornitho.model.local_admin_unit import LocalAdminUnit
+from ornitho.model.observer import Observer
 
 
 class Place(ListableModel):
@@ -80,7 +82,37 @@ class Place(ListableModel):
     def commune(self) -> LocalAdminUnit:
         return self.local_admin_unit
 
-    # Following Properties appear only when requesting an Observation. Mapping to the species API is done here
+    @property  # type: ignore
+    @check_refresh
+    def created_by(self) -> Observer:
+        return Observer(id_=int(self._raw_data["created_by"]))
+
+    @property  # type: ignore
+    @check_refresh
+    def created_date(self) -> datetime:
+        created_date = datetime.fromtimestamp(
+            int(self._raw_data["created_date"]["@timestamp"])
+            if type(self._raw_data["created_date"]) is dict
+            else int(self._raw_data["created_date"]),
+        ).astimezone()
+        return created_date
+
+    @property  # type: ignore
+    @check_refresh
+    def last_updated_by(self) -> Observer:
+        return Observer(id_=int(self._raw_data["last_updated_by"]))
+
+    @property  # type: ignore
+    @check_refresh
+    def last_updated_date(self) -> datetime:
+        last_updated_date = datetime.fromtimestamp(
+            int(self._raw_data["last_updated_date"]["@timestamp"])
+            if type(self._raw_data["last_updated_date"]) is dict
+            else int(self._raw_data["last_updated_date"]),
+        ).astimezone()
+        return last_updated_date
+
+    # Following Properties appear only when requesting an Observation
     @property
     def municipality(self) -> str:
         return (
@@ -97,6 +129,7 @@ class Place(ListableModel):
     def country(self) -> Optional[str]:
         return self._raw_data["country"] if "country" in self._raw_data else None
 
+    # Following Properties appear only when requesting a Site
     @property
     def centroid(self) -> Optional[str]:
         return self._centroid

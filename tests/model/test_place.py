@@ -1,3 +1,4 @@
+from datetime import datetime
 from unittest import TestCase, mock
 
 import ornitho
@@ -25,6 +26,22 @@ class TestPlace(TestCase):
             "place_type": "municipality",
             "loc_precision": "750",
             "municipality": "municipality",
+            "created_by": "30",
+            "created_date": {
+                "@timestamp": "1285902090",
+                "@notime": "0",
+                "@offset": "7200",
+                "@ISO8601": "2010-10-01T05:01:30+02:00",
+                "#text": "Freitag, 1. Oktober 2010, 05:01:30",
+            },
+            "last_updated_by": "30",
+            "last_updated_date": {
+                "@timestamp": "1530066871",
+                "@notime": "0",
+                "@offset": "7200",
+                "@ISO8601": "2018-06-27T04:34:31+02:00",
+                "#text": "Mittwoch, 27. Juni 2018, 04:34:31",
+            },
         }
         self.place = Place.create_from_ornitho_json(self.place_json)
 
@@ -63,6 +80,32 @@ class TestPlace(TestCase):
     def test_loc_precision(self):
         self.assertEqual(
             int(self.place_json["loc_precision"]), self.place.loc_precision
+        )
+
+    def test_created_by(self):
+        self.assertEqual(int(self.place_json["created_by"]), self.place.created_by.id_)
+
+    def test_created_date(self):
+        self.assertEqual(
+            datetime.fromtimestamp(
+                int(self.place_json["created_date"]["@timestamp"]),
+                datetime.now().astimezone().tzinfo,
+            ),
+            self.place.created_date,
+        )
+
+    def test_last_updated_by(self):
+        self.assertEqual(
+            int(self.place_json["last_updated_by"]), self.place.last_updated_by.id_
+        )
+
+    def test_last_updated_date(self):
+        self.assertEqual(
+            datetime.fromtimestamp(
+                int(self.place_json["last_updated_date"]["@timestamp"]),
+                datetime.now().astimezone().tzinfo,
+            ),
+            self.place.last_updated_date,
         )
 
     @mock.patch("ornitho.model.place.LocalAdminUnit")

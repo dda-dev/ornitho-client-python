@@ -29,6 +29,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `polygon_places` added to `Site` model
 - `boundary_wkt` added to `Site` model
 - `observers` added to `Site` model
+- `created_by` added to `Place` model
+- `created_date` added to `Place` model
+- `last_updated_by` added to `Place` model
+- `last_updated_date` added to `Place` model
 
 ### Changed
 
