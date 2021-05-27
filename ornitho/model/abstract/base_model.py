@@ -22,6 +22,7 @@ class BaseModel(ABC):
         self._id: Optional[Union[int, str]] = id_
         self._raw_data: Dict[str, Any] = dict()
         self._previous: Dict[str, Any] = dict()
+        self._refreshed: bool = False
 
     @property
     def id_(self) -> Optional[Union[int, str]]:
@@ -109,6 +110,7 @@ class BaseModel(ABC):
             raise APIException(f"Get {len(data)} objects for {self.instance_url()}")
         self._previous = self._raw_data
         self._raw_data = data[0]
+        self._refreshed = True
         return self
 
     def instance_url(self) -> str:
@@ -129,7 +131,7 @@ class BaseModel(ABC):
 
 def check_refresh(func):
     def wrapper(self: T):
-        if func.__name__ not in self._raw_data and not self._previous:
+        if func.__name__ not in self._raw_data and not self._refreshed:
             self.refresh()
         return func(self)
 
@@ -139,7 +141,7 @@ def check_refresh(func):
 def check_raw_data(key):
     def decorator(func):
         def wrapper(self: T):
-            if key not in self._raw_data and not self._previous:
+            if key not in self._raw_data and not self._refreshed:
                 if self._id is not None:
                     self.refresh()
             return func(self)
