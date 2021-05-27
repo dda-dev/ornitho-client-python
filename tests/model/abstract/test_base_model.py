@@ -86,34 +86,38 @@ def test_check_refresh():
     func.__name__ = "foo"
     base_mode_mock = MagicMock()
     base_mode_mock._raw_data = {"bar": 1}
+    base_mode_mock._previous = {}
     decorated_func = check_refresh(func)
     decorated_func(base_mode_mock)
-    assert base_mode_mock.refresh.called
     assert func.called
+    assert base_mode_mock.refresh.called
 
     func2 = Mock()
     func2.__name__ = "foo"
     base_mode_mock2 = MagicMock()
     base_mode_mock2._raw_data = {"foo": 1}
+    base_mode_mock._previous = {}
     decorated_func = check_refresh(func2)
     decorated_func(base_mode_mock2)
-    assert not base_mode_mock2.refresh.called
     assert func2.called
+    assert not base_mode_mock2.refresh.called
 
 
 def test_check_raw_data():
     func = Mock()
     base_mode_mock = MagicMock()
     base_mode_mock._raw_data = {"bar": 1}
+    base_mode_mock._previous = {}
     decorated_func = check_raw_data("foo")(func)
     decorated_func(base_mode_mock)
-    assert base_mode_mock.refresh.called
     assert func.called
+    assert base_mode_mock.refresh.called
 
     func2 = Mock()
     base_mode_mock2 = MagicMock()
     base_mode_mock2._raw_data = {"foo": 1}
+    base_mode_mock._previous = {}
     decorated_func = check_raw_data("foo")(func2)
     decorated_func(base_mode_mock2)
-    assert not base_mode_mock2.refresh.called
     assert func2.called
+    assert not base_mode_mock2.refresh.called

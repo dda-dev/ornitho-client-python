@@ -129,7 +129,7 @@ class BaseModel(ABC):
 
 def check_refresh(func):
     def wrapper(self: T):
-        if func.__name__ not in self._raw_data:
+        if func.__name__ not in self._raw_data and not self._previous:
             self.refresh()
         return func(self)
 
@@ -139,7 +139,7 @@ def check_refresh(func):
 def check_raw_data(key):
     def decorator(func):
         def wrapper(self: T):
-            if key not in self._raw_data:
+            if key not in self._raw_data and not self._previous:
                 if self._id is not None:
                     self.refresh()
             return func(self)
