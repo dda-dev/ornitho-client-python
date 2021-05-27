@@ -2,7 +2,7 @@ from enum import Enum
 from typing import List, Optional
 
 from ornitho.api_requester import APIRequester
-from ornitho.model.abstract import BaseModel
+from ornitho.model.abstract.base_model import BaseModel, check_raw_data, check_refresh
 from ornitho.model.observer import Observer
 from ornitho.model.place import Place
 
@@ -15,7 +15,7 @@ class MapLayer(Enum):
 
 
 class Site(BaseModel):
-    ENDPOINT: str = "/protocol/sites"
+    ENDPOINT: str = "protocol/sites"
 
     def __init__(self, id_: int) -> None:
         """Site constructor
@@ -25,31 +25,38 @@ class Site(BaseModel):
         super(Site, self).__init__(id_)
         self._pdf: Optional[bytes] = None
 
-    @property
+    @property  # type: ignore
+    @check_refresh
     def id_universal(self) -> str:
         return self._raw_data["id_universal"]
 
-    @property
+    @property  # type: ignore
+    @check_refresh
     def custom_name(self) -> str:
         return self._raw_data["custom_name"]
 
-    @property
+    @property  # type: ignore
+    @check_refresh
     def local_name(self) -> Optional[str]:
         return self._raw_data["local_name"] if "local_name" in self._raw_data else None
 
-    @property
+    @property  # type: ignore
+    @check_refresh
     def id_reference_locality(self) -> int:
         return int(self._raw_data["id_reference_locality"])
 
-    @property
+    @property  # type: ignore
+    @check_refresh
     def reference_locality(self) -> str:
         return self._raw_data["reference_locality"]
 
-    @property
+    @property  # type: ignore
+    @check_refresh
     def id_protocol(self) -> int:
         return int(self._raw_data["id_protocol"])
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("transects")
     def transect_places(self) -> Optional[List[Place]]:
         places = None
         if "transects" in self._raw_data:
@@ -59,7 +66,8 @@ class Site(BaseModel):
             ]
         return places
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("points")
     def point_places(self) -> Optional[List[Place]]:
         places = None
         if "points" in self._raw_data:
@@ -69,7 +77,8 @@ class Site(BaseModel):
             ]
         return places
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("polygons")
     def polygon_places(self) -> Optional[List[Place]]:
         places = None
         if "polygons" in self._raw_data:
@@ -79,13 +88,15 @@ class Site(BaseModel):
             ]
         return places
 
-    @property
+    @property  # type: ignore
+    @check_raw_data("boundary_wkt")
     def boundary_wkt(self) -> Optional[str]:
         return (
             self._raw_data["boundary_wkt"] if "boundary_wkt" in self._raw_data else None
         )
 
-    @property
+    @property  # type: ignore
+    @check_refresh
     def observers(self) -> List[Observer]:
         observers = []
         if "observers" in self._raw_data:

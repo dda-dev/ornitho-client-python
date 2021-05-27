@@ -154,20 +154,18 @@ class TestProtocol(TestCase):
         Protocol.request = MagicMock(
             return_value=[
                 {
-                    "sites": {
-                        "5253": {
-                            "id": "5253",
-                            "id_universal": "28_5253",
-                            "custom_name": "test CBBM",
-                            "reference_locality": "Staufenberg [4623_4_39s]",
-                        },
-                        "7043": {
-                            "id": "7043",
-                            "id_universal": "28_7043",
-                            "custom_name": "dda3",
-                            "reference_locality": "DDA-Teststrecke-Uder",
-                        },
-                    }
+                    "5253": {
+                        "id": "5253",
+                        "id_universal": "28_5253",
+                        "custom_name": "test CBBM",
+                        "reference_locality": "Staufenberg [4623_4_39s]",
+                    },
+                    "7043": {
+                        "id": "7043",
+                        "id_universal": "28_7043",
+                        "custom_name": "dda3",
+                        "reference_locality": "DDA-Teststrecke-Uder",
+                    },
                 }
             ]
         )
@@ -176,8 +174,8 @@ class TestProtocol(TestCase):
         self.assertEqual(len(sites), 2)
         Protocol.request.assert_called_with(
             method="get",
-            url=f"{self.protocol.ENDPOINT}/list_sites",
-            params={"id": self.protocol.id_},
+            url=f"{self.protocol.ENDPOINT}/sites",
+            params={"id_protocol": self.protocol.id_},
         )
 
     @mock.patch("ornitho.model.protocol.Observation")

@@ -25,11 +25,13 @@ class Place(ListableModel):
         """ ID, in which the place is located"""
         return int(self._raw_data["id_commune"])
 
-    @property
+    @property  # type: ignore
+    @check_refresh
     def name(self) -> str:
         return self._raw_data["name"]
 
-    @property
+    @property  # type: ignore
+    @check_refresh
     def coord_lon(self) -> float:
         return (
             float(self._raw_data["coord_lon"])
@@ -37,7 +39,8 @@ class Place(ListableModel):
             else self._raw_data["lon"]
         )
 
-    @property
+    @property  # type: ignore
+    @check_refresh
     def coord_lat(self) -> float:
         return (
             float(self._raw_data["coord_lat"])
@@ -65,7 +68,8 @@ class Place(ListableModel):
     def is_private(self) -> bool:
         return False if self._raw_data.get("is_private") == "0" else True
 
-    @property
+    @property  # type: ignore
+    @check_refresh
     def place_type(self) -> str:
         return self._raw_data["place_type"]
 

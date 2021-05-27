@@ -169,15 +169,11 @@ class Protocol(ListableModel):
         :rtype: List[Site]
         """
         if not self._sites:
-            url = f"{self.ENDPOINT}/list_sites"
-            params = {"id": self.id_}
+            url = f"{self.ENDPOINT}/sites"
+            params = {"id_protocol": self.id_}
 
-            sites_object = self.request(method="get", url=url, params=params)[0][
-                "sites"
-            ]
-            self._sites = [
-                Site.create_from_ornitho_json(site) for site in sites_object.values()
-            ]
+            sites_object = self.request(method="get", url=url, params=params)[0]
+            self._sites = [Site(id_=site_id) for site_id in sites_object.keys()]
         return self._sites
 
     def get_observations(
