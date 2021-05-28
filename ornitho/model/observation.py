@@ -1030,11 +1030,13 @@ class Observation(
                 Relation(
                     with_id=int(relation["with"]), type=RelationType(relation["type"])
                 )
-                for relation in self._raw_data["observers"][0]["protocol"]["relations"]
+                for relation in self._raw_data["observers"][0]["extended_info"][
+                    "relations"
+                ]
                 if relation["with"] and relation["type"]
             ]
-            if "protocol" in self._raw_data["observers"][0]
-            and "relations" in self._raw_data["observers"][0]["protocol"]
+            if "extended_info" in self._raw_data["observers"][0]
+            and "relations" in self._raw_data["observers"][0]["extended_info"]
             else []
         )
 
@@ -1048,38 +1050,46 @@ class Observation(
             for relation in value
         ]
         if "observers" in self._raw_data:
-            if "protocol" in self._raw_data["observers"][0]:
-                self._raw_data["observers"][0]["protocol"][
+            if "extended_info" in self._raw_data["observers"][0]:
+                self._raw_data["observers"][0]["extended_info"][
                     "relations"
                 ] = relations_ornitho_format
             else:
-                self._raw_data["observers"][0]["protocol"] = {
+                self._raw_data["observers"][0]["extended_info"] = {
                     "relations": relations_ornitho_format
                 }
         else:
             self._raw_data["observers"] = [
-                {"protocol": {"relations": relations_ornitho_format}}
+                {"extended_info": {"relations": relations_ornitho_format}}
             ]
 
     @property  # type: ignore
     @check_raw_data("observers")
     def direction(self) -> Optional[float]:
         return (
-            float(self._raw_data["observers"][0]["protocol"]["direction"])
-            if "protocol" in self._raw_data["observers"][0]
-            and "direction" in self._raw_data["observers"][0]["protocol"]
+            float(
+                self._raw_data["observers"][0]["extended_info"]["direction"]["degree"]
+            )
+            if "extended_info" in self._raw_data["observers"][0]
+            and "direction" in self._raw_data["observers"][0]["extended_info"]
             else None
         )
 
     @direction.setter
     def direction(self, value: float):
         if "observers" in self._raw_data:
-            if "protocol" in self._raw_data["observers"][0]:
-                self._raw_data["observers"][0]["protocol"]["direction"] = value
+            if "extended_info" in self._raw_data["observers"][0]:
+                self._raw_data["observers"][0]["extended_info"]["direction"] = {
+                    "degree": value
+                }
             else:
-                self._raw_data["observers"][0]["protocol"] = {"direction": value}
+                self._raw_data["observers"][0]["extended_info"] = {
+                    "direction": {"degree": value}
+                }
         else:
-            self._raw_data["observers"] = [{"protocol": {"direction": value}}]
+            self._raw_data["observers"] = [
+                {"extended_info": {"direction": {"degree": value}}}
+            ]
 
     @classmethod
     def by_observer(

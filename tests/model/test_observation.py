@@ -103,6 +103,8 @@ class TestObservation(TestCase):
                             "nb_artificial_destructed_nests": "0",
                             "nb_construction_nests": "0",
                         },
+                        "relations": [{"with": "56436655", "type": "same"}],
+                        "direction": {"degree": "360"},
                     },
                     "protocol": {
                         "nest_number": {
@@ -113,8 +115,6 @@ class TestObservation(TestCase):
                             "@id": "3",
                             "#text": "DISPLAY_PAGE_TEXT_OCCUPIED_NEST_NUMBER_3",
                         },
-                        "relations": [{"with": "56436655", "type": "same"}],
-                        "direction": "360",
                     },
                 }
             ],
@@ -888,7 +888,11 @@ class TestObservation(TestCase):
 
     def test_direction(self):
         self.assertEqual(
-            int(self.observation_json["observers"][0]["protocol"]["direction"]),
+            float(
+                self.observation_json["observers"][0]["extended_info"]["direction"][
+                    "degree"
+                ]
+            ),
             self.observation.direction,
         )
 
