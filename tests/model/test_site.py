@@ -69,6 +69,13 @@ class TestSite(TestCase):
             self.site_json["reference_locality"], self.site.reference_locality
         )
 
+    def test_place(
+        self,
+    ):
+        self.assertEqual(
+            int(self.site_json["id_reference_locality"]), self.site.place.id_
+        )
+
     def test_id_protocol(self):
         self.assertEqual(int(self.site_json["id_protocol"]), self.site.id_protocol)
 

@@ -55,6 +55,10 @@ class Site(BaseModel):
     def id_protocol(self) -> int:
         return int(self._raw_data["id_protocol"])
 
+    @property
+    def place(self) -> Place:
+        return Place(id_=self.id_reference_locality)
+
     @property  # type: ignore
     @check_raw_data("transects")
     def transect_places(self) -> Optional[List[Place]]:
