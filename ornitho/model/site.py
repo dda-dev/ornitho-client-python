@@ -23,6 +23,10 @@ class Site(BaseModel):
         :type id_: int
         """
         super(Site, self).__init__(id_)
+        self._place: Optional[Place] = None
+        self._point_places: Optional[List[Place]] = None
+        self._transect_places: Optional[List[Place]] = None
+        self._polygon_places: Optional[List[Place]] = None
         self._pdf: Optional[bytes] = None
 
     @property  # type: ignore
@@ -57,40 +61,42 @@ class Site(BaseModel):
 
     @property
     def place(self) -> Place:
-        return Place(id_=self.id_reference_locality)
+        if self._place is None:
+            self._place = Place(id_=self.id_reference_locality)
+        return self._place
 
     @property  # type: ignore
     @check_raw_data("transects")
     def transect_places(self) -> Optional[List[Place]]:
-        places = None
-        if "transects" in self._raw_data:
-            places = [
-                Place.create_from_site(raw_transect)
-                for raw_transect in self._raw_data["transects"]
-            ]
-        return places
+        if self._transect_places is None:
+            if "transects" in self._raw_data:
+                self._transect_places = [
+                    Place.create_from_site(raw_transect)
+                    for raw_transect in self._raw_data["transects"]
+                ]
+        return self._transect_places
 
     @property  # type: ignore
     @check_raw_data("points")
     def point_places(self) -> Optional[List[Place]]:
-        places = None
-        if "points" in self._raw_data:
-            places = [
-                Place.create_from_site(raw_transect)
-                for raw_transect in self._raw_data["points"]
-            ]
-        return places
+        if self._point_places is None:
+            if "points" in self._raw_data:
+                self._point_places = [
+                    Place.create_from_site(raw_transect)
+                    for raw_transect in self._raw_data["points"]
+                ]
+        return self._point_places
 
     @property  # type: ignore
     @check_raw_data("polygons")
     def polygon_places(self) -> Optional[List[Place]]:
-        places = None
-        if "polygons" in self._raw_data:
-            places = [
-                Place.create_from_site(raw_transect)
-                for raw_transect in self._raw_data["polygons"]
-            ]
-        return places
+        if self._polygon_places is None:
+            if "polygons" in self._raw_data:
+                self._polygon_places = [
+                    Place.create_from_site(raw_transect)
+                    for raw_transect in self._raw_data["polygons"]
+                ]
+        return self._polygon_places
 
     @property  # type: ignore
     @check_raw_data("boundary_wkt")
