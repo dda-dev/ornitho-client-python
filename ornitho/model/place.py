@@ -81,7 +81,7 @@ class Place(ListableModel):
     @property
     def local_admin_unit(self) -> LocalAdminUnit:
         if self._local_admin_unit is None:
-            self._local_admin_unit = LocalAdminUnit.get(self.id_commune)
+            self._local_admin_unit = LocalAdminUnit(id_=self.id_commune)
         return self._local_admin_unit
 
     @property
@@ -127,11 +127,13 @@ class Place(ListableModel):
             else self.local_admin_unit.name
         )
 
-    @property
+    @property  # type: ignore
+    @check_refresh
     def county(self) -> Optional[str]:
         return self._raw_data["county"] if "county" in self._raw_data else None
 
-    @property
+    @property  # type: ignore
+    @check_refresh
     def country(self) -> Optional[str]:
         return self._raw_data["country"] if "country" in self._raw_data else None
 

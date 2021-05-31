@@ -1,7 +1,8 @@
 from typing import Optional
 
-import ornitho.model.territorial_unit
 from ornitho.model.abstract import ListableModel
+from ornitho.model.abstract.base_model import check_refresh
+from ornitho.model.territorial_unit import TerritorialUnit
 
 
 class LocalAdminUnit(ListableModel):
@@ -9,36 +10,37 @@ class LocalAdminUnit(ListableModel):
 
     def __init__(self, id_: int) -> None:
         super(LocalAdminUnit, self).__init__(id_)
-        self._territorial_unit: Optional[
-            ornitho.model.territorial_unit.TerritorialUnit
-        ] = None
+        self._territorial_unit: Optional[TerritorialUnit] = None
 
-    @property
+    @property  # type: ignore
+    @check_refresh
     def id_canton(self) -> int:
         return int(self._raw_data["id_canton"])
 
-    @property
+    @property  # type: ignore
+    @check_refresh
     def name(self) -> str:
         return self._raw_data["name"]
 
-    @property
+    @property  # type: ignore
+    @check_refresh
     def insee(self) -> str:
         return self._raw_data["insee"]
 
-    @property
+    @property  # type: ignore
+    @check_refresh
     def coord_lon(self) -> float:
         return float(self._raw_data["coord_lon"])
 
-    @property
+    @property  # type: ignore
+    @check_refresh
     def coord_lat(self) -> float:
         return float(self._raw_data["coord_lat"])
 
     @property
-    def territorial_unit(self):
+    def territorial_unit(self) -> TerritorialUnit:
         if self._territorial_unit is None:
-            self._territorial_unit = ornitho.model.territorial_unit.TerritorialUnit.get(
-                self.id_canton
-            )
+            self._territorial_unit = TerritorialUnit(id_=self.id_canton)
         return self._territorial_unit
 
     @property

@@ -1,4 +1,4 @@
-from unittest import TestCase, mock
+from unittest import TestCase
 
 import ornitho
 from ornitho.model.local_admin_unit import LocalAdminUnit
@@ -50,16 +50,18 @@ class TestLocalAdminUnit(TestCase):
             self.local_admin_unit.coord_lat,
         )
 
-    @mock.patch("ornitho.model.territorial_unit.TerritorialUnit")
-    def test_territorial_unit(self, mock_territorial_unit):
-        mock_territorial_unit.get.return_value = "Territorial Unit Unit retrieved"
+    def test_territorial_unit(
+        self,
+    ):
         territorial_unit = self.local_admin_unit.territorial_unit
-        mock_territorial_unit.get.assert_called_with(self.local_admin_unit.id_canton)
-        self.assertEqual(territorial_unit, "Territorial Unit Unit retrieved")
+        self.assertEqual(
+            int(self.local_admin_unit_json["id_canton"]), territorial_unit.id_
+        )
 
-    @mock.patch("ornitho.model.territorial_unit.TerritorialUnit")
-    def test_canton(self, mock_territorial_unit):
-        mock_territorial_unit.get.return_value = "Territorial Unit Unit retrieved"
+    def test_canton(
+        self,
+    ):
         territorial_unit = self.local_admin_unit.canton
-        mock_territorial_unit.get.assert_called_with(self.local_admin_unit.id_canton)
-        self.assertEqual(territorial_unit, "Territorial Unit Unit retrieved")
+        self.assertEqual(
+            int(self.local_admin_unit_json["id_canton"]), territorial_unit.id_
+        )

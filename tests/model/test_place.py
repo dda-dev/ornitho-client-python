@@ -48,6 +48,7 @@ class TestPlace(TestCase):
             },
         }
         self.place = Place.create_from_ornitho_json(self.place_json)
+        self.place._refreshed = True
 
     def test_id_commune(self):
         self.assertEqual(int(self.place_json["id_commune"]), self.place.id_commune)
@@ -112,19 +113,13 @@ class TestPlace(TestCase):
             self.place.last_updated_date,
         )
 
-    @mock.patch("ornitho.model.place.LocalAdminUnit")
-    def test_local_admin_unit(self, mock_local_admin_unit):
-        mock_local_admin_unit.get.return_value = "Local Admin Unit retrieved"
+    def test_local_admin_unit(self):
         local_admin_unit = self.place.local_admin_unit
-        mock_local_admin_unit.get.assert_called_with(self.place.id_commune)
-        self.assertEqual(local_admin_unit, "Local Admin Unit retrieved")
+        self.assertEqual(local_admin_unit.id_, int(self.place_json["id_commune"]))
 
-    @mock.patch("ornitho.model.place.LocalAdminUnit")
-    def test_commune(self, mock_local_admin_unit):
-        mock_local_admin_unit.get.return_value = "Local Admin Unit retrieved"
-        local_admin_unit = self.place.commune
-        mock_local_admin_unit.get.assert_called_with(self.place.id_commune)
-        self.assertEqual(local_admin_unit, "Local Admin Unit retrieved")
+    def test_commune(self):
+        commune = self.place.commune
+        self.assertEqual(commune.id_, int(self.place_json["id_commune"]))
 
     def test_municipality(self):
         self.assertEqual(self.place_json["municipality"], self.place.municipality)
