@@ -19,6 +19,7 @@ from ornitho.api_exception import (
     AuthenticationException,
     ContentTypeException,
     GatewayTimeoutException,
+    ObjectNotFoundException,
 )
 from ornitho.api_requester import APIRequester
 from ornitho.model import (
