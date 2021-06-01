@@ -40,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `observation.id_atlas_code` returns the ornitho id prefixed with `3_`
 - `sites` can now be retrieved directly via api endpoint 
+- raise `ObjectNotFoundException` instead of `APIException` if no object is retrieved
 
 ### Fixed
 

@@ -2,7 +2,7 @@ from unittest import TestCase, mock
 from unittest.mock import MagicMock, Mock
 
 import ornitho
-from ornitho.api_exception import APIException
+from ornitho.api_exception import ObjectNotFoundException
 from ornitho.model.abstract import BaseModel
 from ornitho.model.abstract.base_model import check_raw_data, check_refresh
 
@@ -73,7 +73,7 @@ class TestBaseModel(TestCase):
     )
     def test_refresh_exception(self):
         self.assertRaises(
-            APIException,
+            ObjectNotFoundException,
             lambda: self.my_model.refresh(),
         )
 

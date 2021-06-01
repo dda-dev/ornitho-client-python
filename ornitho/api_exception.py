@@ -93,3 +93,7 @@ class ContentTypeException(APIHttpException):
     def content_type(self) -> str:
         """Path of the failed request"""
         return self.response.headers["Content-Type"]
+
+
+class ObjectNotFoundException(APIException):
+    """Object not found exception class"""

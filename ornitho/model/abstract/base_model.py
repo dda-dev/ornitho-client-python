@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import Any, Dict, List, Optional, Type, TypeVar, Union
 
-from ornitho.api_exception import APIException
+from ornitho.api_exception import ObjectNotFoundException
 from ornitho.api_requester import APIRequester
 
 # Create a generic variable that can be 'BaseModel', or any subclass.
@@ -101,13 +101,15 @@ class BaseModel(ABC):
         Call the api and refresh fields from response
         :return: Refreshed Object
         :rtype: T
-        :raise APIException: No or more than one objects retrieved
+        :raise ObjectNotFoundException: No or more than one objects retrieved
         """
         data = self.request(
             method="GET", url=self.instance_url(), short_version=short_version
         )
         if len(data) != 1:
-            raise APIException(f"Get {len(data)} objects for {self.instance_url()}")
+            raise ObjectNotFoundException(
+                f"Get {len(data)} objects for {self.instance_url()}"
+            )
         self._previous = self._raw_data
         self._raw_data = data[0]
         self._refreshed = True
