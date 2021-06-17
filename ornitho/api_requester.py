@@ -320,10 +320,7 @@ class APIRequester(object):
             pagination_key = None
 
         if "Content-Type" in raw_response.headers.keys():
-            if (
-                raw_response.headers["Content-Type"]
-                == "application/json; charset=utf-8"
-            ):
+            if raw_response.headers["Content-Type"].startswith("application/json"):
                 try:
                     decoded_json_response = json.loads(raw_response.text)
                 except JSONDecodeError:

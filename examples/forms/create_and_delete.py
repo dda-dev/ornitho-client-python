@@ -40,11 +40,11 @@ first_observation = ornitho.Observation.create(
 )
 second_observation = ornitho.Observation.create(
     observer=observer,
-    species=493,
+    species=species,
     timing=datetime.now(),
     notime=False,
-    coord_lat=51.99666467623097,
-    coord_lon=7.6341611553058595,
+    coord_lat=51.997957904380605,
+    coord_lon=7.632124332526256,
     precision=ornitho.Precision.TRANSECT_PRECISE,
     estimation_code=ornitho.EstimationCode.EXACT_VALUE,
     count=4,
@@ -52,7 +52,6 @@ second_observation = ornitho.Observation.create(
     hidden_comment="HIDDEN TEST",
     hidden=True,
     create_in_ornitho=False,
-    export_date=datetime.now(),
 )
 
 cbbm_place = ornitho.Place.list_all(
@@ -65,9 +64,17 @@ form = ornitho.Form.create(
     observations=[first_observation, second_observation],
     protocol="CBBM",
     place=cbbm_place.id_,
-    visit_number=250,
+    visit_number=42,
+)
+form.observations[0].update_direction(360)
+form.observations[1].update_direction(213)
+
+form.observations[0].add_relation(
+    with_id=form.observations[1].id_, type=ornitho.RelationType.SAME
 )
 
+
 print(f"New form id: {form.id_}")
+
 
 form.delete()

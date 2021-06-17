@@ -2,6 +2,7 @@ import uuid
 from copy import deepcopy
 from datetime import datetime, timedelta
 from enum import Enum
+from random import randint
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import ornitho.model.form
@@ -1080,15 +1081,15 @@ class Observation(
         if "observers" in self._raw_data:
             if "extended_info" in self._raw_data["observers"][0]:
                 self._raw_data["observers"][0]["extended_info"]["direction"] = {
-                    "degree": value
+                    "degree": str(value)
                 }
             else:
                 self._raw_data["observers"][0]["extended_info"] = {
-                    "direction": {"degree": value}
+                    "direction": {"degree": str(value)}
                 }
         else:
             self._raw_data["observers"] = [
-                {"extended_info": {"direction": {"degree": value}}}
+                {"extended_info": {"direction": {"degree": str(value)}}}
             ]
 
     @classmethod
@@ -1239,11 +1240,11 @@ class Observation(
         details: List[Detail] = None,
         resting_habitat: Union[str, FieldOption] = None,
         observation_detail: Union[str, FieldOption] = None,
-        relations: List[Relation] = None,
-        direction: float = None,
+        # relations: List[Relation] = None,
+        # direction: float = None,
         create_in_ornitho: bool = True,
     ) -> "Observation":
-        observation = cls()
+        observation = cls(id_=randint(1, 20000000))
 
         if isinstance(observer, Observer):
             observation.observer = observer
@@ -1315,11 +1316,11 @@ class Observation(
             else:
                 observation.id_observation_detail = observation_detail
 
-        if relations:
-            observation.relations = relations
-
-        if direction is not None:
-            observation.direction = direction
+        # if relations:
+        #     observation.relations = relations
+        #
+        # if direction is not None:
+        #     observation.direction = direction
 
         if create_in_ornitho:
             observation._id = cls.create_in_ornitho(
@@ -1352,4 +1353,17 @@ class Observation(
                 "observation_detail"
             ] = self.id_observation_detail.split("_")[1]
 
+        raw_data["observers"][0]["id_sighting"] = str(self._id)
         return raw_data
+
+    def update_direction(self, direction: int):
+        url = f"{self.ENDPOINT}/direction/{self.id_}"
+        self.request(method="PUT", url=url, params={"direction": direction})
+        self.direction = direction
+
+    def add_relation(self, with_id: int, type: RelationType):
+        url = f"{self.ENDPOINT}/relations/{self.id_}"
+        self.request(
+            method="PUT", url=url, params={"with": with_id, "type": type.value}
+        )
+        self.relations = self.relations + [Relation(with_id=with_id, type=type)]

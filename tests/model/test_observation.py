@@ -1012,8 +1012,6 @@ class TestObservation(TestCase):
             details=[mock_detail],
             resting_habitat="1_1",
             observation_detail="4_1",
-            direction=123,
-            relations=[Relation(123, RelationType("diff"))],
         )
         mock_createable_model.assert_called()
         self.assertEqual(1, obs.id_)
@@ -1119,3 +1117,29 @@ class TestObservation(TestCase):
         obs = Observation()
         obs.mark_as_exported()
         mock_base_model.assert_called_once()
+
+    def test_update_direction(self):
+        Observation.request = MagicMock(
+            return_value={
+                "message": "success",
+            },
+        )
+        self.observation.update_direction(123)
+        Observation.request.assert_called_with(
+            method="PUT",
+            url=f"observations/direction/{self.observation.id_}",
+            params={"direction": 123},
+        )
+
+    def test_add_relation(self):
+        Observation.request = MagicMock(
+            return_value={
+                "message": "success",
+            },
+        )
+        self.observation.add_relation(123, ornitho.RelationType.SAME)
+        Observation.request.assert_called_with(
+            method="PUT",
+            url=f"observations/relations/{self.observation.id_}",
+            params={"with": 123, "type": ornitho.RelationType.SAME.value},
+        )
