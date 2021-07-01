@@ -344,6 +344,12 @@ class TestForm(TestCase):
             Form.create_from_ornitho_json(form_json).id_waterbird_conditions
         )
 
+        form = Form()
+        form.id_waterbird_conditions = "1"
+        self.assertEqual("1", form.id_waterbird_conditions)
+        form.id_waterbird_conditions = "2"
+        self.assertEqual("2", form.id_waterbird_conditions)
+
     def test_id_waterbird_coverage(self):
         self.assertEqual(
             self.form_json["protocol"]["waterbird_coverage"],
@@ -1036,6 +1042,7 @@ class TestForm(TestCase):
             visit_number=250,
             sequence_number=100,
             create_in_ornitho=False,
+            id_waterbird_conditions="1",
         )
         mock_create_in_ornitho.assert_called()
         mock_observation.raw_data_trim_field_ids.assert_called()

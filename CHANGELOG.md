@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `last_updated_by` added to `Place` model
 - `last_updated_date` added to `Place` model
 - `diff` method added to `Place` model
+- `id_waterbird_conditions` setter added to `Form` model
 
 ### Changed
 

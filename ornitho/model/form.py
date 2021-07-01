@@ -245,6 +245,13 @@ class Form(CreateableModel, DeletableModel):
                 return self._raw_data["protocol"]["waterbird_conditions"].split(",")[0]
         return None
 
+    @id_waterbird_conditions.setter
+    def id_waterbird_conditions(self, value: str):
+        if "protocol" in self._raw_data:
+            self._raw_data["protocol"]["waterbird_conditions"] = {"@id": value}
+        else:
+            self._raw_data["protocol"] = {"waterbird_conditions": {"@id": value}}
+
     @property
     def id_waterbird_coverage(self) -> Optional[str]:
         if (
@@ -687,6 +694,7 @@ class Form(CreateableModel, DeletableModel):
         visit_number: Optional[int] = None,
         sequence_number: Optional[int] = None,
         full_form: bool = True,
+        id_waterbird_conditions: str = None,
         create_in_ornitho: bool = True,
     ) -> "Form":
         form = cls()
@@ -704,6 +712,9 @@ class Form(CreateableModel, DeletableModel):
                 form.protocol_name = protocol.name
             else:
                 form.protocol_name = protocol
+
+        if id_waterbird_conditions is not None:
+            form.id_waterbird_conditions = id_waterbird_conditions
 
         # form.site_code = site_code
         if visit_number is not None:
