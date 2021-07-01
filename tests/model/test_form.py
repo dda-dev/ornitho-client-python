@@ -243,6 +243,10 @@ class TestForm(TestCase):
             self.form.comment,
         )
 
+        form = Form()
+        form.comment = "COMMENT"
+        self.assertEqual("COMMENT", form.comment)
+
     def test_protocol_name(self):
         self.assertEqual(
             self.form_json["protocol"]["protocol_name"],
@@ -1029,6 +1033,7 @@ class TestForm(TestCase):
             place=mock.Mock(spec=Place),
             visit_number=250,
             sequence_number=100,
+            comment="COMMENT",
         )
         mock_create_in_ornitho.assert_called()
         mock_observation.raw_data_trim_field_ids.assert_called()

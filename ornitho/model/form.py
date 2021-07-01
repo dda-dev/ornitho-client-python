@@ -129,6 +129,10 @@ class Form(CreateableModel, DeletableModel):
     def comment(self) -> Optional[str]:
         return self._raw_data["comment"] if "comment" in self._raw_data else None
 
+    @comment.setter
+    def comment(self, value: str):
+        self._raw_data["comment"] = value
+
     @property
     def protocol_name(self) -> Optional[str]:
         return (
@@ -690,6 +694,7 @@ class Form(CreateableModel, DeletableModel):
         time_stop: time,
         observations: List[Observation],
         protocol: Optional[Union[Protocol, str]] = None,
+        comment: str = None,
         place: Optional[Union[Place, int]] = None,
         visit_number: Optional[int] = None,
         sequence_number: Optional[int] = None,
@@ -701,6 +706,10 @@ class Form(CreateableModel, DeletableModel):
         form.time_start = time_start
         form.time_stop = time_stop
         form.full_form = full_form
+
+        if comment is not None:
+            form.comment = comment
+
         if place is not None:
             if isinstance(place, Place):
                 form._id_place = place.id_
