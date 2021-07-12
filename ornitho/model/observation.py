@@ -2,7 +2,6 @@ import uuid
 from copy import deepcopy
 from datetime import datetime, timedelta
 from enum import Enum
-from random import randint
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import ornitho.model.form
@@ -1244,7 +1243,7 @@ class Observation(
         # direction: float = None,
         create_in_ornitho: bool = True,
     ) -> "Observation":
-        observation = cls(id_=randint(1, 20000000))
+        observation = cls()
 
         if isinstance(observer, Observer):
             observation.observer = observer
