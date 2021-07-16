@@ -321,15 +321,22 @@ class APIRequester(object):
 
         if "Content-Type" in raw_response.headers.keys():
             if raw_response.headers["Content-Type"].startswith("application/json"):
-                try:
-                    decoded_json_response = json.loads(raw_response.text)
-                except JSONDecodeError:
-                    # Remove the first JSON Line, which breaks the JSON format
-                    # e.g. "API message : Ihre Beobachtungsdaten wurden erfolgreich übermittelt, vielen Dank!"
-                    # A real WTF moment...
-                    decoded_json_response = json.loads(
-                        "\n".join(raw_response.text.split("\n")[1:])
-                    )
+                raw_response_text = raw_response.text
+                decoded_json_response = None
+                while True:
+                    try:
+                        decoded_json_response = json.loads(raw_response_text)
+                        break
+                    except JSONDecodeError:
+                        # Remove the first JSON Line, which breaks the JSON format
+                        # e.g. "API message : Ihre Beobachtungsdaten wurden erfolgreich übermittelt, vielen Dank!"
+                        # A real WTF moment...
+                        removed_line = raw_response.text.split("\n")[0]
+                        ornitho.logger.warning(
+                            f"Ornitho response contains non JSON line: {removed_line}"
+                        )
+                        raw_response_text = "\n".join(raw_response.text.split("\n")[1:])
+                        continue
                 return decoded_json_response, pagination_key
             elif raw_response.headers["Content-Type"] == "application/pdf":
                 return raw_response.content, pagination_key
