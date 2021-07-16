@@ -3,7 +3,7 @@ from datetime import date, time
 from typing import Any, Dict, List, Optional, Union
 
 import ornitho.model.observation
-from ornitho.api_exception import APIException
+from ornitho.api_exception import APIException, APIHttpException
 from ornitho.api_requester import APIRequester
 from ornitho.model.abstract import CreateableModel, DeletableModel
 from ornitho.model.observation import Observation
@@ -760,14 +760,19 @@ class Form(CreateableModel, DeletableModel):
                 observation.id_form = form_id
 
             # Create observations with form id in ornitho
-            Observation.create_in_ornitho(
-                data={
-                    "sightings": [
-                        observation.raw_data_trim_field_ids()
-                        for observation in observations
-                    ]
-                }
-            )
+            try:
+                Observation.create_in_ornitho(
+                    data={
+                        "sightings": [
+                            observation.raw_data_trim_field_ids()
+                            for observation in observations
+                        ]
+                    }
+                )
+            except APIHttpException as ex:
+                form = cls(id_=form_id)
+                form.delete()
+                raise ex
 
             # Retrieve form again, to get acces to observation ids
             form = cls.get(form_id)
