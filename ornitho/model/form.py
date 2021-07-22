@@ -762,14 +762,19 @@ class Form(CreateableModel, DeletableModel):
                 for observation in observations:
                     observation.id_form = form_id
 
-                Observation.create_in_ornitho(
-                    data={
-                        "sightings": [
-                            observation.raw_data_trim_field_ids()
-                            for observation in observations
-                        ]
-                    }
-                )
+                chunk_size = 32
+                for observation_chunk in [
+                    observations[i : i + chunk_size]
+                    for i in range(0, len(observations), chunk_size)
+                ]:
+                    Observation.create_in_ornitho(
+                        data={
+                            "sightings": [
+                                observation.raw_data_trim_field_ids()
+                                for observation in observation_chunk
+                            ]
+                        }
+                    )
                 # Retrieve form again, to get acces to observation ids
                 form = cls.get(form_id)
             except Exception as ex:
