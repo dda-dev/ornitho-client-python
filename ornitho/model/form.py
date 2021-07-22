@@ -3,7 +3,7 @@ from datetime import date, time
 from typing import Any, Dict, List, Optional, Union
 
 import ornitho.model.observation
-from ornitho.api_exception import APIException
+from ornitho.api_exception import ObjectNotFoundException
 from ornitho.api_requester import APIRequester
 from ornitho.model.abstract import CreateableModel, DeletableModel
 from ornitho.model.observation import Observation
@@ -58,7 +58,7 @@ class Form(CreateableModel, DeletableModel):
                 self._raw_data = data
                 self._observations = None
             else:
-                raise APIException(f"Unrecognized response: {data}")
+                raise ObjectNotFoundException(f"Get {data} for {self.instance_url()}")
         return self
 
     @property
