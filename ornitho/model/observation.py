@@ -1350,7 +1350,9 @@ class Observation(
                 "observation_detail"
             ] = self.id_observation_detail.split("_")[1]
 
-        raw_data["observers"][0]["id_sighting"] = str(self._id)
+        if self._id:
+            raw_data["observers"][0]["id_sighting"] = str(self._id)
+
         return raw_data
 
     def update_direction(self, direction: int):
