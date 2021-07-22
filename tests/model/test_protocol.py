@@ -193,6 +193,7 @@ class TestProtocol(TestCase):
             short_version=False,
             only_protocol=self.protocol.name,
             period_choice="all",
+            retries=0,
         )
 
     @mock.patch("ornitho.model.protocol.Observation")
@@ -209,4 +210,5 @@ class TestProtocol(TestCase):
             short_version=False,
             only_protocol=self.protocol.name,
             period_choice="range",
+            retries=0,
         )

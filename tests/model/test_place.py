@@ -191,6 +191,7 @@ class TestPlace(TestCase):
                 "modification_type": ModificationType.ALL.value,
                 "only_protocol": "CBBM",
             },
+            retries=0,
         )
 
         # Case 2: with retrieving
@@ -214,4 +215,5 @@ class TestPlace(TestCase):
                 .isoformat(),
                 "only_protocol": "CBBM-Mock",
             },
+            retries=0,
         )

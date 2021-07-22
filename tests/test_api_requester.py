@@ -11,7 +11,7 @@ from ornitho import (
     APIHttpException,
     APIRequester,
     AuthenticationException,
-BadGatewayException,
+    BadGatewayException,
     GatewayTimeoutException,
 )
 

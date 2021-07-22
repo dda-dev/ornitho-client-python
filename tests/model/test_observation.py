@@ -916,13 +916,21 @@ class TestObservation(TestCase):
         Observation.list = MagicMock(return_value=["obs", "pk"])
         Observation.by_observer(id_observer=1)
         Observation.list.assert_called_with(
-            request_all=False, pagination_key=None, short_version=False, id_observer=1
+            request_all=False,
+            pagination_key=None,
+            short_version=False,
+            id_observer=1,
+            retries=0,
         )
 
     def test_by_observer_all(self):
         Observation.list_all = MagicMock(return_value=["obs", "pk"])
         Observation.by_observer_all(id_observer=1)
-        Observation.list_all.assert_called_with(id_observer=1, short_version=False)
+        Observation.list_all.assert_called_with(
+            id_observer=1,
+            short_version=False,
+            retries=0,
+        )
 
     def test_diff(self):
         Observation.request = MagicMock(
@@ -960,6 +968,7 @@ class TestObservation(TestCase):
                 "only_protocol": "CBBM",
                 "only_form": "1",
             },
+            retries=0,
         )
 
         # Case 2: with retrieving
@@ -985,6 +994,7 @@ class TestObservation(TestCase):
                 .isoformat(),
                 "only_protocol": "CBBM-Mock",
             },
+            retries=0,
         )
 
     @mock.patch("ornitho.model.observation.CreateableModel.create_in_ornitho")
@@ -1129,6 +1139,7 @@ class TestObservation(TestCase):
             method="PUT",
             url=f"observations/direction/{self.observation.id_}",
             params={"direction": 123},
+            retries=0,
         )
 
     def test_add_relation(self):
@@ -1142,4 +1153,5 @@ class TestObservation(TestCase):
             method="PUT",
             url=f"observations/relations/{self.observation.id_}",
             params={"with": 123, "type": ornitho.RelationType.SAME.value},
+            retries=0,
         )

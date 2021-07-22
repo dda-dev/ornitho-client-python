@@ -123,6 +123,7 @@ class Site(BaseModel):
         greyline: bool = False,
         alpha: bool = False,
         boundary: bool = False,
+        retries: int = 0,
     ) -> bytes:
         """Request the site pdf map
         :param map_layer: Used map layer
@@ -130,11 +131,13 @@ class Site(BaseModel):
         :param greyline: Switch for a grey dashed route
         :param alpha: Switch for 50% transparency
         :param boundary: Switch for disable the outer buffer
+        :param retries: Indicates how many retries should be performed
         :type map_layer: MapLayer
         :type greyscale: bool
         :type greyline: bool
         :type alpha: bool
         :type boundary: bool
+        :type retries: int
         :return: PDF as bytes
         :rtype: bytes
         """
@@ -152,6 +155,6 @@ class Site(BaseModel):
             if boundary:
                 params["boundary"] = 1
             response, pagination_key = requester.request(
-                method="GET", url=url, params=params
+                method="GET", url=url, params=params, retries=retries
             )
         return response

@@ -59,6 +59,7 @@ class BaseModel(ABC):
         params: Dict[str, Any] = None,
         body: Dict[str, Any] = None,
         short_version: bool = False,
+        retries: int = 0,
     ) -> List[Any]:
         """Send request to Biolovision and returns response
         :param method: HTTP Method (e.g. 'GET', 'POST', ...)
@@ -66,11 +67,13 @@ class BaseModel(ABC):
         :param params: Additional URL parameters.
         :param body: Request body
         :param short_version: Indicates, if a short version with foreign keys should be returned by the API.
+        :param retries: Indicates how many retries should be performed
         :type method: str
         :type url: str
         :type params: Dict[str, Any]
         :type body: Dict[str, Any]
         :type short_version: bool
+        :type retries: int
         :return: Response map from Biolovision
         :rtype: List[Any]
         """
@@ -81,6 +84,7 @@ class BaseModel(ABC):
                 params=params,
                 body=body,
                 short_version=short_version,
+                retries=retries,
             )
         # noinspection PyTypeChecker
         return response
@@ -96,7 +100,7 @@ class BaseModel(ABC):
         obj._raw_data = data
         return obj
 
-    def refresh(self: T, short_version: bool = False) -> T:
+    def refresh(self: T, short_version: bool = False, retries: int = 0) -> T:
         """Refresh local model
         Call the api and refresh fields from response
         :return: Refreshed Object
@@ -104,7 +108,10 @@ class BaseModel(ABC):
         :raise ObjectNotFoundException: No or more than one objects retrieved
         """
         data = self.request(
-            method="GET", url=self.instance_url(), short_version=short_version
+            method="GET",
+            url=self.instance_url(),
+            short_version=short_version,
+            retries=retries,
         )
         if len(data) != 1:
             raise ObjectNotFoundException(

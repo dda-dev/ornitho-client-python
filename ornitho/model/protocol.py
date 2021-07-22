@@ -181,6 +181,7 @@ class Protocol(ListableModel):
         request_all: Optional[bool] = False,
         pagination_key: Optional[str] = None,
         short_version: bool = False,
+        retries: int = 0,
         **kwargs: Union[str, int, float, bool, date, datetime],
     ) -> Tuple[List[Observation], Optional[str]]:
         """Get observations linked to the protocol
@@ -189,10 +190,12 @@ class Protocol(ListableModel):
         :param request_all: Indicates, if all instances should be retrieved (may result in many API calls)
         :param pagination_key: Pagination key, which can be used to retrieve the next page
         :param short_version: Indicates, if a short version with foreign keys should be returned by the API.
+        :param retries: Indicates how many retries should be performed
         :param kwargs: Additional filter values
         :type request_all: Optional[bool]
         :type pagination_key: Optional[str]
         :type short_version: bool
+        :type retries: int
         :type kwargs: Union[str, int, float, bool, datetime]
         :return: List of observations
         :rtype: Tuple[List[Observation], Optional[str]]
@@ -204,23 +207,31 @@ class Protocol(ListableModel):
             pagination_key=pagination_key,
             short_version=short_version,
             only_protocol=self.name,
+            retries=retries,
             **kwargs,
         )
 
     def get_all_observations(
         self,
         short_version: bool = False,
+        retries: int = 0,
         **kwargs: Union[str, int, float, bool, date, datetime],
     ) -> List[Observation]:
         """Get observations linked to the protocol
         The same search parameters can be used as for the observations (except 'only_protocol' which is automatically set)
         :param short_version: Indicates, if a short version with foreign keys should be returned by the API.
+        :param retries: Indicates how many retries should be performed
         :param kwargs: Additional filter values
         :type short_version: bool
+        :type retries: int
         :type kwargs: Union[str, int, float, bool, datetime]
         :return: List of observations
         :rtype: List[Observation]
         """
         return self.get_observations(
-            request_all=True, pagination_key=None, short_version=short_version, **kwargs
+            request_all=True,
+            pagination_key=None,
+            short_version=short_version,
+            retries=retries,
+            **kwargs,
         )[0]

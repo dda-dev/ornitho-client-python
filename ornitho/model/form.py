@@ -34,7 +34,11 @@ class Form(CreateableModel, DeletableModel):
         """
         return f"{self.ENDPOINT}"
 
-    def refresh(self, short_version: bool = False) -> "Form":
+    def refresh(
+        self,
+        short_version: bool = False,
+        retries: int = 0,
+    ) -> "Form":
         """Refresh local model
         Call the api and refresh fields from response
         :return: Refreshed Object
@@ -46,6 +50,7 @@ class Form(CreateableModel, DeletableModel):
                 url=self.instance_url(),
                 short_version=short_version,
                 body={"id_form": self.id_},
+                retries=retries,
             )
             if "data" in data and "forms" in data["data"]:
                 data = data["data"]["forms"][0]
@@ -702,6 +707,7 @@ class Form(CreateableModel, DeletableModel):
         protocol_headers: Dict[str, Union[int, str]] = {},
         create_in_ornitho: bool = True,
         chunk_size: int = 128,
+        retries: int = 0,
     ) -> "Form":
         form = cls()
         form.time_start = time_start
@@ -750,10 +756,11 @@ class Form(CreateableModel, DeletableModel):
                     estimation_code=ornitho.EstimationCode.EXACT_VALUE,
                     count=0,
                     create_in_ornitho=False,
+                    retries=retries,
                 )
             ]
             first_observation_id = cls.create_in_ornitho(
-                data={"forms": [form.raw_data_trim_field_ids()]}
+                data={"forms": [form.raw_data_trim_field_ids()]}, retries=retries
             )
             form_id = Observation.get(first_observation_id).id_form
 
@@ -773,7 +780,8 @@ class Form(CreateableModel, DeletableModel):
                                 observation.raw_data_trim_field_ids()
                                 for observation in observation_chunk
                             ]
-                        }
+                        },
+                        retries=retries,
                     )
                 # Retrieve form again, to get acces to observation ids
                 form = cls.get(form_id)

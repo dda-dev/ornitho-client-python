@@ -1097,16 +1097,19 @@ class Observation(
         id_observer: int,
         pagination_key: Optional[str] = None,
         short_version: bool = False,
+        retries: int = 0,
         **kwargs: Union[str, int, float, bool],
     ) -> Tuple[List["Observation"], Optional[str]]:
         """Retrieves a (paged) list of observations from one observer
         :param id_observer: Current data, probably received from the API
         :param pagination_key: Pagination key, which can be used to retrieve the next page
         :param short_version: Indicates, if a short version with foreign keys should be returned by the API.
+        :param retries: Indicates how many retries should be performed
         :param kwargs: Additional filter values
         :type id_observer: int
         :type pagination_key: Optional[str]
         :type short_version: bool
+        :type retries: int
         :type kwargs: Union[str, int, float, bool]
         :return: Tuple of observations and an optional pagination key
         :rtype: Tuple[List[Observation], Optional[str]]
@@ -1116,6 +1119,7 @@ class Observation(
             pagination_key=pagination_key,
             short_version=short_version,
             id_observer=id_observer,
+            retries=retries,
             **kwargs,
         )
         return observations, pk
@@ -1125,20 +1129,26 @@ class Observation(
         cls,
         id_observer: int,
         short_version: bool = False,
+        retries: int = 0,
         **kwargs: Union[str, int, float, bool],
     ) -> List["Observation"]:
         """Retrieves a list of all observations from one observer
         :param id_observer: Current data, probably received from the API
         :param short_version: Indicates, if a short version with foreign keys should be returned by the API.
+        :param retries: Indicates how many retries should be performed
         :param kwargs: Additional filter values
         :type id_observer: int
         :type short_version: bool
+        :type retries: int
         :type kwargs: Union[str, int, float, bool]
         :return: List of observations
         :rtype: List[Observation]
         """
         observations = cls.list_all(
-            id_observer=id_observer, short_version=short_version, **kwargs
+            id_observer=id_observer,
+            short_version=short_version,
+            retries=retries,
+            **kwargs,
         )
         return observations
 
@@ -1151,6 +1161,7 @@ class Observation(
         only_protocol: Union[str, BaseModel] = None,
         only_form: bool = None,
         retrieve_observations: bool = False,
+        retries: int = 0,
     ) -> List["Observation"]:
         """Retrieves a list of observations which changed in between now and a given date
         :param date: Date in the past, to which changed observation should be searched
@@ -1159,12 +1170,14 @@ class Observation(
         :param only_protocol: Return only observation which are part of the given Protocol (Protocol Instance or Name)
         :param only_form: Return only observation which are part of a form
         :param retrieve_observations: Indicates if the observation object should be retrieved. Default: False
+        :param retries: Indicates how many retries should be performed
         :type date: datetime
         :type modification_type: ModificationType
         :type id_taxo_group: int
         :type only_protocol: Union[str, "Protocol"]
         :type only_form: bool
         :type retrieve_observations: bool
+        :type retries: int
         :return: List of observations
         :rtype: List[Observation]
         """
@@ -1195,7 +1208,9 @@ class Observation(
             date.isoformat()
         )  # Format here, because isoformat is mostly ignored, except here
 
-        changed_observations = cls.request(method="get", url=url, params=params)
+        changed_observations = cls.request(
+            method="get", url=url, params=params, retries=retries
+        )
         observations = []
         for obs in changed_observations:
             if obs["modification_type"] == "updated":
@@ -1242,6 +1257,7 @@ class Observation(
         # relations: List[Relation] = None,
         # direction: float = None,
         create_in_ornitho: bool = True,
+        retries: int = 0,
     ) -> "Observation":
         observation = cls()
 
@@ -1321,7 +1337,8 @@ class Observation(
 
         if create_in_ornitho:
             observation._id = cls.create_in_ornitho(
-                data={"sightings": [observation.raw_data_trim_field_ids()]}
+                data={"sightings": [observation.raw_data_trim_field_ids()]},
+                retries=retries,
             )
         return observation
 
@@ -1355,14 +1372,28 @@ class Observation(
 
         return raw_data
 
-    def update_direction(self, direction: int):
+    def update_direction(
+        self,
+        direction: int,
+        retries: int = 0,
+    ):
         url = f"{self.ENDPOINT}/direction/{self.id_}"
-        self.request(method="PUT", url=url, params={"direction": direction})
+        self.request(
+            method="PUT", url=url, params={"direction": direction}, retries=retries
+        )
         self.direction = direction
 
-    def add_relation(self, with_id: int, type: RelationType):
+    def add_relation(
+        self,
+        with_id: int,
+        type: RelationType,
+        retries: int = 0,
+    ):
         url = f"{self.ENDPOINT}/relations/{self.id_}"
         self.request(
-            method="PUT", url=url, params={"with": with_id, "type": type.value}
+            method="PUT",
+            url=url,
+            params={"with": with_id, "type": type.value},
+            retries=retries,
         )
         self.relations = self.relations + [Relation(with_id=with_id, type=type)]

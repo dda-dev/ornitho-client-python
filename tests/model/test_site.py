@@ -105,7 +105,7 @@ class TestSite(TestCase):
     @mock.patch("ornitho.model.site.APIRequester")
     def test_pdf(self, mock_requester):
         class MockRequesterClass:
-            def request(self, method, url, params):
+            def request(self, method, url, params, retries):
                 return b"PDF", "pk"
 
         def enter_requester(requester):

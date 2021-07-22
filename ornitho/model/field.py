@@ -33,7 +33,11 @@ class Field(ListableModel):
                 return field
         raise APIException(f"Can't find field with ID {id_}")
 
-    def refresh(self, short_version: bool = False) -> "Field":
+    def refresh(
+        self,
+        short_version: bool = False,
+        retries: int = 0,
+    ) -> "Field":
         raise NotImplementedError
 
     @property

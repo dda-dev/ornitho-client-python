@@ -120,6 +120,7 @@ class APIRequester(object):
         request_all: bool = False,
         params: Optional[Dict[str, Any]] = None,
         body: Optional[Dict[str, Any]] = None,
+        retries: int = 0,
     ) -> Tuple[Union[bytes, List[Dict[str, str]]], Optional[str]]:
         """Make requests to the API
         If request_all ist set, several requests calls to the API can be made, until all data is retrieved. Else a
@@ -132,6 +133,7 @@ class APIRequester(object):
         :param request_all:  Indicates, if all pages should be returned. May result in many API calls. Default: 'False'
         :param params: Additional URL parameters.
         :param body: Request body
+        :param retries: Indicates how many retries should be performed
         :type method: str
         :type url: str
         :type pagination_key: str
@@ -139,6 +141,7 @@ class APIRequester(object):
         :type request_all: bool
         :type params: Dict[str, Any]
         :type body: Dict[str, Any]
+        :type retries: int
         :return: Tuple of raw data list and pagination key
         :rtype: Tuple[List[Dict[str, str]], Optional[str]]
         """
@@ -150,6 +153,7 @@ class APIRequester(object):
             short_version=short_version,
             params=params,
             body=body,
+            retries=retries,
         )
         if isinstance(responds, bytes):
             return responds, pk
@@ -184,6 +188,7 @@ class APIRequester(object):
                 request_all=request_all,
                 params=params,
                 body=body,
+                retries=retries,
             )[0]
             if isinstance(next_response, bytes):
                 raise api_exception.APIException(
@@ -234,6 +239,7 @@ class APIRequester(object):
         short_version: bool = False,
         params: Dict[str, Any] = None,
         body: Dict[str, Any] = None,
+        retries: int = 0,
     ) -> Tuple[Any, Any]:
         """Make direct request to the API
         :param method: HTTP Method e.g. 'GET'
@@ -243,12 +249,14 @@ class APIRequester(object):
             Default: 'False'
         :param params: Additional URL parameters.
         :param body: Request body
+        :param retries: Indicates how many retries should be performed
         :type method: str
         :type url: str
         :type pagination_key: str
         :type short_version: bool
         :type params: Dict[str, Any]
         :type body: Dict[str, Any]
+        :type retries: int
         :return: Tuple of raw response data and pagination key
         :rtype: Tuple[Any, Any]
         :raise APIConnectionError: Unspecified error while connecting to Biolovision
@@ -316,6 +324,16 @@ class APIRequester(object):
         raw_response = self.session.request(method, abs_url, data=data, headers=headers)
 
         if not 200 <= raw_response.status_code < 300:
+            if retries > 0:
+                return self.request_raw(
+                    method=method,
+                    url=url,
+                    pagination_key=pagination_key,
+                    short_version=short_version,
+                    params=params,
+                    body=body,
+                    retries=retries - 1,
+                )
             self.handle_error_response(raw_response)
 
         if "pagination_key" in raw_response.headers.keys():

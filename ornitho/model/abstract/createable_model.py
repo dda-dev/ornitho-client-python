@@ -13,16 +13,18 @@ class CreateableModel(BaseModel, ABC):
     CREATE_ENDPOINT: Optional[str] = None
 
     @classmethod
-    def create_in_ornitho(cls: Type[T], data: Dict[str, Any]) -> int:
+    def create_in_ornitho(cls: Type[T], data: Dict[str, Any], retries: int = 0) -> int:
         """Create an instance on ornitho
         :param data: Data
+        :param retries: Indicates how many retries should be performed
         :type data: T
+        :type retries: int
         :return:  Ornitho ID of the created object
         :rtype: T
         """
         url = cls.CREATE_ENDPOINT if cls.CREATE_ENDPOINT is not None else cls.ENDPOINT
         body = {"data": data}
-        response = cls.request(method="post", url=url, body=body)
+        response = cls.request(method="post", url=url, body=body, retries=retries)
         return response[0]["id"][0]
 
     @classmethod

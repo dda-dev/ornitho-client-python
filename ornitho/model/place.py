@@ -178,16 +178,19 @@ class Place(ListableModel):
         modification_type: ModificationType = None,
         only_protocol: Union[str, BaseModel] = None,
         retrieve_places: bool = False,
+        retries: int = 0,
     ) -> List["Place"]:
         """Retrieves a list of places which changed in between now and a given date
         :param date: Date in the past, to which changed places should be searched
         :param modification_type: Type of modification.
         :param only_protocol: Return only observation which are part of the given Protocol (Protocol Instance or Name)
         :param retrieve_places: Indicates if the place objects should be retrieved. Default: False
+        :param retries: Indicates how many retries should be performed
         :type date: datetime
         :type modification_type: ModificationType
         :type only_protocol: Union[str, "Protocol"]
         :type retrieve_places: bool
+        :type retries: int
         :return: List of observations
         :rtype: List[Observation]
         """
@@ -214,7 +217,9 @@ class Place(ListableModel):
             date.isoformat()
         )  # Format here, because isoformat is mostly ignored, except here
 
-        changed_places = cls.request(method="get", url=url, params=params)
+        changed_places = cls.request(
+            method="get", url=url, params=params, retries=retries
+        )
         places = []
         for place in changed_places:
             if place["modification_type"] == "updated":
