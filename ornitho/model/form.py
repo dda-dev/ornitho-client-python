@@ -3,7 +3,7 @@ from datetime import date, time
 from typing import Any, Dict, List, Optional, Union
 
 import ornitho.model.observation
-from ornitho.api_exception import APIException, APIHttpException
+from ornitho.api_exception import APIException
 from ornitho.api_requester import APIRequester
 from ornitho.model.abstract import CreateableModel, DeletableModel
 from ornitho.model.observation import Observation
@@ -699,8 +699,8 @@ class Form(CreateableModel, DeletableModel):
         visit_number: Optional[int] = None,
         sequence_number: Optional[int] = None,
         full_form: bool = True,
-        create_in_ornitho: bool = True,
         protocol_headers: Dict[str, Union[int, str]] = {},
+        create_in_ornitho: bool = True,
     ) -> "Form":
         form = cls()
         form.time_start = time_start
@@ -756,12 +756,12 @@ class Form(CreateableModel, DeletableModel):
             )
             form_id = Observation.get(first_observation_id).id_form
 
-            # Add form id to every observation
-            for observation in observations:
-                observation.id_form = form_id
-
             # Create observations with form id in ornitho
             try:
+                # Add form id to every observation
+                for observation in observations:
+                    observation.id_form = form_id
+
                 Observation.create_in_ornitho(
                     data={
                         "sightings": [
@@ -770,13 +770,12 @@ class Form(CreateableModel, DeletableModel):
                         ]
                     }
                 )
-            except APIHttpException as ex:
+                # Retrieve form again, to get acces to observation ids
+                form = cls.get(form_id)
+            except Exception as ex:
                 form = cls(id_=form_id)
                 form.delete()
                 raise ex
-
-            # Retrieve form again, to get acces to observation ids
-            form = cls.get(form_id)
         else:
             form.observations = observations
         return form
