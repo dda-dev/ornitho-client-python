@@ -1047,7 +1047,10 @@ class TestForm(TestCase):
             visit_number=250,
             sequence_number=100,
             create_in_ornitho=False,
-            id_waterbird_conditions="1",
+            protocol_headers={
+                "id_waterbird_conditions": "1",
+                "additional_observer": "No additional observer",
+            },
         )
         mock_create_in_ornitho.assert_called()
         mock_observation.raw_data_trim_field_ids.assert_called()

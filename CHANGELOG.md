@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `diff` method added to `Place` model
 - `id_waterbird_conditions` setter added to `Form` model
 - `comment` setter added to `Form` model
+- `protocol_headers` argument added to form creation method
 
 ### Changed
 

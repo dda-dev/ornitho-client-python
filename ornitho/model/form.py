@@ -699,8 +699,8 @@ class Form(CreateableModel, DeletableModel):
         visit_number: Optional[int] = None,
         sequence_number: Optional[int] = None,
         full_form: bool = True,
-        id_waterbird_conditions: str = None,
         create_in_ornitho: bool = True,
+        protocol_headers: Dict[str, Union[int, str]] = {},
     ) -> "Form":
         form = cls()
         form.time_start = time_start
@@ -721,11 +721,12 @@ class Form(CreateableModel, DeletableModel):
                 form.protocol_name = protocol.name
             else:
                 form.protocol_name = protocol
+            for key, value in protocol_headers.items():
+                if key.startswith("id_"):
+                    form._raw_data["protocol"][key.lstrip("id_")] = {"@id": str(value)}
+                else:
+                    form._raw_data["protocol"][key] = value
 
-        if id_waterbird_conditions is not None:
-            form.id_waterbird_conditions = id_waterbird_conditions
-
-        # form.site_code = site_code
         if visit_number is not None:
             form.visit_number = visit_number
         if sequence_number is not None:
