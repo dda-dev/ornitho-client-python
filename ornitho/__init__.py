@@ -17,6 +17,7 @@ from ornitho.api_exception import (
     APIException,
     APIHttpException,
     AuthenticationException,
+    BadGatewayException,
     ContentTypeException,
     GatewayTimeoutException,
     ObjectNotFoundException,

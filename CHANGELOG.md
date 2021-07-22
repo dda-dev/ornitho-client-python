@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `id_waterbird_conditions` setter added to `Form` model
 - `comment` setter added to `Form` model
 - `protocol_headers` argument added to form creation method
+- `BadGatewayException` added
 
 ### Changed
 

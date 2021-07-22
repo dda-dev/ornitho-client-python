@@ -78,6 +78,10 @@ class GatewayTimeoutException(APIHttpException):
     """Exception class indicating a gateway timeout error"""
 
 
+class BadGatewayException(APIHttpException):
+    """Exception class indicating a bad gateway error"""
+
+
 class ContentTypeException(APIHttpException):
     """Content Type exception"""
 

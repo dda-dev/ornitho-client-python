@@ -11,6 +11,7 @@ from ornitho import (
     APIHttpException,
     APIRequester,
     AuthenticationException,
+BadGatewayException,
     GatewayTimeoutException,
 )
 
@@ -157,6 +158,12 @@ class TestAPIRequester(TestCase):
             AuthenticationException,
             lambda: self.requester.handle_error_response(
                 response=Mock(status_code=401)
+            ),
+        )
+        self.assertRaises(
+            BadGatewayException,
+            lambda: self.requester.handle_error_response(
+                response=Mock(status_code=502)
             ),
         )
         self.assertRaises(

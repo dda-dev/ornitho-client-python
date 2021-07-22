@@ -204,10 +204,13 @@ class APIRequester(object):
         :type response: Response
         :raise APIHttpException: Response contains unhandled HTTP Code
         :raise AuthenticationException: Authentication failed, wrong credentials?
+        :raise BadGatewayException: Unknown Server error, in most cases a retry is successful
         :raise GatewayTimeoutException: Request took to long, reduce possible response by adding filters
         """
         if response.status_code == 401:
             raise api_exception.AuthenticationException(response)
+        elif response.status_code == 502:
+            raise api_exception.BadGatewayException(response)
         elif response.status_code == 504:
             raise api_exception.GatewayTimeoutException(response)
         else:
@@ -252,6 +255,7 @@ class APIRequester(object):
         :raise APIException: Response contains unhandled HTTP Code
         :raise AuthenticationException: Authentication failed, wrong credentials?
         :raise GatewayTimeoutException: Request took to long, reduce possible response by adding filters
+        :raise BadGatewayException: Unknown Server error, in most cases a retry is successful
         :raise ContentTypeException: Unhandled Content Type received or no information about content typ found
         """
 
