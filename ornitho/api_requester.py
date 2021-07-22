@@ -322,21 +322,21 @@ class APIRequester(object):
         if "Content-Type" in raw_response.headers.keys():
             if raw_response.headers["Content-Type"].startswith("application/json"):
                 raw_response_text = raw_response.text
-                decoded_json_response = None
-                while True:
-                    try:
-                        decoded_json_response = json.loads(raw_response_text)
-                        break
-                    except JSONDecodeError:
-                        # Remove the first JSON Line, which breaks the JSON format
-                        # e.g. "API message : Ihre Beobachtungsdaten wurden erfolgreich übermittelt, vielen Dank!"
-                        # A real WTF moment...
-                        removed_line = raw_response.text.split("\n")[0]
-                        ornitho.logger.warning(
-                            f"Ornitho response contains non JSON line: {removed_line}"
-                        )
-                        raw_response_text = "\n".join(raw_response_text.split("\n")[1:])
-                        continue
+                # Remove the first JSON Line, which breaks the JSON format
+                # Hopefully there aren't any more success messages
+                # A real WTF moment...
+                # TODO Add other language checks
+                if (
+                    raw_response_text.split("\n")[0]
+                    == "API message : Ihre Beobachtungsdaten wurden erfolgreich übermittelt, vielen Dank!"
+                ):
+                    raw_response_text = "\n".join(raw_response_text.split("\n")[1:])
+                try:
+                    decoded_json_response = json.loads(raw_response_text)
+                except JSONDecodeError:
+                    raise api_exception.APIException(
+                        f"Cant decode the response as JSON:\n{raw_response_text}"
+                    )
                 return decoded_json_response, pagination_key
             elif raw_response.headers["Content-Type"] == "application/pdf":
                 return raw_response.content, pagination_key
