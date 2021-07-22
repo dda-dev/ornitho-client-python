@@ -325,6 +325,9 @@ class APIRequester(object):
 
         if not 200 <= raw_response.status_code < 300:
             if retries > 0:
+                ornitho.logger.warning(
+                    f"Response {raw_response.status_code}. {retries} left! Retry..."
+                )
                 return self.request_raw(
                     method=method,
                     url=url,
