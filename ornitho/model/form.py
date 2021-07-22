@@ -701,6 +701,7 @@ class Form(CreateableModel, DeletableModel):
         full_form: bool = True,
         protocol_headers: Dict[str, Union[int, str]] = {},
         create_in_ornitho: bool = True,
+        chunk_size: int = 128,
     ) -> "Form":
         form = cls()
         form.time_start = time_start
@@ -762,7 +763,6 @@ class Form(CreateableModel, DeletableModel):
                 for observation in observations:
                     observation.id_form = form_id
 
-                chunk_size = 32
                 for observation_chunk in [
                     observations[i : i + chunk_size]
                     for i in range(0, len(observations), chunk_size)
