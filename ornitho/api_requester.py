@@ -335,7 +335,7 @@ class APIRequester(object):
                         ornitho.logger.warning(
                             f"Ornitho response contains non JSON line: {removed_line}"
                         )
-                        raw_response_text = "\n".join(raw_response.text.split("\n")[1:])
+                        raw_response_text = "\n".join(raw_response_text.split("\n")[1:])
                         continue
                 return decoded_json_response, pagination_key
             elif raw_response.headers["Content-Type"] == "application/pdf":

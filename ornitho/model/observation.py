@@ -1257,8 +1257,6 @@ class Observation(
 
         if guid:
             observation.guid = guid
-        else:
-            observation.guid = uuid.uuid4()
 
         if id_form:
             observation.id_form = id_form
