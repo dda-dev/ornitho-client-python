@@ -211,11 +211,14 @@ class APIRequester(object):
         :raise AuthenticationException: Authentication failed, wrong credentials?
         :raise BadGatewayException: Unknown Server error, in most cases a retry is successful
         :raise GatewayTimeoutException: Request took to long, reduce possible response by adding filters
+        :raise ServiceUnavailableException: Service unavailable, in most cases a retry is successful
         """
         if response.status_code == 401:
             raise api_exception.AuthenticationException(response)
         elif response.status_code == 502:
             raise api_exception.BadGatewayException(response)
+        elif response.status_code == 503:
+            raise api_exception.ServiceUnavailableException(response)
         elif response.status_code == 504:
             raise api_exception.GatewayTimeoutException(response)
         else:
@@ -264,6 +267,7 @@ class APIRequester(object):
         :raise AuthenticationException: Authentication failed, wrong credentials?
         :raise GatewayTimeoutException: Request took to long, reduce possible response by adding filters
         :raise BadGatewayException: Unknown Server error, in most cases a retry is successful
+        :raise ServiceUnavailableException: Service unavailable, in most cases a retry is successful
         :raise ContentTypeException: Unhandled Content Type received or no information about content typ found
         """
 

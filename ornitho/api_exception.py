@@ -82,6 +82,10 @@ class BadGatewayException(APIHttpException):
     """Exception class indicating a bad gateway error"""
 
 
+class ServiceUnavailableException(APIHttpException):
+    """Exception class indicating that api is unavailable"""
+
+
 class ContentTypeException(APIHttpException):
     """Content Type exception"""
 

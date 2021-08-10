@@ -41,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `BadGatewayException` added
 - `retries` argument to requests methods added
 - `potential_breeding_pairs` added to `Observation` model
+- `ServiceUnavailableException` added
 
 ### Changed
 

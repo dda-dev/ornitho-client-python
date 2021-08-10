@@ -13,6 +13,7 @@ from ornitho import (
     AuthenticationException,
     BadGatewayException,
     GatewayTimeoutException,
+    ServiceUnavailableException,
 )
 
 ornitho.consumer_key = "ORNITHO_CONSUMER_KEY"
@@ -170,6 +171,12 @@ class TestAPIRequester(TestCase):
             GatewayTimeoutException,
             lambda: self.requester.handle_error_response(
                 response=Mock(status_code=504)
+            ),
+        )
+        self.assertRaises(
+            ServiceUnavailableException,
+            lambda: self.requester.handle_error_response(
+                response=Mock(status_code=503)
             ),
         )
         self.assertRaises(

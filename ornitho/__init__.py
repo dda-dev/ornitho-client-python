@@ -21,6 +21,7 @@ from ornitho.api_exception import (
     ContentTypeException,
     GatewayTimeoutException,
     ObjectNotFoundException,
+    ServiceUnavailableException,
 )
 from ornitho.api_requester import APIRequester
 from ornitho.model import (
