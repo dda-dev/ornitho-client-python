@@ -115,6 +115,10 @@ class TestObservation(TestCase):
                             "@id": "3",
                             "#text": "DISPLAY_PAGE_TEXT_OCCUPIED_NEST_NUMBER_3",
                         },
+                        "potential_breeding_pairs": {
+                            "@id": "3",
+                            "#text": "DISPLAY_PAGE_TEXT_OCCUPIED_NEST_NUMBER_3",
+                        },
                     },
                 }
             ],
@@ -862,6 +866,41 @@ class TestObservation(TestCase):
         observation_json = {"observers": [{}]}
         self.assertIsNone(
             Observation.create_from_ornitho_json(observation_json).occupied_nest_number
+        )
+
+    def test_potential_breeding_pairs(self):
+        self.assertEqual(
+            int(
+                self.observation_json["observers"][0]["protocol"][
+                    "potential_breeding_pairs"
+                ]["@id"]
+            ),
+            self.observation.potential_breeding_pairs,
+        )
+
+        observation_json = {
+            "observers": [
+                {
+                    "protocol": {
+                        "potential_breeding_pairs": "123",
+                    },
+                }
+            ]
+        }
+        self.assertEqual(
+            int(
+                observation_json["observers"][0]["protocol"]["potential_breeding_pairs"]
+            ),
+            Observation.create_from_ornitho_json(
+                observation_json
+            ).potential_breeding_pairs,
+        )
+
+        observation_json = {"observers": [{}]}
+        self.assertIsNone(
+            Observation.create_from_ornitho_json(
+                observation_json
+            ).potential_breeding_pairs
         )
 
     def test_relations(self):

@@ -40,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `protocol_headers` argument added to form creation method
 - `BadGatewayException` added
 - `retries` argument to requests methods added
+- `potential_breeding_pairs` added to `Observation` model
 
 ### Changed
 

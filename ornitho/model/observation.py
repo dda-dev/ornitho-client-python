@@ -1024,6 +1024,34 @@ class Observation(
 
     @property  # type: ignore
     @check_raw_data("observers")
+    def potential_breeding_pairs(self) -> Optional[int]:
+        if (
+            "protocol" in self._raw_data["observers"][0]
+            and "potential_breeding_pairs" in self._raw_data["observers"][0]["protocol"]
+        ):
+            if (
+                type(
+                    self._raw_data["observers"][0]["protocol"][
+                        "potential_breeding_pairs"
+                    ]
+                )
+                is dict
+            ):
+                return int(
+                    self._raw_data["observers"][0]["protocol"][
+                        "potential_breeding_pairs"
+                    ]["@id"]
+                )
+            else:
+                return int(
+                    self._raw_data["observers"][0]["protocol"][
+                        "potential_breeding_pairs"
+                    ]
+                )
+        return None
+
+    @property  # type: ignore
+    @check_raw_data("observers")
     def relations(self) -> List[Relation]:
         return (
             [
