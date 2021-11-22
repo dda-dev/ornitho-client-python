@@ -566,9 +566,12 @@ class Observation(
     @property
     def form(self):
         if self._form is None and self.id_form is not None:
-            self._form = ornitho.model.form.Form.create_from_ornitho_json(
-                self._raw_data["form"]
-            )
+            if "form" in self._raw_data:
+                self._form = ornitho.model.form.Form.create_from_ornitho_json(
+                    self._raw_data["form"]
+                )
+            else:
+                self._form = ornitho.model.form.Form.get(self.id_form)
         return self._form
 
     @property
