@@ -986,6 +986,20 @@ class TestObservation(TestCase):
                 },
             ]
         )
+        Observation.search_all = MagicMock(
+            return_value=[
+                {
+                    "id_sighting": "1",
+                    "id_universal": "1",
+                    "modification_type": "updated",
+                },
+                {
+                    "id_sighting": "2",
+                    "id_universal": "2",
+                    "modification_type": "deleted",
+                },
+            ]
+        )
 
         # Case 1: without retrieving
         date = datetime.now() - timedelta(hours=1)
@@ -1022,7 +1036,14 @@ class TestObservation(TestCase):
             date, only_protocol=mock_protocol, retrieve_observations=True
         )
         self.assertEqual(len(observations), 2)
-        self.assertEqual(observations[0], self.observation)
+        self.assertEqual(
+            observations[0],
+            {
+                "id_sighting": "1",
+                "id_universal": "1",
+                "modification_type": "updated",
+            },
+        )
         Observation.request.assert_called_with(
             method="get",
             url="observations/diff",
@@ -1035,6 +1056,7 @@ class TestObservation(TestCase):
             },
             retries=0,
         )
+        Observation.search_all.assert_called_with(id_sightings_list=["1"])
 
     @mock.patch("ornitho.model.observation.CreateableModel.create_in_ornitho")
     def test_create(self, mock_createable_model):

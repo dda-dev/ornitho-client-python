@@ -3,7 +3,7 @@ from copy import deepcopy
 from datetime import datetime, timedelta
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, Union
-
+import ornitho
 import ornitho.model.form
 from ornitho import APIException
 from ornitho.model.abstract import (
@@ -519,7 +519,7 @@ class Observation(
     @property  # type: ignore
     @check_raw_data("species")
     def species(self) -> Species:
-        """ Observed Species """
+        """Observed Species"""
         if self._species is None:
             if "@id" in self._raw_data["species"]:
                 self._species = Species.create_from_ornitho_json(
@@ -538,7 +538,7 @@ class Observation(
     @property  # type: ignore
     @check_raw_data("observers")
     def observer(self) -> Observer:
-        """ Observing user """
+        """Observing user"""
         if self._observer is None:
             self._observer = Observer.create_from_ornitho_json(
                 self._raw_data["observers"][0]
@@ -553,7 +553,7 @@ class Observation(
     @property  # type: ignore
     @check_raw_data("place")
     def place(self) -> Place:
-        """ Place of the observation """
+        """Place of the observation"""
         if self._place is None:
             self._place = Place.create_from_ornitho_json(self._raw_data["place"])
         return self._place
@@ -576,7 +576,7 @@ class Observation(
 
     @property
     def resting_habitat(self) -> Optional[FieldOption]:
-        """ Resting habitat of the observation """
+        """Resting habitat of the observation"""
         if self._resting_habitat is None and self.id_resting_habitat:
             self._resting_habitat = FieldOption.get(self.id_resting_habitat)
         return self._resting_habitat
@@ -588,14 +588,14 @@ class Observation(
 
     @property
     def accuracy_of_location(self) -> Optional[FieldOption]:
-        """ Resting habitat of the observation """
+        """Resting habitat of the observation"""
         if self._accuracy_of_location is None and self.id_accuracy_of_location:
             self._accuracy_of_location = FieldOption.get(self.id_accuracy_of_location)
         return self._accuracy_of_location
 
     @property
     def observation_detail(self) -> Optional[FieldOption]:
-        """ Observation detail of the observation """
+        """Observation detail of the observation"""
         if self._observation_detail is None and self.id_observation_detail:
             self._observation_detail = FieldOption.get(self.id_observation_detail)
         return self._observation_detail
@@ -607,7 +607,7 @@ class Observation(
 
     @property
     def atlas_code(self) -> Optional[FieldOption]:
-        """ Atlas Code of the observation """
+        """Atlas Code of the observation"""
         if self._atlas_code is None and self.id_atlas_code:
             self._atlas_code = FieldOption.get(f"3_{self.id_atlas_code}")
         return self._atlas_code
@@ -1212,6 +1212,14 @@ class Observation(
         :return: List of observations
         :rtype: List[Observation]
         """
+        if retrieve_observations and (
+            modification_type == ModificationType.ALL
+            or modification_type == ModificationType.ONLY_DELETED
+            or modification_type is None
+        ):
+            ornitho.logger.warning(
+                "When retrieve_observations is set to True, deleted observations are not returned!"
+            )
         url = f"{cls.ENDPOINT}/diff"
         params = dict()
         if modification_type:
@@ -1243,6 +1251,7 @@ class Observation(
             method="get", url=url, params=params, retries=retries
         )
         observations = []
+        observation_ids = []
         for obs in changed_observations:
             if obs["modification_type"] == "updated":
                 modification_type = ModificationType.ONLY_MODIFIED
@@ -1252,13 +1261,15 @@ class Observation(
                 retrieve_observations
                 and modification_type == ModificationType.ONLY_MODIFIED
             ):
-                observations.append(cls.get(int(obs["id_sighting"])))
+                observation_ids.append(obs["id_sighting"])
             else:
                 observations.append(
                     cls(
                         id_=int(obs["id_sighting"]), modification_type=modification_type
                     )
                 )
+        if len(observation_ids) > 0:
+            observations = cls.search_all(id_sightings_list=observation_ids)
         return observations
 
     @classmethod
