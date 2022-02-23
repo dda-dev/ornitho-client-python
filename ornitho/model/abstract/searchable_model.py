@@ -19,7 +19,7 @@ class SearchableModel(BaseModel, ABC):
         pagination_key: Optional[str] = None,
         short_version: bool = False,
         retries: int = 0,
-        **kwargs: Union[str, int, float, bool, date, datetime]
+        **kwargs: Union[str, int, float, bool, date, datetime, list]
     ) -> Tuple[List[T], Optional[str]]:
         """Search for instances at Biolovision via POST search
         If the list is chunked, a pagination key ist returned
@@ -57,7 +57,7 @@ class SearchableModel(BaseModel, ABC):
         cls: Type[T],
         short_version: bool = False,
         retries: int = 0,
-        **kwargs: Union[str, int, float, bool, date, datetime]
+        **kwargs: Union[str, int, float, bool, date, datetime, list]
     ) -> List[T]:
         """Search for instances at Biolovision via POST search
         :param short_version: Indicates, if a short version with foreign keys should be returned by the API.
@@ -65,7 +65,7 @@ class SearchableModel(BaseModel, ABC):
         :param kwargs: Search values
         :type short_version: bool
         :type retries: int
-        :type kwargs: Union[str, int, float, bool]
+        :type kwargs: Union[str, int, float, bool, list]
         :return: List of instances
         :rtype: List[T]
         """

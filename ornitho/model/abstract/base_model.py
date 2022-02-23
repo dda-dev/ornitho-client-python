@@ -26,7 +26,7 @@ class BaseModel(ABC):
 
     @property
     def id_(self) -> Optional[Union[int, str]]:
-        """ Unique identifier """
+        """Unique identifier"""
         if self._id is None:
             if "id" in self._raw_data:
                 self._id = self._raw_data["id"]

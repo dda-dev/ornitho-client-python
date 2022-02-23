@@ -22,7 +22,7 @@ class Place(ListableModel):
     @property  # type: ignore
     @check_refresh
     def id_commune(self) -> int:
-        """ ID, in which the place is located"""
+        """ID, in which the place is located"""
         return int(self._raw_data["id_commune"])
 
     @property  # type: ignore

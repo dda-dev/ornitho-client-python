@@ -157,7 +157,7 @@ class Protocol(ListableModel):
 
     @property
     def entity(self) -> Entity:
-        """ Entity of the protocol """
+        """Entity of the protocol"""
         if self._entity is None:
             self._entity = Entity.get(self.id_entity)
         return self._entity
