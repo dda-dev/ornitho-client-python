@@ -24,7 +24,7 @@ classifiers=[
 ]
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = ">=3.7,<4.0"
 requests-oauthlib = "*"
 pytz = "*"
 requests-cache = {git = "https://github.com/reclosedev/requests-cache.git", optional = true}
@@ -34,7 +34,7 @@ pytest = "*"
 coverage = "*"
 twine = "*"
 autoflake = "*"
-black = "==20.8b1"
+black = "*"
 isort = "^5.0.0"
 vulture = "*"
 pytest-cov = "*"
@@ -47,7 +47,7 @@ caching = ["requests-cache"]
 [tool.tox]
 legacy_tox_ini = """
 [tox]
-envlist = mypy, py36, py37, py38, py39
+envlist = mypy, py37, py38, py39, py310
 isolated_build = True
 skip_missing_interpreters = True
 
@@ -58,6 +58,6 @@ commands = pytest
 [testenv:mypy]
 basepython = python3.8
 deps = mypy
-commands = mypy . --ignore-missing-imports  --exclude examples
+commands = mypy . --ignore-missing-imports  --exclude examples --install-types --non-interactive
 skip_install = True
 """
