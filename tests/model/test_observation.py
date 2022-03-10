@@ -984,20 +984,28 @@ class TestObservation(TestCase):
                     "id_universal": "2",
                     "modification_type": "deleted",
                 },
-            ]
-        )
-        Observation.search_all = MagicMock(
-            return_value=[
                 {
-                    "id_sighting": "1",
-                    "id_universal": "1",
+                    "id_sighting": "3",
+                    "id_universal": "3",
                     "modification_type": "updated",
                 },
-                {
-                    "id_sighting": "2",
-                    "id_universal": "2",
-                    "modification_type": "deleted",
-                },
+            ]
+        )
+        Observation.search = MagicMock(
+            return_value=[
+                [
+                    {
+                        "id_sighting": "1",
+                        "id_universal": "1",
+                        "modification_type": "updated",
+                    },
+                    {
+                        "id_sighting": "3",
+                        "id_universal": "3",
+                        "modification_type": "updated",
+                    },
+                ],
+                "key",
             ]
         )
 
@@ -1010,7 +1018,8 @@ class TestObservation(TestCase):
             only_protocol="CBBM",
             only_form=True,
         )
-        self.assertEqual(len(observations), 2)
+        self.assertEqual(len(observations[ModificationType.ONLY_MODIFIED]), 2)
+        self.assertEqual(len(observations[ModificationType.ONLY_DELETED]), 1)
         Observation.request.assert_called_with(
             method="get",
             url="observations/diff",
@@ -1035,9 +1044,10 @@ class TestObservation(TestCase):
         observations = Observation.diff(
             date, only_protocol=mock_protocol, retrieve_observations=True
         )
-        self.assertEqual(len(observations), 2)
+        self.assertEqual(len(observations[ModificationType.ONLY_MODIFIED]), 2)
+        self.assertEqual(len(observations[ModificationType.ONLY_DELETED]), 1)
         self.assertEqual(
-            observations[0],
+            observations[ModificationType.ONLY_MODIFIED][0],
             {
                 "id_sighting": "1",
                 "id_universal": "1",
@@ -1056,7 +1066,9 @@ class TestObservation(TestCase):
             },
             retries=0,
         )
-        Observation.search_all.assert_called_with(id_sightings_list=["1"])
+        Observation.search.assert_called_with(
+            period_choice="all", id_sightings_list=[1, 3]
+        )
 
     @mock.patch("ornitho.model.observation.CreateableModel.create_in_ornitho")
     def test_create(self, mock_createable_model):

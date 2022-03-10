@@ -3,6 +3,7 @@ from copy import deepcopy
 from datetime import datetime, timedelta
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, Union
+
 import ornitho
 import ornitho.model.form
 from ornitho import APIException
@@ -1193,8 +1194,8 @@ class Observation(
         only_form: bool = None,
         retrieve_observations: bool = False,
         retries: int = 0,
-    ) -> List["Observation"]:
-        """Retrieves a list of observations which changed in between now and a given date
+    ) -> Dict[ModificationType, Union[List["Observation"], List[int]]]:
+        """Retrieves observations which changed in between now and a given date
         :param date: Date in the past, to which changed observation should be searched
         :param modification_type: Type of modification.
         :param id_taxo_group: Optional taxo group, to which the observerd species must belong to
@@ -1209,17 +1210,9 @@ class Observation(
         :type only_form: bool
         :type retrieve_observations: bool
         :type retries: int
-        :return: List of observations
-        :rtype: List[Observation]
+        :return: Dictionary containing List of Ids/Observations as values and ModificationType as key
+        :rtype: Dict[ModificationType, Union[List["Observation"], List[int]]]
         """
-        if retrieve_observations and (
-            modification_type == ModificationType.ALL
-            or modification_type == ModificationType.ONLY_DELETED
-            or modification_type is None
-        ):
-            ornitho.logger.warning(
-                "When retrieve_observations is set to True, deleted observations are not returned!"
-            )
         url = f"{cls.ENDPOINT}/diff"
         params = dict()
         if modification_type:
@@ -1250,27 +1243,34 @@ class Observation(
         changed_observations = cls.request(
             method="get", url=url, params=params, retries=retries
         )
-        observations = []
-        observation_ids = []
+
+        updated_observations = []
+        updated_observations_id = []
+        deleted_observations_id = []
         for obs in changed_observations:
             if obs["modification_type"] == "updated":
-                modification_type = ModificationType.ONLY_MODIFIED
+                updated_observations_id.append(int(obs["id_sighting"]))
             else:
-                modification_type = ModificationType.ONLY_DELETED
-            if (
-                retrieve_observations
-                and modification_type == ModificationType.ONLY_MODIFIED
-            ):
-                observation_ids.append(obs["id_sighting"])
-            else:
-                observations.append(
-                    cls(
-                        id_=int(obs["id_sighting"]), modification_type=modification_type
-                    )
-                )
-        if len(observation_ids) > 0:
-            observations = cls.search_all(id_sightings_list=observation_ids)
-        return observations
+                deleted_observations_id.append(int(obs["id_sighting"]))
+
+        if retrieve_observations:
+            observations_chunks = [
+                updated_observations_id[i : i + 1000]
+                for i in range(0, len(updated_observations_id), 1000)
+            ]
+            for observations_chunk in observations_chunks:
+                updated_observations += cls.search(
+                    period_choice="all", id_sightings_list=observations_chunk
+                )[0]
+        else:
+            updated_observations = [
+                cls(id_=obs_id) for obs_id in updated_observations_id
+            ]
+
+        return {
+            ModificationType.ONLY_MODIFIED: updated_observations,
+            ModificationType.ONLY_DELETED: deleted_observations_id,
+        }
 
     @classmethod
     def create(  # type: ignore

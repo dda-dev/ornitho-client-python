@@ -34,11 +34,15 @@ print(f"Found {len(resp)} observations between 31.10.2019 and 31.10.2019")
 
 td = timedelta(hours=1)
 resp = ornitho.Observation.diff(datetime.now() - td)
-print(f"Found {len(resp)} observation in the last hour!")
+print(
+    f"Found {len(resp[ornitho.ModificationType.ONLY_MODIFIED]) + len(resp[ornitho.ModificationType.ONLY_DELETED])} observation in the last hour!"
+)
 
 td = timedelta(days=1)
 resp = ornitho.Observation.diff(
     datetime.now().astimezone(pytz.timezone("Asia/Tokyo")) - timedelta(hours=1) - td,
     modification_type=ornitho.ModificationType.ONLY_DELETED,
 )
-print(f"Found {len(resp)} deleted observation in the last 24 hours!")
+print(
+    f"Found {len(resp[ornitho.ModificationType.ONLY_DELETED])} deleted observation in the last 24 hours!"
+)
