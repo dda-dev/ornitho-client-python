@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [0.3.0] - 2022-03-10
+
+### Added
+
 - `MUNICIPALITY` added to `Precision` enum
 - `requests-cache` added as optional dependency
 - `excel_str_german` property added to `Detail`
@@ -95,6 +103,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added media
 - Some basic examples
 
-[unreleased]: https://github.com/dda-dev/ornitho-client-python/compare/v0.2.0...master
+[unreleased]: https://github.com/dda-dev/ornitho-client-python/compare/v0.3.0...master
+[0.3.0]: https://github.com/dda-dev/ornitho-client-python/releases/tag/v0.3.0
 [0.2.0]: https://github.com/dda-dev/ornitho-client-python/releases/tag/v0.2.0
 [0.1.0]: https://github.com/dda-dev/ornitho-client-python/releases/tag/v0.1.0
