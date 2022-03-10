@@ -200,6 +200,7 @@ class TestAPIRequester(TestCase):
                     "pagination_key": "new_key",
                     "Content-Type": "application/json; charset=utf-8",
                     "Content-Length": 23,
+                    "Transfer-Encoding": "chunked",
                 },
                 text='{"data": [{"id": "1"}]}',
             )
@@ -290,6 +291,7 @@ class TestAPIRequester(TestCase):
                     "pagination_key": "new_key",
                     "Content-Type": "application/json; charset=utf-8",
                     "Content-Length": 23,
+                    "Transfer-Encoding": "chunked",
                 },
                 text='{"data": [{"id": "1"}]}',
             )
@@ -319,6 +321,7 @@ class TestAPIRequester(TestCase):
                     "pagination_key": "new_key",
                     "Content-Type": "application/json; charset=utf-8",
                     "Content-Length": 23,
+                    "Transfer-Encoding": "chunked",
                 },
                 text='{"data": [{"id": "1"}]}',
             )
@@ -348,6 +351,7 @@ class TestAPIRequester(TestCase):
                     "pagination_key": "new_key",
                     "Content-Type": "application/json; charset=utf-8",
                     "Content-Length": 23,
+                    "Transfer-Encoding": "chunked",
                 },
                 text='{"data": [{"id": "1"}]}',
             )
@@ -377,6 +381,7 @@ class TestAPIRequester(TestCase):
                     "pagination_key": "new_key",
                     "Content-Type": "application/json; charset=utf-8",
                     "Content-Length": 23,
+                    "Transfer-Encoding": "chunked",
                 },
                 text='{"data": [{"id": "1"}]}',
             )
@@ -406,6 +411,7 @@ class TestAPIRequester(TestCase):
                     "pagination_key": "new_key",
                     "Content-Type": "application/json; charset=utf-8",
                     "Content-Length": 23,
+                    "Transfer-Encoding": "chunked",
                 },
                 text='{"data": [{"id": "1"}]}',
             )
@@ -437,6 +443,7 @@ class TestAPIRequester(TestCase):
                     "pagination_key": "new_key",
                     "Content-Type": "application/json; charset=utf-8",
                     "Content-Length": 23,
+                    "Transfer-Encoding": "chunked",
                 },
                 text='{"data": [{"id": "1"}]}',
             )
@@ -489,6 +496,7 @@ class TestAPIRequester(TestCase):
                     "pagination_key": "new_key",
                     "Content-Type": "application/json; charset=utf-8",
                     "Content-Length": 23,
+                    "Transfer-Encoding": "chunked",
                 },
                 text='{"data": [{"id": "1"}]}',
             )
@@ -519,6 +527,7 @@ class TestAPIRequester(TestCase):
                     "pagination_key": "new_key",
                     "Content-Type": "application/json; charset=utf-8",
                     "Content-Length": 43,
+                    "Transfer-Encoding": "chunked",
                 },
                 text='API message : Ihre Beobachtungsdaten wurden erfolgreich übermittelt, vielen Dank!\n{"data": [{"id": "1"}]}',
             )
@@ -546,6 +555,7 @@ class TestAPIRequester(TestCase):
                     "pagination_key": "new_key",
                     "Content-Type": "application/json; charset=utf-8",
                     "Content-Length": 43,
+                    "Transfer-Encoding": "chunked",
                 },
                 text='A very stupid line!\n{"data": [{"id": "1"}]}',
             )

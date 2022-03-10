@@ -342,7 +342,11 @@ class APIRequester(object):
                 )
             self.handle_error_response(raw_response)
 
-        if "pagination_key" in raw_response.headers.keys():
+        if (
+            "pagination_key" in raw_response.headers.keys()
+            and "Transfer-Encoding" in raw_response.headers.keys()
+            and raw_response.headers["Transfer-Encoding"] == "chunked"
+        ):
             pagination_key = raw_response.headers["pagination_key"] or None
         else:
             pagination_key = None
