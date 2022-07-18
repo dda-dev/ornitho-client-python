@@ -1,5 +1,6 @@
 # flake8: noqa
 
+from ornitho.model.access import Access
 from ornitho.model.detail import Detail
 from ornitho.model.entity import Entity
 from ornitho.model.family import Family

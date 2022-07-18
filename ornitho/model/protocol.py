@@ -1,7 +1,9 @@
 from datetime import date, datetime
-from typing import List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
+from ornitho.api_requester import APIRequester
 from ornitho.model.abstract import ListableModel
+from ornitho.model.access import Access
 from ornitho.model.entity import Entity
 from ornitho.model.observation import Observation
 from ornitho.model.site import Site
@@ -18,6 +20,7 @@ class Protocol(ListableModel):
         super(Protocol, self).__init__(id_)
         self._entity: Optional[Entity] = None
         self._sites: Optional[List[Site]] = None
+        self._access: Optional[Dict[int, List[Access]]] = None
 
     @property
     def name(self) -> str:
@@ -175,6 +178,34 @@ class Protocol(ListableModel):
             sites_object = self.request(method="get", url=url, params=params)[0]
             self._sites = [Site(id_=site_id) for site_id in sites_object.keys()]
         return self._sites
+
+    @property
+    def access(self) -> Dict[int, List[Access]]:
+        """Get the list of observers with access to sites for the protocol
+        :return: List of access information
+        :rtype: Dict[int, List[Access]]
+        """
+        if self._access is None:
+            with APIRequester() as requester:
+                url = "protocol/access"
+                response, pk = requester.request(
+                    method="get",
+                    url=url,
+                    params={"id_protocol": self.id_},
+                )
+                self._access = {
+                    int(key): [
+                        Access(
+                            id_observer=int(ac["id"]),
+                            anonymous=False if ac["anonymous"] == "0" else True,
+                            id_access=int(ac["id_access"]),
+                        )
+                        for ac in response[0][key]["observers"]
+                    ]
+                    for key in response[0].keys()
+                }
+
+        return self._access
 
     def get_observations(
         self,

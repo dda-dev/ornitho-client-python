@@ -3,6 +3,7 @@ from typing import List, Optional
 
 from ornitho.api_requester import APIRequester
 from ornitho.model.abstract.base_model import BaseModel, check_raw_data, check_refresh
+from ornitho.model.access import Access
 from ornitho.model.observer import Observer
 from ornitho.model.place import Place
 
@@ -28,6 +29,7 @@ class Site(BaseModel):
         self._transect_places: Optional[List[Place]] = None
         self._polygon_places: Optional[List[Place]] = None
         self._pdf: Optional[bytes] = None
+        self._access: Optional[List[Access]] = None
 
     @property  # type: ignore
     @check_refresh
@@ -158,3 +160,28 @@ class Site(BaseModel):
                 method="GET", url=url, params=params, retries=retries
             )
         return response
+
+    @property
+    def access(self) -> List[Access]:
+        """Get the list of observers with access to this sites
+        :return: List of access information
+        :rtype: List[Access]
+        """
+        if self._access is None:
+            with APIRequester() as requester:
+                url = "protocol/access"
+                response, pk = requester.request(
+                    method="get",
+                    url=url,
+                    params={"id_site": self.id_},
+                )
+                self._access = [
+                    Access(
+                        id_observer=int(ac["id"]),
+                        anonymous=False if ac["anonymous"] == "0" else True,
+                        id_access=int(ac["id_access"]),
+                    )
+                    for ac in response[0][str(self.id_)]["observers"]
+                ]
+
+        return self._access
