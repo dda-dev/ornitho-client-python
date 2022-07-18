@@ -2,7 +2,7 @@ import json
 from copy import deepcopy
 from datetime import date, datetime
 from json.decoder import JSONDecodeError
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union, cast
 from urllib.parse import urlencode
 
 from requests import Response
@@ -20,7 +20,7 @@ try:
         """Session with features from both CachedSession and OAuth1Session"""
 
 except ImportError:  # pragma: no cover
-    requests_cache = None
+    requests_cache = cast(Any, None)
 
 
 class APIRequester(object):
