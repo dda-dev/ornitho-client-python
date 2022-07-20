@@ -175,13 +175,16 @@ class Site(BaseModel):
                     url=url,
                     params={"id_site": self.id_},
                 )
-                self._access = [
-                    Access(
-                        id_observer=int(ac["id"]),
-                        anonymous=False if ac["anonymous"] == "0" else True,
-                        id_access=int(ac["id_access"]),
-                    )
-                    for ac in response[0][str(self.id_)]["observers"]
-                ]
+                if len(response) > 0:
+                    self._access = [
+                        Access(
+                            id_observer=int(ac["id"]),
+                            anonymous=False if ac["anonymous"] == "0" else True,
+                            id_access=int(ac["id_access"]),
+                        )
+                        for ac in response[0][str(self.id_)]["observers"]
+                    ]
+                else:
+                    self._access = []
 
         return self._access
