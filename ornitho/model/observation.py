@@ -610,7 +610,7 @@ class Observation(
     def atlas_code(self) -> Optional[FieldOption]:
         """Atlas Code of the observation"""
         if self._atlas_code is None and self.id_atlas_code:
-            self._atlas_code = FieldOption.get(f"3_{self.id_atlas_code}")
+            self._atlas_code = FieldOption.get(f"{self.id_atlas_code}")
         return self._atlas_code
 
     @atlas_code.setter

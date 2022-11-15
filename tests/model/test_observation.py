@@ -694,7 +694,7 @@ class TestObservation(TestCase):
         mock_field_option.id_.return_value = "2"
 
         atlas_code = self.observation.atlas_code
-        mock_field_option.get.assert_called_with(f"3_{self.observation.id_atlas_code}")
+        mock_field_option.get.assert_called_with(f"{self.observation.id_atlas_code}")
         self.assertEqual(atlas_code, "Atlas Code retrieved")
 
         obs = Observation()
