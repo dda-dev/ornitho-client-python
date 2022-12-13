@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- if a `protocol` has no sites, an exception is no longer thrown when trying to access them
+
 ## [0.3.0] - 2022-03-10
 
 ### Added

@@ -174,8 +174,8 @@ class Protocol(ListableModel):
         if not self._sites:
             url = f"{self.ENDPOINT}/sites"
             params = {"id_protocol": self.id_}
-
-            sites_object = self.request(method="get", url=url, params=params)[0]
+            response = self.request(method="get", url=url, params=params)
+            sites_object = response[0] if len(response) == 1 else dict()
             self._sites = [Site(id_=site_id) for site_id in sites_object.keys()]
         return self._sites
 
