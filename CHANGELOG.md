@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- override default repr
+
 ### Fixed
 
 - if a `protocol` has no sites, an exception is no longer thrown when trying to access them

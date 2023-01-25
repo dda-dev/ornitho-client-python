@@ -137,6 +137,10 @@ class BaseModel(ABC):
         """
         return self._raw_data
 
+    def __repr__(self) -> str:
+        """Readable string representation"""
+        return f"<{self.__module__}.{self.__class__.__qualname__} {self.id_}>"
+
 
 def check_refresh(func):
     def wrapper(self: T):
