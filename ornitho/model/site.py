@@ -4,6 +4,7 @@ from typing import List, Optional
 from ornitho.api_requester import APIRequester
 from ornitho.model.abstract.base_model import BaseModel, check_raw_data, check_refresh
 from ornitho.model.access import Access
+from ornitho.model.observation import Observation
 from ornitho.model.observer import Observer
 from ornitho.model.place import Place
 
@@ -30,6 +31,7 @@ class Site(BaseModel):
         self._polygon_places: Optional[List[Place]] = None
         self._pdf: Optional[bytes] = None
         self._access: Optional[List[Access]] = None
+        self._observations: Optional[List[Observation]] = None
 
     @property  # type: ignore
     @check_refresh
@@ -188,3 +190,23 @@ class Site(BaseModel):
                     self._access = []
 
         return self._access
+
+    @property
+    def observations(self) -> List[Observation]:
+        """Get the list of observations for this site
+        :return: List of observations
+        :rtype: List[Observation]
+        """
+        if self._observations is None:
+            self._observations = []
+            if self.transect_places:
+                for place in self.transect_places:
+                    self._observations += Observation.list_all(id_place=place.id_)
+            if self.point_places:
+                for place in self.point_places:
+                    self._observations += Observation.list_all(id_place=place.id_)
+            if self.polygon_places:
+                for place in self.polygon_places:
+                    self._observations += Observation.list_all(id_place=place.id_)
+
+        return self._observations
