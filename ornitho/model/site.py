@@ -201,12 +201,12 @@ class Site(BaseModel):
             self._observations = []
             if self.transect_places:
                 for place in self.transect_places:
-                    self._observations += Observation.list_all(id_place=place.id_)
+                    self._observations += place.observations
             if self.point_places:
                 for place in self.point_places:
-                    self._observations += Observation.list_all(id_place=place.id_)
+                    self._observations += place.observations
             if self.polygon_places:
                 for place in self.polygon_places:
-                    self._observations += Observation.list_all(id_place=place.id_)
+                    self._observations += place.observations
 
         return self._observations

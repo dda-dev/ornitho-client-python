@@ -1,11 +1,16 @@
+from __future__ import annotations
+
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from ornitho.model.abstract import ListableModel
 from ornitho.model.abstract.base_model import BaseModel, check_refresh
 from ornitho.model.local_admin_unit import LocalAdminUnit
 from ornitho.model.modification_type import ModificationType
 from ornitho.model.observer import Observer
+
+if TYPE_CHECKING:
+    from ornitho.model.observation import Observation
 
 
 class Place(ListableModel):
@@ -18,6 +23,7 @@ class Place(ListableModel):
         self._centroid: Optional[str] = None
         self._order: Optional[int] = None
         self._wkt: Optional[str] = None
+        self._observations: Optional[List[Observation]] = None
 
     @property  # type: ignore
     @check_refresh
@@ -233,3 +239,15 @@ class Place(ListableModel):
                     cls(id_=int(place["id_place"]), modification_type=modification_type)
                 )
         return places
+
+    @property
+    def observations(self) -> List[Observation]:
+        """Get the list of observations for this site
+        :return: List of observations
+        :rtype: List[Observation]
+        """
+        if self._observations is None:
+            from ornitho.model.observation import Observation
+
+            self._observations = Observation.list_all(id_place=self.id_)
+        return self._observations
