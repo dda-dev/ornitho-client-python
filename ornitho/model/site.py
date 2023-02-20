@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from ornitho.api_requester import APIRequester
 from ornitho.model.abstract.base_model import BaseModel, check_raw_data, check_refresh
@@ -210,3 +210,41 @@ class Site(BaseModel):
                     self._observations += place.observations
 
         return self._observations
+
+    def add_access(
+        self,
+        observer: Union[int, Observer],
+    ) -> None:
+        """Add observer to the list of observers with access to this sites
+        :param observer: Observer object or observer id who should get access to the site
+        :type observer: Union[int, Observer]
+        """
+        with APIRequester() as requester:
+            url = "protocol/access"
+            response, pk = requester.request(
+                method="post",
+                url=url,
+                params={
+                    "id_site": self.id_,
+                    "id_observer": observer if type(observer) is int else observer.id_,
+                },
+            )
+
+    def add_access(
+        self,
+        observer: Union[int, Observer],
+    ) -> None:
+        """Add observer to the list of observers with access to this sites
+        :param observer: Observer object or observer id who should get access to the site
+        :type observer: Union[int, Observer]
+        """
+        with APIRequester() as requester:
+            url = "protocol/access"
+            requester.request(
+                method="post",
+                url=url,
+                body={
+                    "id_site": self.id_,
+                    "id_observer": observer if type(observer) is int else observer.id_,
+                },
+            )

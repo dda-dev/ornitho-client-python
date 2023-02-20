@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `access` property added to `protocol`
 - `observations` property added to `site`
 - `observations` property added to `place`
+- `add_access` method added to `site`
 
 ### Changed
 
