@@ -364,7 +364,7 @@ class APIRequester(object):
                 ):
                     raw_response_text = "\n".join(raw_response_text.split("\n")[1:])
                 try:
-                    decoded_json_response = json.loads(raw_response_text)
+                    decoded_json_response = json.loads(raw_response_text or "{}")
                 except JSONDecodeError:
                     raise api_exception.APIException(
                         f"Cant decode the response as JSON:\n{raw_response_text}"
