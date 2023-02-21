@@ -221,25 +221,6 @@ class Site(BaseModel):
         """
         with APIRequester() as requester:
             url = "protocol/access"
-            response, pk = requester.request(
-                method="post",
-                url=url,
-                params={
-                    "id_site": self.id_,
-                    "id_observer": observer if type(observer) is int else observer.id_,
-                },
-            )
-
-    def add_access(
-        self,
-        observer: Union[int, Observer],
-    ) -> None:
-        """Add observer to the list of observers with access to this sites
-        :param observer: Observer object or observer id who should get access to the site
-        :type observer: Union[int, Observer]
-        """
-        with APIRequester() as requester:
-            url = "protocol/access"
             requester.request(
                 method="post",
                 url=url,
@@ -247,4 +228,21 @@ class Site(BaseModel):
                     "id_site": self.id_,
                     "id_observer": observer if type(observer) is int else observer.id_,
                 },
+            )
+
+    @staticmethod
+    def remove_access(
+        access: Union[int, Access],
+    ) -> None:
+        """Remove observer from the list of observers with access to this sites
+        :param access: Access object or access id which represents the right for one observer
+        :type access: Union[int, Access]
+        """
+        with APIRequester() as requester:
+            url = (
+                f"protocol/access/{access if type(access) is int else access.id_access}"
+            )
+            requester.request(
+                method="delete",
+                url=url,
             )
