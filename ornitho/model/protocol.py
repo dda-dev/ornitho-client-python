@@ -176,7 +176,10 @@ class Protocol(ListableModel):
             params = {"id_protocol": self.id_}
             response = self.request(method="get", url=url, params=params)
             sites_object = response[0] if len(response) == 1 else dict()
-            self._sites = [Site(id_=site_id) for site_id in sites_object.keys()]
+            self._sites = [
+                Site.create_from_ornitho_json({"id": site_id, **sites_object[site_id]})
+                for site_id in sites_object.keys()
+            ]
         return self._sites
 
     @property
