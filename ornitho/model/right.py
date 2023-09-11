@@ -30,7 +30,11 @@ class Right:
                 method="get",
                 url=url,
             )
-        return [
-            cls(id_=int(right["id"]), name=right["name"], comment=right["comment"])
-            for right in response["data"]["rights"]
-        ]
+        return (
+            [
+                cls(id_=int(right["id"]), name=right["name"], comment=right["comment"])
+                for right in response["data"]["rights"]
+            ]
+            if "rights" in response["data"]
+            else []
+        )
