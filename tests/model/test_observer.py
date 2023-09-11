@@ -23,6 +23,7 @@ class TestObserver(TestCase):
             "number": "6",
             "postcode": "48157",
             "municipality": "Münster",
+            "local_admin_unit": "Münster",
             "lat": "51.9543773534501",
             "lon": "7.62357910479833",
             "email": "dbird@dda-web.de",
@@ -121,6 +122,11 @@ class TestObserver(TestCase):
 
     def test_municipality(self):
         self.assertEqual(self.observer_json["municipality"], self.observer.municipality)
+
+    def test_local_admin_unit(self):
+        self.assertEqual(
+            self.observer_json["local_admin_unit"], self.observer.local_admin_unit
+        )
 
     def test_lat(self):
         self.assertEqual(float(self.observer_json["lat"]), self.observer.lat)

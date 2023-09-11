@@ -56,7 +56,16 @@ class Observer(ListableModel):
     @property  # type: ignore
     @check_refresh
     def municipality(self) -> str:
-        return self._raw_data["municipality"]
+        return (
+            self._raw_data["municipality"]
+            if "municipality" in self._raw_data
+            else self._raw_data["local_admin_unit"]
+        )
+
+    @property  # type: ignore
+    @check_refresh
+    def local_admin_unit(self) -> str:
+        return self._raw_data["local_admin_unit"]
 
     @property  # type: ignore
     @check_refresh

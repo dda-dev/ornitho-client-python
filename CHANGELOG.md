@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `observations` property added to `place`
 - `add_access` method added to `site`
 - `remove_access` method added to `site`
+- `local_admin_unit` property to `observer`
 
 ### Changed
 
@@ -24,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - if a `protocol` has no sites, an exception is no longer thrown when trying to access them
+- return `local_admin_unit` as `municipality` property in `observer` (just an unexpected API change by BVN)
 
 ## [0.3.0] - 2022-03-10
 
