@@ -44,6 +44,7 @@ class Precision(Enum):
     POLYGON_PRECISE = "polygone_precise"
     TRANSECT_PRECISE = "transect_precise"
     SUBPLACE_PRECISE = "subplace_precise"
+    IMPRECISE = "imprecise"
 
 
 class Source(Enum):

@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `remove_access` method added to `site`
 - `local_admin_unit` property to `observer`
 - `MOBILE_FORM_DELAYED_REALTIME` added to `source` enum
+- `IMPRECISE` added to `precision` enum
 
 ### Changed
 
