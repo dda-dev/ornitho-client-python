@@ -351,7 +351,9 @@ class APIRequester(object):
         else:
             pagination_key = None
 
-        if "Content-Type" in raw_response.headers.keys():
+        if method == "delete":
+            return raw_response.text, pagination_key
+        elif "Content-Type" in raw_response.headers.keys():
             if raw_response.headers["Content-Type"].startswith("application/json"):
                 raw_response_text = raw_response.text
                 # Remove the first JSON Line, which breaks the JSON format
