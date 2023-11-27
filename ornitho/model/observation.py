@@ -707,6 +707,15 @@ class Observation(
 
     @property  # type: ignore
     @check_raw_data("observers")
+    def project_name(self) -> Optional[str]:
+        return (
+            self._raw_data["observers"][0]["project_name"]
+            if "project_name" in self._raw_data["observers"][0]
+            else None
+        )
+
+    @property  # type: ignore
+    @check_raw_data("observers")
     def cavs(self) -> Optional[str]:
         return (
             self._raw_data["observers"][0]["committees_validation"]["cavs"]
