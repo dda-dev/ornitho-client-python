@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `MOBILE_FORM_DELAYED_REALTIME` added to `source` enum
 - `IMPRECISE` added to `precision` enum
 - `project_name` added to `observation` model
+- made `place` updatable (especially the wkt field)
 
 ### Changed
 

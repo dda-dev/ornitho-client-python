@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
-from ornitho.model.abstract import ListableModel
+from ornitho.model.abstract import ListableModel, UpdateableModel
 from ornitho.model.abstract.base_model import BaseModel, check_refresh
 from ornitho.model.local_admin_unit import LocalAdminUnit
 from ornitho.model.modification_type import ModificationType
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from ornitho.model.observation import Observation
 
 
-class Place(ListableModel):
+class Place(ListableModel, UpdateableModel):
     ENDPOINT: str = "places"
 
     def __init__(self, id_: int, modification_type: ModificationType = None) -> None:
@@ -154,7 +154,13 @@ class Place(ListableModel):
 
     @property
     def wkt(self) -> Optional[str]:
-        return self._wkt
+        return self._raw_data["wkt"] if "wkt" in self._raw_data else self._wkt
+
+    @wkt.setter
+    def wkt(self, value: str):
+        if not self._refreshed:
+            self.refresh()
+        self._raw_data["wkt"] = value
 
     @classmethod
     def find_closest_place(
