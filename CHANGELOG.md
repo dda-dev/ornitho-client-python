@@ -36,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `Object` added to `Precision` enum
 - `MUNICIPALITY` added to `Precision` enum
 - `requests-cache` added as optional dependency
 - `excel_str_german` property added to `Detail`

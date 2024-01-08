@@ -45,6 +45,7 @@ class Precision(Enum):
     TRANSECT_PRECISE = "transect_precise"
     SUBPLACE_PRECISE = "subplace_precise"
     IMPRECISE = "imprecise"
+    OBJECT = "object"
 
 
 class Source(Enum):
