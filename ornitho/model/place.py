@@ -154,7 +154,11 @@ class Place(ListableModel, UpdateableModel):
 
     @property
     def wkt(self) -> Optional[str]:
-        return self._raw_data["wkt"] if "wkt" in self._raw_data else self._wkt
+        return (
+            self._raw_data["wkt"]
+            if "wkt" in self._raw_data and self._raw_data["wkt"] != ""
+            else self._wkt
+        )
 
     @wkt.setter
     def wkt(self, value: str):
