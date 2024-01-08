@@ -747,6 +747,9 @@ class TestObservation(TestCase):
     def test_project_code(self):
         self.assertIsNone(self.observation.project_code)
 
+    def test_project_name(self):
+        self.assertIsNone(self.observation.project_name)
+
     def test_cavs(self):
         self.assertIsNone(self.observation.cavs)
 
