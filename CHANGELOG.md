@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `trace`  model added to `form`
 - `access` model added
 - `access` property added to `site`
 - `access` property added to `protocol`

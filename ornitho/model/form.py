@@ -131,6 +131,20 @@ class Form(CreateableModel, DeletableModel):
         )
 
     @property
+    def trace(self) -> Optional[str]:
+        """
+        Well-known text representation of the recorded track
+        :return: LINESTRING geometry, if a valid LINESTRING WKT is received, None otherwise
+        """
+        return (
+            self._raw_data["trace"]
+            if "trace" in self._raw_data
+            and "LINESTRING" in self._raw_data["trace"]  # check if Linestring
+            and "," in self._raw_data["trace"]  # check if Linestring contains 2 points
+            else None
+        )
+
+    @property
     def comment(self) -> Optional[str]:
         return self._raw_data["comment"] if "comment" in self._raw_data else None
 
