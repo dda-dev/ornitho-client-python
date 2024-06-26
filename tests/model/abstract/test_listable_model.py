@@ -12,7 +12,6 @@ ornitho.api_base = "ORNITHO_API_BASE"
 
 class TestListableModel(TestCase):
     class MyModel(ListableModel):
-
         ENDPOINT = "my_model"
 
         @classmethod

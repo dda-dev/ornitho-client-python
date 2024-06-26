@@ -5,7 +5,6 @@ from ornitho.model.taxo_group import TaxonomicGroup
 
 
 class Family(ListableModel):
-
     ENDPOINT: str = "families"
 
     def __init__(self, id_: int) -> None:

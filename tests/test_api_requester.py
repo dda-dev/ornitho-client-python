@@ -191,7 +191,6 @@ class TestAPIRequester(TestCase):
         )
 
     def test_request_raw(self):
-
         # Case 1: GET Method
         self.requester.session.request = MagicMock(
             return_value=Mock(
