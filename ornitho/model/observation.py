@@ -212,6 +212,22 @@ class Observation(
 
     @property  # type: ignore
     @check_raw_data("observers")
+    def place_object_id(self) -> Optional[int]:
+        return (
+            int(self._raw_data["observers"][0]["place_object_id"])
+            if "place_object_id" in self._raw_data["observers"][0]
+            else None
+        )
+
+    @place_object_id.setter
+    def place_object_id(self, value: int):
+        if "observers" in self._raw_data:
+            self._raw_data["observers"][0]["place_object_id"] = value
+        else:
+            self._raw_data["observers"] = [{"place_object_id": value}]
+
+    @property  # type: ignore
+    @check_raw_data("observers")
     def precision(self) -> Precision:
         return Precision(self._raw_data["observers"][0]["precision"])
 

@@ -84,6 +84,7 @@ class TestObservation(TestCase):
                     ],
                     "atlas_code": {"@id": "3_3", "#text": "A2"},
                     "project": 1,
+                    "place_object_id": "878071",
                     "extended_info": {
                         "colony": {
                             "couples": "3",
@@ -246,6 +247,19 @@ class TestObservation(TestCase):
         id_form2 = 2
         obs.id_form = id_form2
         self.assertEqual(id_form2, obs.id_form)
+
+    def test_place_object_id(self):
+        self.assertEqual(
+            int(self.observation_json["observers"][0]["place_object_id"]),
+            self.observation.place_object_id,
+        )
+        obs = Observation()
+        place_object_id = 1
+        obs.place_object_id = place_object_id
+        self.assertEqual(place_object_id, obs.place_object_id)
+        place_object_id2 = 2
+        obs.place_object_id = place_object_id2
+        self.assertEqual(place_object_id2, obs.place_object_id)
 
     def test_precision(self):
         self.assertEqual(
