@@ -9,8 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `time_spent_in_object` added to `observation` model
 - `place_object_id` added to `observation` model
-- `trace`  model added to `form`
+- `trace` model added to `form`
 - `access` model added
 - `access` property added to `site`
 - `access` property added to `protocol`
@@ -77,7 +78,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - `observation.id_atlas_code` returns the ornitho id prefixed with `3_`
-- `sites` can now be retrieved directly via api endpoint 
+- `sites` can now be retrieved directly via api endpoint
 - raise `ObjectNotFoundException` instead of `APIException` if no object is retrieved
 - `observation.diff` returns a dictionary containing the updated and deleted observations
 
@@ -106,7 +107,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Setter `notime` of the observation model
 - Raw data of `resting_habitat` when generating body for updating observations
 - Raw data of `observation_detail` when generating body for when updating observations
-
 
 ## [0.1.0] - 2020-11-10
 

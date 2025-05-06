@@ -120,6 +120,7 @@ class TestObservation(TestCase):
                             "@id": "3",
                             "#text": "DISPLAY_PAGE_TEXT_OCCUPIED_NEST_NUMBER_3",
                         },
+                        "time_spent_in_object": 3,
                     },
                 }
             ],
@@ -260,6 +261,19 @@ class TestObservation(TestCase):
         place_object_id2 = 2
         obs.place_object_id = place_object_id2
         self.assertEqual(place_object_id2, obs.place_object_id)
+
+    def test_time_spent_in_object(self):
+        self.assertEqual(
+            int(self.observation_json["observers"][0]["protocol"]["time_spent_in_object"]),
+            self.observation.time_spent_in_object,
+        )
+        obs = Observation()
+        time_spent_in_object = 1
+        obs.time_spent_in_object = time_spent_in_object
+        self.assertEqual(time_spent_in_object, obs._raw_data['observers'][0]['protocol']['time_spent_in_object'])
+        time_spent_in_object = 2
+        obs.time_spent_in_object = time_spent_in_object
+        self.assertEqual(time_spent_in_object, obs._raw_data['observers'][0]['protocol']['time_spent_in_object'])
 
     def test_precision(self):
         self.assertEqual(

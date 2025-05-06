@@ -228,6 +228,23 @@ class Observation(
 
     @property  # type: ignore
     @check_raw_data("observers")
+    def time_spent_in_object(self):
+        try:
+            return int(self._raw_data["observers"][0]["protocol"]["time_spent_in_object"])
+        except KeyError:
+            return None
+
+    @time_spent_in_object.setter
+    def time_spent_in_object(self, value: int):
+        if "observers" not in self._raw_data:
+            self._raw_data["observers"] = [{}]
+        if "protocol" not in self._raw_data['observers'][0]:
+            self._raw_data["observers"][0]["protocol"] = {}
+
+        self._raw_data["observers"][0]["protocol"]["time_spent_in_object"] = value
+
+    @property  # type: ignore
+    @check_raw_data("observers")
     def precision(self) -> Precision:
         return Precision(self._raw_data["observers"][0]["precision"])
 
