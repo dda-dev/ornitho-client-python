@@ -784,6 +784,17 @@ class Observation(
             else None
         )
 
+    @colony_nests.setter
+    def colony_nests(self, value: int):
+        if "observers" not in self._raw_data:
+            self._raw_data["observers"] = [{}]
+        if "extended_info" not in self._raw_data["observers"][0]:
+            self._raw_data["observers"][0]["extended_info"] = {}
+        if "colony" not in self._raw_data["observers"][0]["extended_info"]:
+            self._raw_data["observers"][0]["extended_info"]["colony"] = {}
+
+        self._raw_data["observers"][0]["extended_info"]["colony"]["nests"] = value
+
     @property  # type: ignore
     @check_raw_data("observers")
     def colony_occupied_nests(self) -> Optional[int]:
@@ -1324,6 +1335,7 @@ class Observation(
         details: List[Detail] = None,
         resting_habitat: Union[str, FieldOption] = None,
         observation_detail: Union[str, FieldOption] = None,
+        colony_nests: Optional[int] = None,
         # relations: List[Relation] = None,
         # direction: float = None,
         create_in_ornitho: bool = True,
@@ -1398,6 +1410,9 @@ class Observation(
                 observation.observation_detail = observation_detail
             else:
                 observation.id_observation_detail = observation_detail
+
+        if colony_nests:
+            observation.colony_nests = colony_nests
 
         # if relations:
         #     observation.relations = relations
