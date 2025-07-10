@@ -793,7 +793,7 @@ class Observation(
         if "colony" not in self._raw_data["observers"][0]["extended_info"]:
             self._raw_data["observers"][0]["extended_info"]["colony"] = {}
 
-        self._raw_data["observers"][0]["extended_info"]["colony"]["nests"] = value
+        self._raw_data["observers"][0]["extended_info"]["colony"]["nests"] = str(value)
 
     @property  # type: ignore
     @check_raw_data("observers")
