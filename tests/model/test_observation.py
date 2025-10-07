@@ -793,6 +793,10 @@ class TestObservation(TestCase):
     def test_colony_nests(self):
         self.assertEqual(18, self.observation.colony_nests)
 
+        observation = Observation()
+        observation.colony_nests = 31
+        self.assertEqual(31, observation.colony_nests)
+
     def test_colony_occupied_nests(self):
         self.assertEqual(2, self.observation.colony_occupied_nests)
 

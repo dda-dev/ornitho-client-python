@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `IMPRECISE` added to `precision` enum
 - `project_name` added to `observation` model
 - made `place` updatable (especially the wkt field)
+- made `colony_nests` updatable
 
 ### Changed
 
