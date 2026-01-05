@@ -264,16 +264,26 @@ class TestObservation(TestCase):
 
     def test_time_spent_in_object(self):
         self.assertEqual(
-            int(self.observation_json["observers"][0]["protocol"]["time_spent_in_object"]),
+            int(
+                self.observation_json["observers"][0]["protocol"][
+                    "time_spent_in_object"
+                ]
+            ),
             self.observation.time_spent_in_object,
         )
         obs = Observation()
         time_spent_in_object = 1
         obs.time_spent_in_object = time_spent_in_object
-        self.assertEqual(time_spent_in_object, obs._raw_data['observers'][0]['protocol']['time_spent_in_object'])
+        self.assertEqual(
+            time_spent_in_object,
+            obs._raw_data["observers"][0]["protocol"]["time_spent_in_object"],
+        )
         time_spent_in_object = 2
         obs.time_spent_in_object = time_spent_in_object
-        self.assertEqual(time_spent_in_object, obs._raw_data['observers'][0]['protocol']['time_spent_in_object'])
+        self.assertEqual(
+            time_spent_in_object,
+            obs._raw_data["observers"][0]["protocol"]["time_spent_in_object"],
+        )
 
     def test_precision(self):
         self.assertEqual(

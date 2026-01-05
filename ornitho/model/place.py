@@ -103,9 +103,11 @@ class Place(ListableModel, UpdateableModel):
     @check_refresh
     def created_date(self) -> datetime:
         created_date = datetime.fromtimestamp(
-            int(self._raw_data["created_date"]["@timestamp"])
-            if type(self._raw_data["created_date"]) is dict
-            else int(self._raw_data["created_date"]),
+            (
+                int(self._raw_data["created_date"]["@timestamp"])
+                if type(self._raw_data["created_date"]) is dict
+                else int(self._raw_data["created_date"])
+            ),
         ).astimezone()
         return created_date
 
@@ -118,9 +120,11 @@ class Place(ListableModel, UpdateableModel):
     @check_refresh
     def last_updated_date(self) -> datetime:
         last_updated_date = datetime.fromtimestamp(
-            int(self._raw_data["last_updated_date"]["@timestamp"])
-            if type(self._raw_data["last_updated_date"]) is dict
-            else int(self._raw_data["last_updated_date"]),
+            (
+                int(self._raw_data["last_updated_date"]["@timestamp"])
+                if type(self._raw_data["last_updated_date"]) is dict
+                else int(self._raw_data["last_updated_date"])
+            ),
         ).astimezone()
         return last_updated_date
 
@@ -227,9 +231,7 @@ class Place(ListableModel, UpdateableModel):
             date = date.astimezone(datetime.now().astimezone().tzinfo).replace(
                 tzinfo=None
             )
-        params[
-            "date"
-        ] = (
+        params["date"] = (
             date.isoformat()
         )  # Format here, because isoformat is mostly ignored, except here
 

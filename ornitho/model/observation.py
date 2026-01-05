@@ -230,7 +230,9 @@ class Observation(
     @check_raw_data("observers")
     def time_spent_in_object(self):
         try:
-            return int(self._raw_data["observers"][0]["protocol"]["time_spent_in_object"])
+            return int(
+                self._raw_data["observers"][0]["protocol"]["time_spent_in_object"]
+            )
         except KeyError:
             return None
 
@@ -238,7 +240,7 @@ class Observation(
     def time_spent_in_object(self, value: int):
         if "observers" not in self._raw_data:
             self._raw_data["observers"] = [{}]
-        if "protocol" not in self._raw_data['observers'][0]:
+        if "protocol" not in self._raw_data["observers"][0]:
             self._raw_data["observers"][0]["protocol"] = {}
 
         self._raw_data["observers"][0]["protocol"]["time_spent_in_object"] = value
@@ -404,9 +406,11 @@ class Observation(
         id_atlas_code = (
             None
             if "atlas_code" not in self._raw_data["observers"][0]
-            else self._raw_data["observers"][0]["atlas_code"]["@id"]
-            if type(self._raw_data["observers"][0]["atlas_code"]) is dict
-            else f"3_{self._raw_data['observers'][0]['atlas_code']}"
+            else (
+                self._raw_data["observers"][0]["atlas_code"]["@id"]
+                if type(self._raw_data["observers"][0]["atlas_code"]) is dict
+                else f"3_{self._raw_data['observers'][0]['atlas_code']}"
+            )
         )
         return id_atlas_code
 
@@ -467,9 +471,11 @@ class Observation(
     @check_raw_data("observers")
     def insert_date(self) -> datetime:
         insert_date = datetime.fromtimestamp(
-            int(self._raw_data["observers"][0]["insert_date"]["@timestamp"])
-            if type(self._raw_data["observers"][0]["insert_date"]) is dict
-            else int(self._raw_data["observers"][0]["insert_date"]),
+            (
+                int(self._raw_data["observers"][0]["insert_date"]["@timestamp"])
+                if type(self._raw_data["observers"][0]["insert_date"]) is dict
+                else int(self._raw_data["observers"][0]["insert_date"])
+            ),
         ).astimezone()
         return insert_date
 
@@ -478,9 +484,11 @@ class Observation(
     def update_date(self) -> Optional[datetime]:
         update_date = (
             datetime.fromtimestamp(
-                int(self._raw_data["observers"][0]["update_date"]["@timestamp"])
-                if type(self._raw_data["observers"][0]["update_date"]) is dict
-                else int(self._raw_data["observers"][0]["update_date"]),
+                (
+                    int(self._raw_data["observers"][0]["update_date"]["@timestamp"])
+                    if type(self._raw_data["observers"][0]["update_date"]) is dict
+                    else int(self._raw_data["observers"][0]["update_date"])
+                ),
             ).astimezone()
             if "update_date" in self._raw_data["observers"][0]
             else None
@@ -764,9 +772,11 @@ class Observation(
         return (
             int(self._raw_data["observers"][0]["vowa_id"])
             if "vowa_id" in self._raw_data["observers"][0]
-            else int(self._raw_data["observers"][0]["@vowa_id"])
-            if "@vowa_id" in self._raw_data["observers"][0]
-            else None
+            else (
+                int(self._raw_data["observers"][0]["@vowa_id"])
+                if "@vowa_id" in self._raw_data["observers"][0]
+                else None
+            )
         )
 
     @property  # type: ignore
@@ -842,9 +852,7 @@ class Observation(
             and "colony" in self._raw_data["observers"][0]["extended_info"]
             and "nests_is_min"
             in self._raw_data["observers"][0]["extended_info"]["colony"]
-            else False
-            if self.colony_nests is not None
-            else None
+            else False if self.colony_nests is not None else None
         )
 
     @property  # type: ignore
@@ -893,9 +901,7 @@ class Observation(
             and "colony_extended" in self._raw_data["observers"][0]["extended_info"]
             and "nb_natural_nests_is_min"
             in self._raw_data["observers"][0]["extended_info"]["colony_extended"]
-            else False
-            if self.colony_extended_nb_natural_nests is not None
-            else None
+            else False if self.colony_extended_nb_natural_nests is not None else None
         )
 
     @property  # type: ignore
@@ -928,9 +934,7 @@ class Observation(
             and "colony_extended" in self._raw_data["observers"][0]["extended_info"]
             and "nb_artificial_nests_is_min"
             in self._raw_data["observers"][0]["extended_info"]["colony_extended"]
-            else False
-            if self.colony_extended_nb_artificial_nests is not None
-            else None
+            else False if self.colony_extended_nb_artificial_nests is not None else None
         )
 
     @property  # type: ignore
@@ -1290,9 +1294,7 @@ class Observation(
             date = date.astimezone(datetime.now().astimezone().tzinfo).replace(
                 tzinfo=None
             )
-        params[
-            "date"
-        ] = (
+        params["date"] = (
             date.isoformat()
         )  # Format here, because isoformat is mostly ignored, except here
 
@@ -1465,9 +1467,9 @@ class Observation(
             )[1]
 
         if self.id_observation_detail:
-            raw_data["observers"][0][
-                "observation_detail"
-            ] = self.id_observation_detail.split("_")[1]
+            raw_data["observers"][0]["observation_detail"] = (
+                self.id_observation_detail.split("_")[1]
+            )
 
         if self._id:
             raw_data["observers"][0]["id_sighting"] = str(self._id)

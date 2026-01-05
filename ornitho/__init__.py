@@ -1,10 +1,10 @@
 # flake8: noqa
 """
-    Ornitho
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    An ornitho API client
-    :copyright: (c) 2019 by DDA
-    :license: MIT, see LICENSE for more details.
+Ornitho
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+An ornitho API client
+:copyright: (c) 2019 by DDA
+:license: MIT, see LICENSE for more details.
 """
 import logging
 import os
