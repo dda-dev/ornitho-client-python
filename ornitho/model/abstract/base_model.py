@@ -117,6 +117,10 @@ class BaseModel(ABC):
             raise ObjectNotFoundException(
                 f"Get {len(data)} objects for {self.instance_url()}"
             )
+        elif len(data) == 1 and "id" in data[0] and data[0]["id"] is None:
+            raise ObjectNotFoundException(
+                f"Object with nulled fields retrieved: {self.instance_url()}"
+            )
         self._previous = self._raw_data
         self._raw_data = data[0]
         self._refreshed = True

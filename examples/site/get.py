@@ -8,5 +8,5 @@ ornitho.user_email = os.environ.get("ORNITHO_USER_EMAIL")
 ornitho.user_pw = os.environ.get("ORNITHO_USER_PW")
 ornitho.api_base = os.environ.get("ORNITHO_API_BASE")
 
-site = ornitho.Site.get(id_=26394)
+site = ornitho.Site.get(id_=8513)
 print(f"Place with ID {site.id_}: {site.custom_name} / {site.local_name}")
