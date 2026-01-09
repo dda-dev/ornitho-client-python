@@ -22,6 +22,7 @@ from ornitho.model.media import Media
 from ornitho.model.modification_type import ModificationType
 from ornitho.model.observer import Observer
 from ornitho.model.place import Place
+from ornitho.model.project import Project
 from ornitho.model.relation import Relation, RelationType
 from ornitho.model.species import Species
 
@@ -88,6 +89,7 @@ class Observation(
         self._observation_detail: Optional[FieldOption] = None
         self._atlas_code: Optional[FieldOption] = None
         self._medias: Optional[List[Media]] = None
+        self._project_object: Optional[Project] = None
 
     @classmethod
     def create_from_ornitho_json(cls, data: Dict[str, Any]) -> "Observation":
@@ -755,6 +757,18 @@ class Observation(
             if "project_name" in self._raw_data["observers"][0]
             else None
         )
+
+    @property  # type: ignore
+    @check_raw_data("observers")
+    def project_object(self) -> Optional[Project]:
+        if self.project is not None:
+            if self._project_object is None:
+                self._project_object = Project(
+                    self.project, self.project_code, self.project_name
+                )
+            return self._project_object
+        else:
+            return None
 
     @property  # type: ignore
     @check_raw_data("observers")

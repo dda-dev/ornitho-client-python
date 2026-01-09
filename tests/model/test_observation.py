@@ -84,6 +84,8 @@ class TestObservation(TestCase):
                     ],
                     "atlas_code": {"@id": "3_3", "#text": "A2"},
                     "project": 1,
+                    "project_code": "TP",
+                    "project_name": "Test Project",
                     "place_object_id": "878071",
                     "extended_info": {
                         "colony": {
@@ -783,10 +785,15 @@ class TestObservation(TestCase):
         self.assertEqual(1, self.observation.project)
 
     def test_project_code(self):
-        self.assertIsNone(self.observation.project_code)
+        self.assertEqual("TP", self.observation.project_code)
 
     def test_project_name(self):
-        self.assertIsNone(self.observation.project_name)
+        self.assertEqual("Test Project", self.observation.project_name)
+
+    def test_project_object(self):
+        self.assertEqual(1, self.observation.project_object.id_)
+        self.assertEqual("TP", self.observation.project_object.project_code)
+        self.assertEqual("Test Project", self.observation.project_object.project_name)
 
     def test_cavs(self):
         self.assertIsNone(self.observation.cavs)

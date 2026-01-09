@@ -1,5 +1,6 @@
 # flake8: noqa
 
+from ornitho.model.abstract import BaseModel
 from ornitho.model.access import Access
 from ornitho.model.detail import Detail
 from ornitho.model.entity import Entity
@@ -13,6 +14,7 @@ from ornitho.model.modification_type import ModificationType
 from ornitho.model.observation import EstimationCode, Observation, Precision, Source
 from ornitho.model.observer import Observer
 from ornitho.model.place import Place
+from ornitho.model.project import Project
 from ornitho.model.protocol import Protocol
 from ornitho.model.relation import Relation, RelationType
 from ornitho.model.right import Right

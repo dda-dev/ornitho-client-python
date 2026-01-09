@@ -75,6 +75,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `retries` argument to requests methods added
 - `potential_breeding_pairs` added to `Observation` model
 - `ServiceUnavailableException` added
+- `Project` model added
+- `project_object` added to `Observation` model
 
 ### Changed
 
