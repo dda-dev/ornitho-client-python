@@ -443,13 +443,21 @@ class Observation(
             if "@id" in self._raw_data["observers"][0]["details"][0]["sex"]:
                 details = [
                     Detail(
-                        int(detail["count"]), detail["sex"]["@id"], detail["age"]["@id"]
+                        int(detail["count"]),
+                        detail["sex"]["@id"],
+                        detail["age"]["@id"],
+                        self.id_,
                     )
                     for detail in self._raw_data["observers"][0]["details"]
                 ]
             else:
                 details = [
-                    Detail(int(detail["count"]), detail["sex"], detail["age"])
+                    Detail(
+                        int(detail["count"]),
+                        detail["sex"],
+                        detail["age"],
+                        self.id_,
+                    )
                     for detail in self._raw_data["observers"][0]["details"]
                 ]
         return details

@@ -2,18 +2,23 @@ from typing import List
 
 
 class Detail:
-    def __init__(self, count: int, sex: str, age: str) -> None:
+    def __init__(
+        self, count: int, sex: str, age: str, id_observation: int = None
+    ) -> None:
         """Detail constructor
         :param count: Count
         :param sex: Sex
         :param age: Age
+        :param id_observation: ID of an observation
         :type count: int
         :type sex: str
         :type age: str
+        :type id_observation: int
         """
         self.count: int = count
         self.sex: str = sex
         self.age: str = age
+        self.id_observation: int | None = id_observation
 
     @property
     def excel_str_german(self):
