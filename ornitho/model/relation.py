@@ -23,3 +23,6 @@ class Relation:
 
     def __eq__(self, other):
         return self.with_id == other.with_id and self.type == other.type
+
+    def __hash__(self):
+        return hash((self.with_id, self.type))

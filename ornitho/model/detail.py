@@ -79,6 +79,9 @@ class Detail:
             and self.age == other.age
         )
 
+    def __hash__(self):
+        return hash((self.count, self.sex, self.age, self.id_observation))
+
     @staticmethod
     def list_to_excel_str(details: List["Detail"]):
         excel_str = ""
