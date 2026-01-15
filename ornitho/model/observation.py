@@ -230,6 +230,13 @@ class Observation(
 
     @property  # type: ignore
     @check_raw_data("observers")
+    def place_object(self) -> Optional[Place]:
+        if self.place_object_id is None:
+            return None
+        return Place(self.place_object_id)
+
+    @property  # type: ignore
+    @check_raw_data("observers")
     def time_spent_in_object(self):
         try:
             return int(

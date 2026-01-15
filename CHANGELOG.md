@@ -78,6 +78,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Project` model added
 - `project_object` added to `Observation` model
 - `id_observation` added to `Detail` model
+- `place_object` added to `Observation` model
 
 ### Changed
 
