@@ -1149,7 +1149,10 @@ class Observation(
         return (
             [
                 Relation(
-                    with_id=int(relation["with"]), type=RelationType(relation["type"])
+                    with_id=int(relation["with"]),
+                    type=RelationType(relation["type"]),
+                    first_observation=self,
+                    second_observation=Observation(id_=int(relation["with"])),
                 )
                 for relation in self._raw_data["observers"][0]["extended_info"][
                     "relations"
