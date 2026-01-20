@@ -91,3 +91,6 @@ class Detail:
             else:
                 excel_str = f"{detail.excel_str_german}"
         return excel_str
+
+    def __repr__(self) -> str:
+        return f"<{self.__module__}.{self.__class__.__qualname__} {self}>"
