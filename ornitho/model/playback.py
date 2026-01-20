@@ -2,27 +2,27 @@ from .species import Species
 
 
 class Playback:
-    def __init__(self, form_id: int, species_id: int, played: bool) -> None:
-        self.form_id: int = form_id
-        self.species_id: int = species_id
+    def __init__(self, id_form: int, id_species: int, played: bool) -> None:
+        self.id_form: int = id_form
+        self.id_species: int = id_species
         self.played: bool = played
 
     @property
     def species(self) -> Species:
-        return Species(id_=self.species_id)
+        return Species(id_=self.id_species)
 
     def __str__(self) -> str:
-        return f"{self.form_id}-{self.species_id}-{self.played}"
+        return f"{self.id_form}-{self.id_species}-{self.played}"
 
     def __eq__(self, other):
         return (
-            self.form_id == other.form_id
-            and self.species_id == other.species_id
+            self.id_form == other.id_form
+            and self.id_species == other.id_species
             and self.played == other.played
         )
 
     def __hash__(self):
-        return hash((self.form_id, self.species_id, self.played))
+        return hash((self.id_form, self.id_species, self.played))
 
     def __repr__(self) -> str:
         return f"<{self.__module__}.{self.__class__.__qualname__} {self}>"

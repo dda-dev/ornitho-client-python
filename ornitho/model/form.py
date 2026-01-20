@@ -682,8 +682,8 @@ class Form(CreateableModel, DeletableModel):
                 species_id = key.replace("Id_species_", "")
                 playbacks.append(
                     Playback(
-                        form_id=self.id_,
-                        species_id=int(species_id),
+                        id_form=self.id_,
+                        id_species=int(species_id),
                         played=value == "1",
                     )
                 )
