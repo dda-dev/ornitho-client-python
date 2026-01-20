@@ -39,6 +39,7 @@ from ornitho.model import (
     Observation,
     Observer,
     Place,
+    Playback,
     Precision,
     Protocol,
     Relation,

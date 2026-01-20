@@ -14,6 +14,7 @@ from ornitho.model.modification_type import ModificationType
 from ornitho.model.observation import EstimationCode, Observation, Precision, Source
 from ornitho.model.observer import Observer
 from ornitho.model.place import Place
+from ornitho.model.playback import Playback
 from ornitho.model.project import Project
 from ornitho.model.protocol import Protocol
 from ornitho.model.relation import Relation, RelationType

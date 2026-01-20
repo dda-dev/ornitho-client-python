@@ -79,6 +79,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `project_object` added to `Observation` model
 - `id_observation` added to `Detail` model
 - `place_object` added to `Observation` model
+- `Playback` model added
+- `playback_objects` added to `Form` model
 
 ### Changed
 

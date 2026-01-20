@@ -8,6 +8,7 @@ from ornitho.api_requester import APIRequester
 from ornitho.model.abstract import CreateableModel, DeletableModel
 from ornitho.model.observation import Observation
 from ornitho.model.place import Place
+from ornitho.model.playback import Playback
 from ornitho.model.protocol import Protocol
 from ornitho.model.species import Species
 
@@ -672,6 +673,21 @@ class Form(CreateableModel, DeletableModel):
                 species_ids[int(species_id)] = value == "1"
             return species_ids
         return None
+
+    @property
+    def playback_objects(self) -> List[Playback]:
+        playbacks: List[Playback] = []
+        if "protocol" in self._raw_data and "playback" in self._raw_data["protocol"]:
+            for key, value in self._raw_data["protocol"]["playback"].items():
+                species_id = key.replace("Id_species_", "")
+                playbacks.append(
+                    Playback(
+                        form_id=self.id_,
+                        species_id=int(species_id),
+                        played=value == "1",
+                    )
+                )
+        return playbacks
 
     @property
     def observations(self) -> Optional[List[Observation]]:
