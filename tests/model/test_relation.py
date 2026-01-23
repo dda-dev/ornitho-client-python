@@ -8,4 +8,4 @@ class TestRelation(TestCase):
         relation = Relation(1, RelationType("same"))
         self.assertEqual(1, relation.with_id)
         self.assertEqual(RelationType("same"), relation.type)
-        self.assertEqual("1-same", relation.__str__())
+        self.assertEqual("1-same-None-None", relation.__str__())

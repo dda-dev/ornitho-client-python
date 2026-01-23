@@ -31,7 +31,10 @@ class Relation:
         self.second_observation: Observation = second_observation
 
     def __str__(self) -> str:
-        return f"{self.with_id}-{self.type.value}"
+        return f"{self.with_id}-{self.type.value}-{self.first_observation}-{self.second_observation}"
+
+    def __repr__(self) -> str:
+        return f"<{self.__module__}.{self.__class__.__qualname__} {self}>"
 
     def __eq__(self, other):
         return self.with_id == other.with_id and self.type == other.type
