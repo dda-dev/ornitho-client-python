@@ -6,7 +6,7 @@ from ornitho import Detail
 class TestDetail(TestCase):
     def test_str(self):
         detail = Detail(1, "U", "PULL")
-        self.assertEqual("1-U-PULL", detail.__str__())
+        self.assertEqual("None-1-U-PULL", detail.__str__())
 
     def test_excel_str_german(self):
         details = [

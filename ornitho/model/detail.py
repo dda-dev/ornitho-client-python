@@ -70,7 +70,7 @@ class Detail:
         return excel_str
 
     def __str__(self) -> str:
-        return f"{self.count}-{self.sex}-{self.age}"
+        return f"{self.id_observation}-{self.count}-{self.sex}-{self.age}"
 
     def __eq__(self, other):
         return (
