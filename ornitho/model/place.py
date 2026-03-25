@@ -199,7 +199,7 @@ class Place(ListableModel, UpdateableModel):
         only_protocol: Union[str, BaseModel] = None,
         retrieve_places: bool = False,
         retries: int = 0,
-    ) -> List["Place"]:
+    ) -> Dict[ModificationType, Union[List["Place"], List[int]]]:
         """Retrieves a list of places which changed in between now and a given date
         :param date: Date in the past, to which changed places should be searched
         :param modification_type: Type of modification.
@@ -211,8 +211,8 @@ class Place(ListableModel, UpdateableModel):
         :type only_protocol: Union[str, "Protocol"]
         :type retrieve_places: bool
         :type retries: int
-        :return: List of observations
-        :rtype: List[Observation]
+        :return: Dictionary containing List of Ids/Places as values and ModificationType as key
+        :rtype: Dict[ModificationType, Union[List["Place"], List[int]]]
         """
         url = f"{cls.ENDPOINT}/diff"
         params = dict()
@@ -238,19 +238,24 @@ class Place(ListableModel, UpdateableModel):
         changed_places = cls.request(
             method="get", url=url, params=params, retries=retries
         )
-        places = []
+        updated_places = []
+        updated_places_id = []
+        deleted_places_id = []
         for place in changed_places:
             if place["modification_type"] == "updated":
-                modification_type = ModificationType.ONLY_MODIFIED
+                updated_places_id.append(int(place["id_place"]))
             else:
-                modification_type = ModificationType.ONLY_DELETED
-            if retrieve_places and modification_type == ModificationType.ONLY_MODIFIED:
-                places.append(cls.get(int(place["id_place"])))
-            else:
-                places.append(
-                    cls(id_=int(place["id_place"]), modification_type=modification_type)
-                )
-        return places
+                deleted_places_id.append(int(place["id_place"]))
+
+        if retrieve_places:
+            for place_id in updated_places_id:
+                updated_places.append(cls.get(place_id))
+        else:
+            updated_places = [cls(id_=place_id) for place_id in updated_places_id]
+        return {
+            ModificationType.ONLY_MODIFIED: updated_places,
+            ModificationType.ONLY_DELETED: deleted_places_id,
+        }
 
     @property
     def observations(self) -> List[Observation]:

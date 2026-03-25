@@ -204,7 +204,9 @@ class TestPlace(TestCase):
         )
         places = Place.diff(date, only_protocol=mock_protocol, retrieve_places=True)
         self.assertEqual(len(places), 2)
-        self.assertEqual(places[0], self.place)
+        self.assertEqual(len(places[ModificationType.ONLY_MODIFIED]), 1)
+        self.assertEqual(len(places[ModificationType.ONLY_DELETED]), 1)
+        self.assertEqual(places[ModificationType.ONLY_MODIFIED][0], self.place)
         Place.request.assert_called_with(
             method="get",
             url="places/diff",
