@@ -208,12 +208,15 @@ class APIRequester(object):
         :type response: Response
         :raise APIHttpException: Response contains unhandled HTTP Code
         :raise AuthenticationException: Authentication failed, wrong credentials?
+        :raise ObjectNotFoundException: No or more than one objects retrieved
         :raise BadGatewayException: Unknown Server error, in most cases a retry is successful
         :raise GatewayTimeoutException: Request took to long, reduce possible response by adding filters
         :raise ServiceUnavailableException: Service unavailable, in most cases a retry is successful
         """
         if response.status_code == 401:
             raise api_exception.AuthenticationException(response)
+        if response.status_code == 404:
+            raise api_exception.ObjectNotFoundException(response)
         elif response.status_code == 502:
             raise api_exception.BadGatewayException(response)
         elif response.status_code == 503:
