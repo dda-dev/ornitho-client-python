@@ -28,7 +28,7 @@ classifiers=[
 python = ">=3.7,<4.0"
 requests-oauthlib = "*"
 pytz = "*"
-requests-cache = "^0.9.3"
+requests-cache = "*"
 
 [tool.poetry.dev-dependencies]
 pytest = "*"
