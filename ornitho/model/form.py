@@ -738,7 +738,7 @@ class Form(CreateableModel, DeletableModel):
         create_in_ornitho: bool = True,
         chunk_size: int = 128,
         retries: int = 0,
-        hidde_comment_for_placeholder_observation: str = None,
+        hidden_comment_for_placeholder_observation: str = None,
     ) -> "Form":
         form = cls()
         form.time_start = time_start
@@ -786,7 +786,7 @@ class Form(CreateableModel, DeletableModel):
                     precision=observations[0].precision,
                     estimation_code=ornitho.EstimationCode.EXACT_VALUE,
                     hidden=True,
-                    hidden_comment=hidde_comment_for_placeholder_observation,
+                    hidden_comment=hidden_comment_for_placeholder_observation,
                     count=0,
                     create_in_ornitho=False,
                     retries=retries,
