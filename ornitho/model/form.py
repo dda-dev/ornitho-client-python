@@ -3,7 +3,7 @@ from datetime import date, time
 from typing import Any, Dict, List, Optional, Union
 
 import ornitho.model.observation
-from ornitho.api_exception import ObjectNotFoundException
+from ornitho.api_exception import APIException, ObjectNotFoundException
 from ornitho.api_requester import APIRequester
 from ornitho.model.abstract import CreateableModel, DeletableModel
 from ornitho.model.observation import Observation
@@ -723,11 +723,10 @@ class Form(CreateableModel, DeletableModel):
         )
 
     @classmethod
-    def create(  # type: ignore
+    def _unsaved(
         cls,
         time_start: time,
         time_stop: time,
-        observations: List[Observation],
         protocol: Optional[Union[Protocol, str]] = None,
         comment: str = None,
         place: Optional[Union[Place, int]] = None,
@@ -735,11 +734,8 @@ class Form(CreateableModel, DeletableModel):
         sequence_number: Optional[int] = None,
         full_form: bool = True,
         protocol_headers: Dict[str, Union[int, str]] = {},
-        create_in_ornitho: bool = True,
-        chunk_size: int = 128,
-        retries: int = 0,
-        hidde_comment_for_placeholder_observation: str = None,
     ) -> "Form":
+        """Build a local form with the given fields set, without touching ornitho."""
         form = cls()
         form.time_start = time_start
         form.time_stop = time_stop
@@ -770,61 +766,179 @@ class Form(CreateableModel, DeletableModel):
         if sequence_number is not None:
             form.sequence_number = sequence_number
 
-        if create_in_ornitho:
-            # Form must be created first,
-            # otherwise ornitho will ignore the given GUID/UUID for observations (╯°□°）╯︵ ┻━┻)
-
-            # Create Form with an "Keine Art" observation, to create form in ornitho
-            form.observations = [
-                Observation.create(
-                    observer=observations[0].id_observer,
-                    species=10000,
-                    place=place,
-                    timing=observations[0].timing,
-                    coord_lat=observations[0].coord_lat,
-                    coord_lon=observations[0].coord_lon,
-                    precision=observations[0].precision,
-                    estimation_code=ornitho.EstimationCode.EXACT_VALUE,
-                    hidden=True,
-                    hidden_comment=hidde_comment_for_placeholder_observation,
-                    count=0,
-                    create_in_ornitho=False,
-                    retries=retries,
-                )
-            ]
-            first_observation_id = cls.create_in_ornitho(
-                data={"forms": [form.raw_data_trim_field_ids()]}, retries=retries
-            )
-            form_id = Observation.get(first_observation_id).id_form
-
-            # Create observations with form id in ornitho
-            try:
-                # Add form id to every observation
-                for observation in observations:
-                    observation.id_form = form_id
-
-                for observation_chunk in [
-                    observations[i : i + chunk_size]
-                    for i in range(0, len(observations), chunk_size)
-                ]:
-                    Observation.create_in_ornitho(
-                        data={
-                            "sightings": [
-                                observation.raw_data_trim_field_ids()
-                                for observation in observation_chunk
-                            ]
-                        },
-                        retries=retries,
-                    )
-                # Retrieve form again, to get acces to observation ids
-                form = cls.get(form_id)
-            except Exception as ex:
-                form = cls(id_=form_id)
-                form.delete()
-                raise ex
-        else:
-            form.observations = observations
         return form
+
+    @classmethod
+    def create_empty(
+        cls,
+        time_start: time,
+        time_stop: time,
+        template_observation: Observation,
+        protocol: Optional[Union[Protocol, str]] = None,
+        comment: str = None,
+        place: Optional[Union[Place, int]] = None,
+        visit_number: Optional[int] = None,
+        sequence_number: Optional[int] = None,
+        full_form: bool = True,
+        protocol_headers: Dict[str, Union[int, str]] = {},
+        retries: int = 0,
+        hidde_comment_for_placeholder_observation: str = None,
+    ) -> "Form":
+        """Create the form in ornitho, holding nothing but the placeholder observation.
+
+        The form has to exist before its observations are sent, otherwise ornitho ignores
+        the GUID/UUID given for them (╯°□°）╯︵ ┻━┻), so it is brought into existence with
+        a hidden "Keine Art" observation. Splitting that off from `add_observations` lets
+        a caller persist the returned form id before any real observation reaches ornitho:
+        until then the form carries only the placeholder, which consumers are expected to
+        recognise - via `hidde_comment_for_placeholder_observation` - and ignore.
+
+        :param template_observation: Observation the placeholder takes its observer,
+            timing, coordinates and precision from. Not sent to ornitho itself.
+        :return: The created form. Only `id_` is populated; call `refresh()` for the rest.
+        :rtype: Form
+        """
+        form = cls._unsaved(
+            time_start=time_start,
+            time_stop=time_stop,
+            protocol=protocol,
+            comment=comment,
+            place=place,
+            visit_number=visit_number,
+            sequence_number=sequence_number,
+            full_form=full_form,
+            protocol_headers=protocol_headers,
+        )
+        form.observations = [
+            Observation.create(
+                observer=template_observation.id_observer,
+                species=10000,
+                place=place,
+                timing=template_observation.timing,
+                coord_lat=template_observation.coord_lat,
+                coord_lon=template_observation.coord_lon,
+                precision=template_observation.precision,
+                estimation_code=ornitho.EstimationCode.EXACT_VALUE,
+                hidden=True,
+                hidden_comment=hidde_comment_for_placeholder_observation,
+                count=0,
+                create_in_ornitho=False,
+                retries=retries,
+            )
+        ]
+        first_observation_id = cls.create_in_ornitho(
+            data={"forms": [form.raw_data_trim_field_ids()]}, retries=retries
+        )
+        form_id = Observation.get(first_observation_id).id_form
+        if form_id is None:
+            # The placeholder was created but is not attached to a form, so there is no
+            # id to hand back and nothing for the caller to add observations to.
+            raise APIException(
+                f"Ornitho reported no form for the created observation {first_observation_id}"
+            )
+        return cls(id_=form_id)
+
+    def add_observations(
+        self,
+        observations: List[Observation],
+        chunk_size: int = 128,
+        retries: int = 0,
+    ) -> "Form":
+        """Send observations to this already existing form, in chunks.
+
+        Every observation is stamped with this form's id first. Nothing is read back:
+        call `refresh()` afterwards to see the ids ornitho assigned. Resuming a
+        half-finished call is a matter of sending only the observations that are still
+        missing from the form.
+
+        :return: This form, unchanged.
+        :rtype: Form
+        """
+        if self.id_ is None:
+            raise APIException(
+                "Cannot add observations to a form that does not exist in ornitho yet"
+            )
+
+        for observation in observations:
+            observation.id_form = int(self.id_)
+
+        for observation_chunk in [
+            observations[i : i + chunk_size]
+            for i in range(0, len(observations), chunk_size)
+        ]:
+            Observation.create_in_ornitho(
+                data={
+                    "sightings": [
+                        observation.raw_data_trim_field_ids()
+                        for observation in observation_chunk
+                    ]
+                },
+                retries=retries,
+            )
+        return self
+
+    @classmethod
+    def create(  # type: ignore
+        cls,
+        time_start: time,
+        time_stop: time,
+        observations: List[Observation],
+        protocol: Optional[Union[Protocol, str]] = None,
+        comment: str = None,
+        place: Optional[Union[Place, int]] = None,
+        visit_number: Optional[int] = None,
+        sequence_number: Optional[int] = None,
+        full_form: bool = True,
+        protocol_headers: Dict[str, Union[int, str]] = {},
+        create_in_ornitho: bool = True,
+        chunk_size: int = 128,
+        retries: int = 0,
+        hidde_comment_for_placeholder_observation: str = None,
+    ) -> "Form":
+        """Create a form in ornitho together with its observations.
+
+        Both phases in one call, deleting the form again if the observations cannot be
+        sent. Callers that need to persist the form id before the observations are sent -
+        so that a concurrent reader can always resolve the form - should drive
+        `create_empty` and `add_observations` themselves and handle failure by resuming
+        rather than deleting.
+        """
+        if not create_in_ornitho:
+            form = cls._unsaved(
+                time_start=time_start,
+                time_stop=time_stop,
+                protocol=protocol,
+                comment=comment,
+                place=place,
+                visit_number=visit_number,
+                sequence_number=sequence_number,
+                full_form=full_form,
+                protocol_headers=protocol_headers,
+            )
+            form.observations = observations
+            return form
+
+        form = cls.create_empty(
+            time_start=time_start,
+            time_stop=time_stop,
+            template_observation=observations[0],
+            protocol=protocol,
+            comment=comment,
+            place=place,
+            visit_number=visit_number,
+            sequence_number=sequence_number,
+            full_form=full_form,
+            protocol_headers=protocol_headers,
+            retries=retries,
+            hidde_comment_for_placeholder_observation=hidde_comment_for_placeholder_observation,
+        )
+        try:
+            form.add_observations(observations, chunk_size=chunk_size, retries=retries)
+        except Exception as ex:
+            form.delete()
+            raise ex
+        # Retrieve form again, to get acces to observation ids
+        return cls.get(form.id_)
 
     def raw_data_trim_field_ids(self) -> Dict[str, Any]:
         raw_data = deepcopy(self._raw_data)

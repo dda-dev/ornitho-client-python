@@ -1061,3 +1061,93 @@ class TestForm(TestCase):
         )
         mock_create_in_ornitho.assert_called()
         mock_observation.raw_data_trim_field_ids.assert_called()
+
+    @mock.patch("ornitho.model.form.Observation")
+    @mock.patch("ornitho.model.form.CreateableModel.create_in_ornitho")
+    def test_create_empty(self, mock_create_in_ornitho, mock_observation):
+        mock_create_in_ornitho.return_value = 1
+        mock_observation.get.return_value.id_form = 446171
+        template = MagicMock()
+
+        form = Form.create_empty(
+            time_start=datetime.now().time(),
+            time_stop=datetime.now().time(),
+            template_observation=template,
+            protocol="PROTOCOL",
+            place=1,
+            visit_number=250,
+            sequence_number=100,
+            hidde_comment_for_placeholder_observation="PLACEHOLDER",
+        )
+
+        self.assertEqual(446171, form.id_)
+        # Only the placeholder is sent, so the form exists in ornitho without carrying
+        # any real observation yet.
+        sent = mock_create_in_ornitho.call_args.kwargs["data"]
+        self.assertEqual(1, len(sent["forms"][0]["sightings"]))
+        placeholder = mock_observation.create.call_args.kwargs
+        self.assertEqual(10000, placeholder["species"])
+        self.assertEqual(0, placeholder["count"])
+        self.assertTrue(placeholder["hidden"])
+        self.assertEqual("PLACEHOLDER", placeholder["hidden_comment"])
+        self.assertFalse(placeholder["create_in_ornitho"])
+
+    @mock.patch("ornitho.model.form.Observation")
+    @mock.patch("ornitho.model.form.CreateableModel.create_in_ornitho")
+    def test_create_empty_raises_without_form_id(
+        self, mock_create_in_ornitho, mock_observation
+    ):
+        mock_create_in_ornitho.return_value = 1
+        mock_observation.get.return_value.id_form = None
+
+        with self.assertRaises(APIException):
+            Form.create_empty(
+                time_start=datetime.now().time(),
+                time_stop=datetime.now().time(),
+                template_observation=MagicMock(),
+            )
+
+    @mock.patch("ornitho.model.form.Observation")
+    def test_add_observations(self, mock_observation):
+        form = Form(id_=446171)
+        observations = [MagicMock(), MagicMock()]
+
+        self.assertEqual(form, form.add_observations(observations))
+
+        for observation in observations:
+            self.assertEqual(446171, observation.id_form)
+        mock_observation.create_in_ornitho.assert_called_once()
+        sent = mock_observation.create_in_ornitho.call_args.kwargs["data"]
+        self.assertEqual(2, len(sent["sightings"]))
+
+    @mock.patch("ornitho.model.form.Observation")
+    def test_add_observations_chunked(self, mock_observation):
+        form = Form(id_=446171)
+
+        form.add_observations([MagicMock(), MagicMock(), MagicMock()], chunk_size=2)
+
+        self.assertEqual(2, mock_observation.create_in_ornitho.call_count)
+
+    def test_add_observations_raises_without_form_id(self):
+        with self.assertRaises(APIException):
+            Form().add_observations([MagicMock()])
+
+    @mock.patch("ornitho.model.form.Observation")
+    @mock.patch("ornitho.model.form.DeletableModel.delete")
+    @mock.patch("ornitho.model.form.CreateableModel.get")
+    @mock.patch("ornitho.model.form.CreateableModel.create_in_ornitho")
+    def test_create_deletes_the_form_when_observations_fail(
+        self, mock_create_in_ornitho, mock_get, mock_delete, mock_observation
+    ):
+        mock_create_in_ornitho.return_value = 1
+        mock_observation.get.return_value.id_form = 446171
+        mock_observation.create_in_ornitho.side_effect = APIException("nope")
+
+        with self.assertRaises(APIException):
+            Form.create(
+                time_start=datetime.now().time(),
+                time_stop=datetime.now().time(),
+                observations=[MagicMock()],
+            )
+
+        mock_delete.assert_called_once()
