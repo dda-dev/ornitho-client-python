@@ -146,6 +146,10 @@ class Form(CreateableModel, DeletableModel):
         )
 
     @property
+    def trace_type(self) -> Optional[str]:
+        return self._raw_data["trace_type"] if "trace_type" in self._raw_data else None
+
+    @property
     def comment(self) -> Optional[str]:
         return self._raw_data["comment"] if "comment" in self._raw_data else None
 
