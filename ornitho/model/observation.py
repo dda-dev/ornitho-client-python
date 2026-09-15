@@ -798,6 +798,13 @@ class Observation(
 
     @property  # type: ignore
     @check_raw_data("observers")
+    def committees_validation(self) -> Optional[dict]:
+        return (
+            self._raw_data["observers"][0].get("committees_validation", None)
+        )
+
+    @property  # type: ignore
+    @check_raw_data("observers")
     def id_observer_vowa(self) -> Optional[int]:
         return (
             int(self._raw_data["observers"][0]["vowa_id"])

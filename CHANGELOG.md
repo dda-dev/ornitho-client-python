@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `project_name` added to `observation` model
 - made `place` updatable (especially the wkt field)
 - made `colony_nests` updatable
+- `committees_validation` added to `observation` model
 
 ### Changed
 
