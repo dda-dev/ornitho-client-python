@@ -120,6 +120,30 @@ class Site(BaseModel):
             ]
         return observers
 
+    @classmethod
+    def get_sites(cls, ids: List[int], retries: int = 0) -> List["Site"]:
+        """Retrieves several sites by their IDs within one request
+        :param ids: List of site IDs
+        :param retries: Indicates how many retries should be performed
+        :type ids: List[int]
+        :type retries: int
+        :return: List of sites with the given IDs
+        :rtype: List[Site]
+        """
+        if not ids:
+            return []
+        response = cls.request(
+            method="post",
+            url=f"{cls.ENDPOINT}/get_sites",
+            body={"id": [int(id_) for id_ in ids]},
+            retries=retries,
+        )
+        sites_object = response[0] if len(response) == 1 else {}
+        return [
+            cls.create_from_ornitho_json({"id": site_id, **sites_object[site_id]})
+            for site_id in sites_object.keys()
+        ]
+
     def pdf(
         self,
         map_layer: MapLayer = None,

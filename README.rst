@@ -51,6 +51,7 @@ The following "ornitho controllers / calls" are implemented:
   - List protocol
   - Get a single protocol
   - Get list of sites for protocol id
+  - Get multiple sites by IDs
   - Get PDF for site id
 
 - observations
