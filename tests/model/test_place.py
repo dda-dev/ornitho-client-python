@@ -146,6 +146,27 @@ class TestPlace(TestCase):
         place = Place.find_closest_place(1.1, 2.2)
         self.assertEqual(place, "Place")
 
+    def test_get_places(self):
+        second_place_json = dict(self.place_json, id="768")
+        with mock.patch.object(
+            Place, "request", return_value=[self.place_json, second_place_json]
+        ) as mock_request:
+            places = Place.get_places([767, 768])
+            self.assertEqual(len(places), 2)
+            self.assertEqual(places[0].id_, 767)
+            self.assertEqual(places[1].id_, 768)
+            self.assertEqual(places[1].name, self.place_json["name"])
+            mock_request.assert_called_once_with(
+                method="post",
+                url="places/get_places",
+                body={"id": [767, 768]},
+                retries=0,
+            )
+
+        with mock.patch.object(Place, "request") as mock_request:
+            self.assertEqual(Place.get_places([]), [])
+            mock_request.assert_not_called()
+
     def test_create_from_site(self):
         place = Place.create_from_site(
             {
