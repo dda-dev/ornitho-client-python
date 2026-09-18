@@ -139,8 +139,11 @@ class Site(BaseModel):
             retries=retries,
         )
         sites_object = response[0] if len(response) == 1 else {}
+        # local_name is optional, default it so a missing value does not trigger a refresh
         return [
-            cls.create_from_ornitho_json({"id": site_id, **sites_object[site_id]})
+            cls.create_from_ornitho_json(
+                {"id": site_id, "local_name": None, **sites_object[site_id]}
+            )
             for site_id in sites_object.keys()
         ]
 
