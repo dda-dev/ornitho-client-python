@@ -102,6 +102,34 @@ class TestSite(TestCase):
             int(self.site_json["observers"][0]), self.site.observers[0].id_
         )
 
+    def test_get_sites(self):
+        second_site_json = dict(self.site_json, id="2")
+        with mock.patch.object(
+            Site, "request", return_value=[{"1": self.site_json, "2": second_site_json}]
+        ) as mock_request:
+            sites = Site.get_sites([1, 2])
+            self.assertEqual(2, len(sites))
+            self.assertEqual(1, sites[0].id_)
+            self.assertEqual(2, sites[1].id_)
+            self.assertEqual(self.site_json["custom_name"], sites[1].custom_name)
+            self.assertEqual(
+                int(self.site_json["transects"][0]["id"]),
+                sites[0].transect_places[0].id_,
+            )
+            mock_request.assert_called_once_with(
+                method="post",
+                url="protocol/sites/get_sites",
+                body={"id": [1, 2]},
+                retries=0,
+            )
+
+        with mock.patch.object(Site, "request") as mock_request:
+            self.assertEqual([], Site.get_sites([]))
+            mock_request.assert_not_called()
+
+        with mock.patch.object(Site, "request", return_value=[]):
+            self.assertEqual([], Site.get_sites([1]))
+
     @mock.patch("ornitho.model.site.APIRequester")
     def test_pdf(self, mock_requester):
         class MockRequesterClass:
