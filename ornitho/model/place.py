@@ -183,6 +183,26 @@ class Place(ListableModel, UpdateableModel):
         )[0]
 
     @classmethod
+    def get_places(cls, ids: List[int], retries: int = 0) -> List["Place"]:
+        """Retrieves several places by their IDs within one request
+        :param ids: List of place IDs
+        :param retries: Indicates how many retries should be performed
+        :type ids: List[int]
+        :type retries: int
+        :return: List of places with the given IDs
+        :rtype: List[Place]
+        """
+        if not ids:
+            return []
+        response = cls.request(
+            method="post",
+            url=f"{cls.ENDPOINT}/get_places",
+            body={"id": [int(id_) for id_ in ids]},
+            retries=retries,
+        )
+        return [cls.create_from_ornitho_json(place) for place in response]
+
+    @classmethod
     def create_from_site(cls, data: Dict[str, Any]):
         identifier: int = int(data["id"])
         obj = cls(identifier)

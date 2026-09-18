@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `get_places` method added to `Place` model (POST /places/get_places)
 - `create_empty` and `add_observations` methods added to `form`, splitting the two phases
   of `form.create` so a caller can persist the form id before any real observation is sent
   to ornitho. `form.create` is unchanged and now calls both.

@@ -32,6 +32,7 @@ The following "ornitho controllers / calls" are implemented:
 
   - List places
   - Get a single place
+  - Get multiple places by IDs
 
 - observers
 
