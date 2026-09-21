@@ -117,6 +117,11 @@ class BaseModel(ABC):
             raise ObjectNotFoundException(
                 f"Get {len(data)} objects for {self.instance_url()}"
             )
+        elif data[0] is None:
+            # e.g. protocol/sites/<id> of a deleted site answers [null]
+            raise ObjectNotFoundException(
+                f"Null object retrieved: {self.instance_url()}"
+            )
         elif len(data) == 1 and "id" in data[0] and data[0]["id"] is None:
             raise ObjectNotFoundException(
                 f"Object with nulled fields retrieved: {self.instance_url()}"
