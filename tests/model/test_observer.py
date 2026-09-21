@@ -123,6 +123,14 @@ class TestObserver(TestCase):
     def test_municipality(self):
         self.assertEqual(self.observer_json["municipality"], self.observer.municipality)
 
+        # The API returns only local_admin_unit, which must not trigger a refresh
+        observer_json = dict(self.observer_json)
+        del observer_json["municipality"]
+        observer = Observer.create_from_ornitho_json(observer_json)
+        with mock.patch.object(Observer, "request") as mock_request:
+            self.assertEqual(observer_json["local_admin_unit"], observer.municipality)
+            mock_request.assert_not_called()
+
     def test_local_admin_unit(self):
         self.assertEqual(
             self.observer_json["local_admin_unit"], self.observer.local_admin_unit

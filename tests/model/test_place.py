@@ -156,6 +156,8 @@ class TestPlace(TestCase):
             self.assertEqual(places[0].id_, 767)
             self.assertEqual(places[1].id_, 768)
             self.assertEqual(places[1].name, self.place_json["name"])
+            self.assertIsNone(places[1].county)
+            self.assertIsNone(places[1].country)
             mock_request.assert_called_once_with(
                 method="post",
                 url="places/get_places",
