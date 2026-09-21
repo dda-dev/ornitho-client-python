@@ -200,7 +200,11 @@ class Place(ListableModel, UpdateableModel):
             body={"id": [int(id_) for id_ in ids]},
             retries=retries,
         )
-        return [cls.create_from_ornitho_json(place) for place in response]
+        places = [cls.create_from_ornitho_json(place) for place in response]
+        # The response holds complete places, missing optional fields need no refresh
+        for place in places:
+            place._refreshed = True
+        return places
 
     @classmethod
     def create_from_site(cls, data: Dict[str, Any]):

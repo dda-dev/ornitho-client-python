@@ -104,7 +104,8 @@ class TestSite(TestCase):
 
     def test_get_sites(self):
         second_site_json = dict(self.site_json, id="2")
-        del second_site_json["local_name"]
+        for optional_key in ["local_name", "points", "boundary_wkt"]:
+            del second_site_json[optional_key]
         with mock.patch.object(
             Site, "request", return_value=[{"1": self.site_json, "2": second_site_json}]
         ) as mock_request:
@@ -115,6 +116,8 @@ class TestSite(TestCase):
             self.assertEqual(self.site_json["custom_name"], sites[1].custom_name)
             self.assertEqual(self.site_json["local_name"], sites[0].local_name)
             self.assertIsNone(sites[1].local_name)
+            self.assertIsNone(sites[1].point_places)
+            self.assertIsNone(sites[1].boundary_wkt)
             self.assertEqual(
                 int(self.site_json["transects"][0]["id"]),
                 sites[0].transect_places[0].id_,
