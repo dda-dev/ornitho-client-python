@@ -190,6 +190,40 @@ class TestAPIRequester(TestCase):
             headers, {"User-Agent": f"API Python Client/{ornitho.__version__}"}
         )
 
+    def test_format_for_log(self):
+        max_items = ornitho.log_list_max_items
+        ornitho.log_list_max_items = 3
+        self.assertEqual("None", APIRequester.format_for_log(None))
+        self.assertEqual(
+            "{'id': [1, 2, 3]}", APIRequester.format_for_log({"id": [1, 2, 3]})
+        )
+        self.assertEqual(
+            "{'id': [1, 2, 3, ... (5 items)], 'name': 'test'}",
+            APIRequester.format_for_log({"id": [1, 2, 3, 4, 5], "name": "test"}),
+        )
+        self.assertEqual(
+            "[{'id': [1, 2, 3, ... (4 items)]}]",
+            APIRequester.format_for_log([{"id": [1, 2, 3, 4]}]),
+        )
+        ornitho.log_list_max_items = None
+        self.assertEqual(
+            "{'id': [1, 2, 3, 4, 5]}",
+            APIRequester.format_for_log({"id": [1, 2, 3, 4, 5]}),
+        )
+        ornitho.log_list_max_items = max_items
+
+    def test_truncate_for_log(self):
+        max_length = ornitho.log_body_max_length
+        ornitho.log_body_max_length = 5
+        self.assertEqual("'abc'", APIRequester.truncate_for_log("abc"))
+        self.assertEqual("[1]", APIRequester.truncate_for_log([1]))
+        self.assertEqual(
+            "'abcd... (5 more chars)", APIRequester.truncate_for_log("abcdefgh")
+        )
+        ornitho.log_body_max_length = None
+        self.assertEqual("'abcdefgh'", APIRequester.truncate_for_log("abcdefgh"))
+        ornitho.log_body_max_length = max_length
+
     def test_request_raw(self):
         # Case 1: GET Method
         self.requester.session.request = MagicMock(

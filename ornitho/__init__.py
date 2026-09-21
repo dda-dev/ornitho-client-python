@@ -6,6 +6,7 @@ An ornitho API client
 :copyright: (c) 2019 by DDA
 :license: MIT, see LICENSE for more details.
 """
+
 import logging
 import os
 from typing import Callable, Optional
@@ -78,6 +79,8 @@ cache_redis_port: int = 6379
 cache_redis_db: int = 0
 
 log_level = os.environ.get("ORNITHO_LOG_LEVEL") or logging.WARNING
+log_body_max_length: Optional[int] = 500
+log_list_max_items: Optional[int] = 5
 logging.basicConfig(
     level=log_level, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )

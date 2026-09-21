@@ -236,6 +236,43 @@ class APIRequester(object):
         headers = {"User-Agent": user_agent}
         return headers
 
+    @staticmethod
+    def format_for_log(value: Any) -> str:
+        """Represent a value for log output. Lists longer than 'ornitho.log_list_max_items' are summarized.
+        :param value: Value to be logged
+        :type value: Any
+        :return: String representation
+        :rtype: str
+        """
+        if isinstance(value, dict):
+            items = ", ".join(
+                f"{key!r}: {APIRequester.format_for_log(item)}"
+                for key, item in value.items()
+            )
+            return f"{{{items}}}"
+        if isinstance(value, list):
+            max_items = ornitho.log_list_max_items
+            shown = value if max_items is None else value[:max_items]
+            items = ", ".join(APIRequester.format_for_log(item) for item in shown)
+            if len(shown) < len(value):
+                items += f", ... ({len(value)} items)"
+            return f"[{items}]"
+        return repr(value)
+
+    @staticmethod
+    def truncate_for_log(value: Any) -> str:
+        """Shorten a value for log output, if it exceeds 'ornitho.log_body_max_length'
+        :param value: Value to be logged
+        :type value: Any
+        :return: String representation, truncated if necessary
+        :rtype: str
+        """
+        text = APIRequester.format_for_log(value)
+        max_length = ornitho.log_body_max_length
+        if max_length is None or len(text) <= max_length:
+            return text
+        return f"{text[:max_length]}... ({len(text) - max_length} more chars)"
+
     def request_raw(
         self,
         method: str,
@@ -325,7 +362,7 @@ class APIRequester(object):
 
         headers = self.request_headers()
         ornitho.logger.info(
-            f"Request to Ornitho api. method={method}, url=/{url}, params={params}, short_version={short_version}, body={body}"
+            f"Request to Ornitho api. method={method}, url=/{url}, params={params}, short_version={short_version}, body={self.truncate_for_log(body)}"
         )
         raw_response = self.session.request(method, abs_url, data=data, headers=headers)
 
