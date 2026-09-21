@@ -41,6 +41,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - return `local_admin_unit` as `municipality` property in `observer` (just an unexpected API change by BVN)
 - return empty list if observer has no rights
 - fix empty wkt for point places
+- `refresh` raises `ObjectNotFoundException` instead of a `TypeError` when the API
+  answers `[null]`, as `protocol/sites/<id>` does for a deleted site
 
 ## [0.3.0] - 2022-03-10
 

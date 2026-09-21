@@ -27,6 +27,11 @@ class TestBaseModel(TestCase):
     def fake_empty_request(**kwargs):
         return [[], None]
 
+    # noinspection PyUnusedLocal
+    @staticmethod
+    def fake_null_request(**kwargs):
+        return [[None], None]
+
     def setUp(self):
         self.my_model = self.MyModel.create_from_ornitho_json({"id": "1"})
         self.my_model_2 = self.MyModel.create_from_ornitho_json({"@id": "2"})
@@ -72,6 +77,13 @@ class TestBaseModel(TestCase):
         ornitho.api_requester.APIRequester, "request", fake_empty_request
     )
     def test_refresh_exception(self):
+        self.assertRaises(
+            ObjectNotFoundException,
+            lambda: self.my_model.refresh(),
+        )
+
+    @mock.patch.object(ornitho.api_requester.APIRequester, "request", fake_null_request)
+    def test_refresh_null_object_exception(self):
         self.assertRaises(
             ObjectNotFoundException,
             lambda: self.my_model.refresh(),
