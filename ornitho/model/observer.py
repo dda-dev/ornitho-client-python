@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List, Optional
 
 from ornitho.model.abstract import ListableModel
-from ornitho.model.abstract.base_model import check_refresh
+from ornitho.model.abstract.base_model import check_raw_data, check_refresh
 from ornitho.model.right import Right
 
 
@@ -54,7 +54,7 @@ class Observer(ListableModel):
         return self._raw_data["postcode"]
 
     @property  # type: ignore
-    @check_refresh
+    @check_raw_data("local_admin_unit")
     def municipality(self) -> str:
         return (
             self._raw_data["municipality"]
