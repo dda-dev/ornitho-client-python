@@ -9,7 +9,9 @@ An ornitho API client
 
 import logging
 import os
+import re
 from typing import Callable, Optional
+from urllib.parse import urlparse
 
 import requests
 
@@ -71,8 +73,15 @@ cache_enabled: bool = False
 cache_name: str = "ornitho_cache"
 cache_backend: str = "sqlite"
 cache_expire_after: int = 600
-cache_filter_fn: Callable[[requests.Response], bool] = (
-    lambda r: "pagination_key" not in r.headers.keys()
+# Only direct calls of master data (e.g. GET /species/123) and the field list are cached, never paginated responses
+cache_filter_fn: Callable[[requests.Response], bool] = lambda r: (
+    "pagination_key" not in r.headers.keys()
+    and re.search(
+        r"/(fields|observers/current|(observers|species|fields|taxo_groups|families"
+        r"|territorial_units|local_admin_units|entities)/\d+)$",
+        urlparse(r.url).path,
+    )
+    is not None
 )
 cache_redis_host: str = "localhost"
 cache_redis_port: int = 6379
