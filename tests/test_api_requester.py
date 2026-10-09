@@ -602,3 +602,37 @@ class TestAPIRequester(TestCase):
                 short_version=True,
             ),
         )
+
+    def test_cache_filter_fn(self):
+        def url(path, headers=None):
+            return Mock(
+                url=f"https://www.ornitho.de/api/{path}?user_email=a&user_pw=b",
+                headers=headers or {},
+            )
+
+        # Direct calls of master data and the field list are cached
+        self.assertTrue(ornitho.cache_filter_fn(url("observers/1")))
+        self.assertTrue(ornitho.cache_filter_fn(url("observers/current")))
+        self.assertTrue(ornitho.cache_filter_fn(url("species/2")))
+        self.assertTrue(ornitho.cache_filter_fn(url("fields")))
+        self.assertTrue(ornitho.cache_filter_fn(url("fields/3")))
+        self.assertTrue(ornitho.cache_filter_fn(url("taxo_groups/4")))
+        self.assertTrue(ornitho.cache_filter_fn(url("families/5")))
+        self.assertTrue(ornitho.cache_filter_fn(url("territorial_units/6")))
+        self.assertTrue(ornitho.cache_filter_fn(url("local_admin_units/7")))
+        self.assertTrue(ornitho.cache_filter_fn(url("entities/8")))
+
+        # Paginated responses are never cached
+        self.assertFalse(
+            ornitho.cache_filter_fn(url("fields", headers={"pagination_key": "key"}))
+        )
+
+        # Everything else is not cached
+        self.assertFalse(ornitho.cache_filter_fn(url("observers")))
+        self.assertFalse(ornitho.cache_filter_fn(url("observers/rights/1")))
+        self.assertFalse(ornitho.cache_filter_fn(url("species")))
+        self.assertFalse(ornitho.cache_filter_fn(url("taxo_groups")))
+        self.assertFalse(ornitho.cache_filter_fn(url("observations/9")))
+        self.assertFalse(ornitho.cache_filter_fn(url("places/10")))
+        self.assertFalse(ornitho.cache_filter_fn(url("media/11")))
+        self.assertFalse(ornitho.cache_filter_fn(url("protocol/sites/12")))

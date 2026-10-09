@@ -176,7 +176,11 @@ The client can then be used.
 
 Caching
 ~~~~~~~~
-If the additional caching dependency is installed, non chunked responses can be cached.
+If the additional caching dependency is installed, responses can be cached.
+By default only direct calls of master data are cached: observers (incl. ``Observer.current()``), species,
+field options, taxonomic groups, families, territorial units, local admin units and entities
+(e.g. ``Species.get(id_)``), as well as the field list (``Field.get(id_)``).
+Paginated responses are never cached.
 For activating the cache one has to set the `cache_enabled` flag.
 Following settings are available:
 
