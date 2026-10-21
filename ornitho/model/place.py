@@ -183,6 +183,17 @@ class Place(ListableModel, UpdateableModel):
         )[0]
 
     @classmethod
+    def get_places(
+        cls,
+        ids: List[int],
+        retries: int = 0,
+    ) -> List[Place]:
+        url = "%s/get_place" % cls.ENDPOINT
+        body = {"id": ids}
+        response = cls.request(method="post", url=url, body=body, retries=retries)
+        return [cls.create_from_ornitho_json(ele) for ele in response]
+
+    @classmethod
     def create_from_site(cls, data: Dict[str, Any]):
         identifier: int = int(data["id"])
         obj = cls(identifier)

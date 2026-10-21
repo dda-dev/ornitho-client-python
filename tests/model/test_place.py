@@ -139,6 +139,22 @@ class TestPlace(TestCase):
     def test_wkt(self):
         self.assertIsNone(self.place.wkt)
 
+    @mock.patch("ornitho.model.place.Place.request")
+    def test_get_places(self, mock_request):
+        mock_request.return_value = [self.place_json]
+
+        result = Place.get_places([1, 2], retries=3)
+
+        self.assertEqual(1, len(result))
+        self.assertIsInstance(result[0], Place)
+        self.assertEqual(int(self.place_json["id"]), result[0].id_)
+        mock_request.assert_called_once_with(
+            method="post",
+            url="places/get_place",
+            body={"id": [1, 2]},
+            retries=3,
+        )
+
     @mock.patch("ornitho.model.place.ListableModel.list_all")
     def test_find_closest_place(self, mock_list_all):
         mock_list_all.return_value = ["Place"]
