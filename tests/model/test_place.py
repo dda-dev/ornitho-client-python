@@ -150,7 +150,7 @@ class TestPlace(TestCase):
         self.assertEqual(int(self.place_json["id"]), result[0].id_)
         mock_request.assert_called_once_with(
             method="post",
-            url="places/get_place",
+            url="places/get_places",
             body={"id": [1, 2]},
             retries=3,
         )

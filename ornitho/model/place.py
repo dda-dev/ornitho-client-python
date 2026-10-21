@@ -188,7 +188,7 @@ class Place(ListableModel, UpdateableModel):
         ids: List[int],
         retries: int = 0,
     ) -> List[Place]:
-        url = "%s/get_place" % cls.ENDPOINT
+        url = "%s/get_places" % cls.ENDPOINT
         body = {"id": ids}
         response = cls.request(method="post", url=url, body=body, retries=retries)
         return [cls.create_from_ornitho_json(ele) for ele in response]
