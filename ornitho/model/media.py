@@ -25,7 +25,7 @@ class Media(BaseModel):
 
     @property
     def advanced_observer(self) -> bool:
-        return False if self._raw_data["advanced_observer"] == "0" else True
+        return True if self._raw_data["advanced_observer"] == "1" else False
 
     @property
     def traid(self) -> int:
@@ -45,15 +45,15 @@ class Media(BaseModel):
 
     @property
     def obs_power_user(self) -> bool:
-        return False if self._raw_data["obs_power_user"] == "0" else True
+        return True if self._raw_data["obs_power_user"] == "1" else False
 
     @property
     def tra_power_user(self) -> bool:
-        return False if self._raw_data["tra_power_user"] == "0" else True
+        return True if self._raw_data["tra_power_user"] == "1" else False
 
     @property
     def media(self) -> str:
-        return self._raw_data["media"]
+        return self._raw_data["media"] or self._raw_data["type"]
 
     @property
     def has_large(self) -> bool:
@@ -65,6 +65,13 @@ class Media(BaseModel):
             int(self._raw_data["insert_date"]["@timestamp"]),
         ).astimezone()
         return timing
+
+    @property
+    def url(self) -> str:
+        url = self.photo()
+        if url is None and self._raw_data["path"] is not None and self._raw_data["filename"] is not None:
+          url = self._raw_data["path"]+"/"+self._raw_data["filename"]
+        return url
 
     @property
     def photo(self) -> str:
