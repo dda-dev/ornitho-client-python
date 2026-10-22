@@ -68,7 +68,7 @@ class Media(BaseModel):
 
     @property
     def url(self) -> str:
-        url = self.photo()
+        url = self.photo
         if url is None and self._raw_data["path"] is not None and self._raw_data["filename"] is not None:
           url = self._raw_data["path"]+"/"+self._raw_data["filename"]
         return url
