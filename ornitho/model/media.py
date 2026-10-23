@@ -28,8 +28,8 @@ class Media(BaseModel):
         return self._raw_data.get("advanced_observer") == "1"
 
     @property
-    def traid(self) -> int:
-        return int(self._raw_data.get("traid")) or -1
+    def traid(self) -> int:        
+        return int(self._raw_data.get("traid")) if self._raw_data.get("traid") is not None else -1
 
     @property
     def tra_hidden(self) -> bool:
