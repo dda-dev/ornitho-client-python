@@ -5,6 +5,7 @@ from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import ornitho
+from ornitho.api_exception import ObjectNotFoundException
 import ornitho.model.form
 from ornitho import APIException
 from ornitho.model.abstract import (
@@ -347,7 +348,11 @@ class Observation(
         if self._medias is None and "medias" in self._raw_data["observers"][0]:
             self._medias = []
             for media in self._raw_data["observers"][0]["medias"]:
-                medium = Media.get(media["@id"])
+                try:
+                    medium = Media.get(media["@id"])
+                except ObjectNotFoundException:
+                    medium = None
+
                 if medium is None:
                     media["obid"] = self.id_
                     medium = Media.create_from_ornitho_json(media)
