@@ -71,14 +71,16 @@ class Media(BaseModel):
     @property
     def url(self) -> str:
         url = self.photo
-        if url is None and self._raw_data.get("path") is not None and self._raw_data.get("filename") is not None:
-          url = self._raw_data.get("path")+"/"+self._raw_data.get("filename")
+        if not url and self._raw_data.get("path") is not None and self._raw_data.get("filename") is not None:
+            url = self._raw_data.get("path")+"/"+self._raw_data.get("filename")
+        else:
+            url = ""
         return url
 
     @property
     def photo(self) -> str:
         if self._raw_data.get("photo") is None:
-            return "unknown"
+            return ""
         if self.has_large and self.media == "PHOTO":
             return self._raw_data["photo"].replace("xsmall", "large")
         elif self.media == "PHOTO":
