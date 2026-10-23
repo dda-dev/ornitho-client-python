@@ -345,10 +345,15 @@ class Observation(
     @check_raw_data("observers")
     def medias(self) -> Optional[List[Media]]:
         if self._medias is None and "medias" in self._raw_data["observers"][0]:
-            self._medias = [
-                Media.get(media["@id"]) or Media.create_from_ornitho_json(media)
-                for media in self._raw_data["observers"][0]["medias"]
-            ]
+            self._medias = []
+            for media in self._raw_data["observers"][0]["medias"]:
+                medium = Media.get(media["@id"])
+                if medium is None:
+                    media["obid"] = self.id_
+                    medium = Media.create_from_ornitho_json(media)
+                if medium is not None:
+                    self._medias.append(medium)
+
         return self._medias
 
     @property  # type: ignore
