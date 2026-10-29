@@ -351,6 +351,14 @@ class TestObservation(TestCase):
             self.observation.admin_hidden,
         )
 
+        obs = Observation()
+        obs.admin_hidden = True
+        self.assertTrue(obs.admin_hidden)
+        self.assertEqual("1", obs._raw_data["observers"][0]["admin_hidden"])
+        obs.admin_hidden = False
+        self.assertFalse(obs.admin_hidden)
+        self.assertEqual("0", obs._raw_data["observers"][0]["admin_hidden"])
+
     def test_admin_hidden_type(self):
         self.assertEqual(
             self.observation_json["observers"][0]["admin_hidden_type"],
